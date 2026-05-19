@@ -13,3 +13,104 @@
 .externalNativeBuild
 .cxx
 local.properties
+<<<<<<< HEAD
+=======
+# Built application files
+*.apk
+*.aab
+*.ap_
+
+# Files for the ART/Dalvik VM
+*.dex
+
+# Java/Kotlin class files
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+build/
+
+# Gradle files
+.gradle/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Android Studio files
+.idea/
+
+# Keystore files
+*.jks
+*.keystore
+
+# Log Files
+*.log
+
+# OS generated files
+Thumbs.db
+
+# Kotlin
+.kotlin/
+
+# Navigation Safe Args
+.navigation/
+
+# Generated signing configs
+signing.properties
+keystore.properties
+
+# Firebase / Google Services backups
+google-services.json.bak
+
+# Temporary files
+*.tmp
+*.temp
+
+# NDK
+obj/
+
+# Mac/Linux hidden files
+*.swp
+*.swo
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Compose generated
+compose_compiler/
+
+# Room schema (ignore ONLY if you don't track schemas)
+schemas/
+
+# KSP
+.ksp/
+
+# Crashlytics
+com_crashlytics_export_strings.xml
+
+# Android Studio cache
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+
+# User specific
+.idea/shelf/
+
+# Generated resources
+app/release/
+app/debug/
+
+# Google Play Publisher
+play/
+
+# Temporary Gradle download files
+.gradle-cache/
+>>>>>>> ae63df161865b497e09e93df0daac59bf46d57e0
