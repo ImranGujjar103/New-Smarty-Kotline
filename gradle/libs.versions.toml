@@ -14,6 +14,7 @@ datastorePreferences = "1.2.1"
 gson = "2.14.0"
 koinAndroid = "4.2.1"
 koinAndroidxCompose = "4.2.1"
+navigationCompose = "2.9.8"
 koinAndroidxComposeNavigation = "4.2.1"
 lottieCompose = "6.7.1"
 playServicesAds = "25.2.0"
@@ -35,6 +36,7 @@ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "j
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
