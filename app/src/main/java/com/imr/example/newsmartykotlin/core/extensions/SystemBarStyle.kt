@@ -6,8 +6,10 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import android.os.Build
 import android.view.WindowInsets
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import com.imr.example.newsmartykotlin.R
 
 fun ComponentActivity.setupLightSystemBars() {
     WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -21,8 +23,8 @@ fun ComponentActivity.setupLightSystemBars() {
     }
 
     enableEdgeToEdge(
-        SystemBarStyle.light(Color.WHITE, Color.WHITE),
-        SystemBarStyle.light(Color.WHITE, Color.WHITE)
+        SystemBarStyle.light(ContextCompat.getColor(this,R.color.background_color), ContextCompat.getColor(this,R.color.background_color)),
+        SystemBarStyle.light(ContextCompat.getColor(this,R.color.background_color), ContextCompat.getColor(this,R.color.background_color))
     )
 
     WindowCompat.getInsetsController(window, window.decorView).apply {

@@ -11,16 +11,6 @@ sealed class AppRoutes(val route: String) {
     }
 
     data object Onboarding : AppRoutes("onboarding")
-    data object Settings : AppRoutes("settings")
 
-    data object Pin : AppRoutes("pin/{mode}") {
-        fun createRoute(mode: String) = "pin/$mode"
 
-        const val MODE_SET = "set"
-        const val MODE_CHANGE = "change"
-    }
-
-    data object Feature : AppRoutes("feature/{featureKey}") {
-        fun createRoute(featureKey: String) = "feature/$featureKey"
-    }
 }

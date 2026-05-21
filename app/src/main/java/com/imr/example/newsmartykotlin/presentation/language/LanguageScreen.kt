@@ -24,8 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,7 +32,6 @@ import com.imr.example.newsmartykotlin.domain.model.LanguageModel
 import com.imr.example.newsmartykotlin.presentation.language.components.HandTutorialAnimation
 import com.imr.example.newsmartykotlin.presentation.language.components.LanguageBottomNativeAd
 import com.imr.example.newsmartykotlin.presentation.language.components.LanguageItem
-import com.imr.example.newsmartykotlin.presentation.language.components.LanguageTopBannerAd
 import com.imr.example.newsmartykotlin.ui.theme.CardColor
 import com.imr.example.newsmartykotlin.ui.theme.DisabledTextColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
@@ -46,7 +43,6 @@ import com.imr.example.newsmartykotlin.ui.theme.WhiteColor
 @Composable
 fun LanguageScreen(
     state: LanguageUiState,
-    bannerState: LanguageBannerState,
     nativeState: LanguageNativeState,
     onLanguageClick: (LanguageModel) -> Unit,
     onSaveClick: () -> Unit
@@ -54,15 +50,15 @@ fun LanguageScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(WhiteColor)
+            .background(CardColor)
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
 
-        LanguageTopBannerAd(
+/*        LanguageTopBannerAd(
             state = bannerState,
             modifier = Modifier.fillMaxWidth()
-        )
+        )*/
 
         Row(
             modifier = Modifier
@@ -75,13 +71,13 @@ fun LanguageScreen(
                     text = stringResource(R.string.select_language),
                     fontFamily = SfProDisplayBold,
                     color = TextColor,
-                    fontSize = 18.sp
+                    fontSize = 24.sp
                 )
 
                 Text(
                     text = stringResource(R.string.select_language_subtitle),
                     fontFamily = SfProDisplayRegular,
-                    fontSize = 12.sp,
+                    fontSize = 14.sp,
                     lineHeight = 16.sp,
                     color = TextColor
                 )
@@ -89,23 +85,26 @@ fun LanguageScreen(
 
             Button(
                 modifier = Modifier
-                    .width(80.dp).height(40.dp)
-                    .clip(RoundedCornerShape(14.dp)),
+                    .width(60.dp).height(30.dp)
+                    .clip(RoundedCornerShape(10.dp)),
                 onClick = onSaveClick,
                 enabled = state.isSaveEnabled,
+                contentPadding = PaddingValues(0.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = PrimaryColor,
                     disabledContainerColor = CardColor,
                     contentColor = WhiteColor,
                     disabledContentColor = DisabledTextColor
                 ),
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(10.dp),
             ) {
                 Text(
+                    modifier = Modifier,
                     text = stringResource(R.string.save),
                     fontFamily = SfProDisplayBold,
-                    fontSize = 12.sp,
-                    textAlign = TextAlign.Center
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1
                 )
             }
         }
@@ -119,7 +118,7 @@ fun LanguageScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 22.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(11.dp),
                 contentPadding = PaddingValues(bottom = 16.dp)
             ) {
                 items(

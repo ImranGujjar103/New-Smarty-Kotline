@@ -5,4 +5,38 @@
     <string name="save">Save</string>
     <string name="select_language">Select Language</string>
     <string name="select_language_subtitle">Choose Your Preferred Language for the Best Experience!</string>
+    <string name="next">Next</string>
+    <string name="change_outfits_in_one_tap">Change Outfits in One Tap</string>
+    <string name="fun_face_swap">Fun Face Swap</string>
+    <string name="transform_your_photos">Transform your photos</string>
+    <string name="change_backgrounds">Change Backgrounds</string>
+    <string name="beach_photo_while_staying_at_home">Beach Photo while staying at home</string>
+
+
+    <string name="get_text">Get</string>
+    <string name="premium">Premium</string>
+    <string name="premium_subtitle">Unlimited access to all features with 100% Ads - free experience</string>
+
+    <string name="features">Features</string>
+    <string name="free">Free</string>
+    <string name="pro">Pro</string>
+
+    <string name="unlimited_photo_editing">Unlimited Photo Editing</string>
+    <string name="unlimited_ai_suit_changer">Unlimited AI Suit Changer</string>
+    <string name="unlimited_bg_removes">Unlimited BG Removes</string>
+    <string name="remove_all_ads">Remove All Ads</string>
+
+    <string name="monthly">Monthly</string>
+    <string name="month">Month</string>
+    <string name="year">Year</string>
+    <string name="loading">Loading…</string>
+
+    <string name="premium_trial_text">Enjoy 3 day free trail then $ 3.99/week</string>
+    <string name="continue_for_free">Continue For Free</string>
+    <string name="subscription_auto_renew_text">Your subscription will renew automatically and you will be charged at start of each billing cycle.</string>
+    <string name="no_commitment_cancel_anytime">No Commitment - Cancel Anytime</string>
+
+    <string name="terms_and_conditions">Terms and Conditions</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="subscription_details">Subscription Details</string>
 </resources>

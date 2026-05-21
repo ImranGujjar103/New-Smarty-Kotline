@@ -86,7 +86,14 @@ fun LanguageBottomNativeAd(
             )
         }
 
-        else -> Unit
+        else -> {
+            AdShimmerBox(
+                modifier = modifier
+                    .height(125.dp)
+                    .padding(horizontal = 12.dp, vertical = 8.dp)
+            )
+
+        }
     }
 }
 

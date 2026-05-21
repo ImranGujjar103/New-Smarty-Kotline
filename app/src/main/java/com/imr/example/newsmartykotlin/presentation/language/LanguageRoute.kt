@@ -27,27 +27,11 @@ fun LanguageRoute(
     val activity = context as ComponentActivity
     val uiState by languageViewModel.uiState.collectAsStateWithLifecycle()
 
-    var bannerState by remember { mutableStateOf<LanguageBannerState>(LanguageBannerState.Idle) }
     var nativeState by remember { mutableStateOf<LanguageNativeState>(LanguageNativeState.Idle) }
 
     LaunchedEffect(Unit) {
         activity.setupLightSystemBars()
         val config = adViewModel.adRepository.appConfig.value
-
-        if (config.homeBanner.toShow) {
-            bannerState = LanguageBannerState.Loading
-            adViewModel.loadAdaptiveBanner(
-                activity = activity,
-                adId = config.homeBanner.adId,
-                tag = "LanguageTopBanner"
-            ) { adView ->
-                bannerState = if (adView != null) {
-                    LanguageBannerState.Loaded(adView)
-                } else {
-                    LanguageBannerState.Failed
-                }
-            }
-        }
 
         if (config.languageNative.toShow) {
             nativeState = LanguageNativeState.Loading
@@ -74,7 +58,6 @@ fun LanguageRoute(
 
     LanguageScreen(
         state = uiState,
-        bannerState = bannerState,
         nativeState = nativeState,
         onLanguageClick = languageViewModel::onLanguageClick,
         onSaveClick = {

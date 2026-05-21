@@ -23,21 +23,20 @@ class DataStorePrefs(private val context: Context) {
 
     private val IS_FIRST_SPLASH = booleanPreferencesKey("IS_FIRST_SPLASH")
 
-    // Weekly Trial Keys
-    private val IS_WEEKLY_TRIAL = booleanPreferencesKey("IS_WEEKLY_TRIAL")
-    private val WEEKLY_TRIAL_INFO = stringPreferencesKey("WEEKLY_TRIAL_INFO")
-    private val WEEKLY_TRIAL_INFO_AFTER = stringPreferencesKey("WEEKLY_TRIAL_INFO_AFTER")
-    private val WEEKLY_PRICE = stringPreferencesKey("WEEKLY_PRICE")
-    private val WEEKLY_DISCOUNTED_PRICE = stringPreferencesKey("WEEKLY_DISCOUNTED_PRICE")
-    private val WEEKLY_ORIGNAL_PRICE = stringPreferencesKey("WEEKLY_ORIGNAL_PRICE")
-
-    // Monthly Paid Trial Keys
+    // Premium Billing Keys
     private val IS_MONTHLY_TRIAL = booleanPreferencesKey("IS_MONTHLY_TRIAL")
     private val MONTHLY_TRIAL_INFO = stringPreferencesKey("MONTHLY_TRIAL_INFO")
     private val MONTHLY_TRIAL_PRICE = stringPreferencesKey("MONTHLY_TRIAL_PRICE")
     private val MONTHLY_TRIAL_INFO_AFTER = stringPreferencesKey("MONTHLY_TRIAL_INFO_AFTER")
     private val MONTHLY_PRICE = stringPreferencesKey("MONTHLY_PRICE")
 
+    private val IS_YEARLY_TRIAL = booleanPreferencesKey("IS_YEARLY_TRIAL")
+    private val YEARLY_TRIAL_INFO = stringPreferencesKey("YEARLY_TRIAL_INFO")
+    private val YEARLY_TRIAL_PRICE = stringPreferencesKey("YEARLY_TRIAL_PRICE")
+    private val YEARLY_TRIAL_INFO_AFTER = stringPreferencesKey("YEARLY_TRIAL_INFO_AFTER")
+    private val YEARLY_PRICE = stringPreferencesKey("YEARLY_PRICE")
+
+    private val PREMIUM_LAYOUT_TYPE = stringPreferencesKey("PREMIUM_LAYOUT_TYPE")
     private val SELECTED_LANGUAGE_CODE = stringPreferencesKey("SELECTED_LANGUAGE_CODE")
     private val SELECTED_LANGUAGE_DATA = stringPreferencesKey("SELECTED_LANGUAGE_DATA")
     private val LANGUAGE_SELECTED = booleanPreferencesKey("LANGUAGE_SELECTED")
@@ -386,28 +385,9 @@ class DataStorePrefs(private val context: Context) {
     fun isFirstSplash(): Flow<Boolean> = getBoolean(IS_FIRST_SPLASH, true)
 
     suspend fun setIsPurchased(value: Boolean) = setBoolean(PREMIUM_PURCHASED, value)
-    fun getIsPurchased(): Flow<Boolean> = getBoolean(PREMIUM_PURCHASED, false)
+    fun getIsPurchased(): Flow<Boolean> = getBoolean(PREMIUM_PURCHASED, true)
 
-    // Weekly Trial Preferences
-    suspend fun setIsWeeklyTrial(value: Boolean) = setBoolean(IS_WEEKLY_TRIAL, value)
-    fun getIsWeeklyTrial(): Flow<Boolean> = getBoolean(IS_WEEKLY_TRIAL, false)
-
-    suspend fun setWeeklyTrialInfo(value: String) = setString(WEEKLY_TRIAL_INFO, value)
-    fun getWeeklyTrialInfo(): Flow<String> = getString(WEEKLY_TRIAL_INFO, "")
-
-    suspend fun setWeeklyTrialInfoAfter(value: String) = setString(WEEKLY_TRIAL_INFO_AFTER, value)
-    fun getWeeklyTrialInfoAfter(): Flow<String> = getString(WEEKLY_TRIAL_INFO_AFTER, "")
-
-    suspend fun setWeeklyPrice(value: String) = setString(WEEKLY_PRICE, value)
-    fun getWeeklyPrice(): Flow<String> = getString(WEEKLY_PRICE, "")
-
-    suspend fun setWeeklyDisCountedPrice(value: String) = setString(WEEKLY_DISCOUNTED_PRICE, value)
-    fun getWeeklyDiscountedPrice(): Flow<String> = getString(WEEKLY_DISCOUNTED_PRICE, "")
-
-    suspend fun setOriginalWeeklyPrice(value: String) = setString(WEEKLY_ORIGNAL_PRICE, value)
-    fun getOriginalWeeklyPrice(): Flow<String> = getString(WEEKLY_ORIGNAL_PRICE, "")
-
-    // Monthly Paid Trial Preferences
+    // Monthly Premium Preferences
     suspend fun setIsMonthlyTrial(value: Boolean) = setBoolean(IS_MONTHLY_TRIAL, value)
     fun getIsMonthlyTrial(): Flow<Boolean> = getBoolean(IS_MONTHLY_TRIAL, false)
 
@@ -422,6 +402,29 @@ class DataStorePrefs(private val context: Context) {
 
     suspend fun setMonthlyPrice(value: String) = setString(MONTHLY_PRICE, value)
     fun getMonthlyPrice(): Flow<String> = getString(MONTHLY_PRICE, "")
+
+
+    // Yearly Premium Preferences
+    suspend fun setIsYearlyTrial(value: Boolean) = setBoolean(IS_YEARLY_TRIAL, value)
+    fun getIsYearlyTrial(): Flow<Boolean> = getBoolean(IS_YEARLY_TRIAL, false)
+
+    suspend fun setYearlyTrialInfo(value: String) = setString(YEARLY_TRIAL_INFO, value)
+    fun getYearlyTrialInfo(): Flow<String> = getString(YEARLY_TRIAL_INFO, "")
+
+    suspend fun setYearlyTrialPrice(value: String) = setString(YEARLY_TRIAL_PRICE, value)
+    fun getYearlyTrialPrice(): Flow<String> = getString(YEARLY_TRIAL_PRICE, "")
+
+    suspend fun setYearlyTrialInfoAfter(value: String) = setString(YEARLY_TRIAL_INFO_AFTER, value)
+    fun getYearlyTrialInfoAfter(): Flow<String> = getString(YEARLY_TRIAL_INFO_AFTER, "")
+
+    suspend fun setYearlyPrice(value: String) = setString(YEARLY_PRICE, value)
+    fun getYearlyPrice(): Flow<String> = getString(YEARLY_PRICE, "")
+
+
+    // Remote Config Premium Layout
+    suspend fun setPremiumLayoutType(value: String) = setString(PREMIUM_LAYOUT_TYPE, value)
+    fun getPremiumLayoutType(): Flow<String> = getString(PREMIUM_LAYOUT_TYPE, "two_card")
+    // Monthly Paid Trial Preferences
 
     // Clear all data
     suspend fun clearAll() {

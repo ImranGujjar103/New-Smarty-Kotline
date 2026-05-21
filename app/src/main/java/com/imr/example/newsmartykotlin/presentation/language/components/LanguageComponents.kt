@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.domain.model.LanguageModel
-import com.imr.example.newsmartykotlin.ui.theme.CardColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
 import com.imr.example.newsmartykotlin.ui.theme.TextColor
@@ -51,7 +50,7 @@ fun LanguageItem(
         targetValue = if (language.isSelected) {
             PrimaryColor
         } else {
-            CardColor
+            WhiteColor
         },
         label = "languageBackground"
     )
@@ -59,20 +58,20 @@ fun LanguageItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(58.dp)
+            .height(50.dp)
+            .clip(RoundedCornerShape(16.dp)) // Move before clickable
             .background(
                 color = backgroundColor,
                 shape = RoundedCornerShape(16.dp)
             )
             .clickable { onClick() }
-            .clip(RoundedCornerShape(16.dp))
             .padding(horizontal = 13.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
             painter = painterResource(id = language.flags),
             contentDescription = language.languageName,
-            modifier = Modifier.size(34.dp).clip(CircleShape),
+            modifier = Modifier.size(30.dp).clip(CircleShape),
             contentScale = ContentScale.Crop
         )
 
@@ -94,8 +93,8 @@ fun LanguageItem(
             Icon(
                 painter =painterResource(R.drawable.ic_language_tick),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.size(20.dp)
+                tint = WhiteColor,
+                modifier = Modifier.size(12.dp)
             )
         }
     }
