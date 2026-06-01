@@ -39,4 +39,19 @@
     <string name="terms_and_conditions">Terms and Conditions</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="subscription_details">Subscription Details</string>
+
+
+    <string name="suit">Suit</string>
+    <string name="changer">Changer</string>
+
+    <string name="suit_changer">Suit Changer</string>
+    <string name="suit_changer_subtitle">The easiest way to personalize your looks.</string>
+    <string name="lets_change">Let’s Change</string>
+
+    <string name="face_swap">Face Swap</string>
+    <string name="passport_pic">Passport Pic</string>
+    <string name="bg_changer">BG Changer</string>
+    <string name="my_creation">My Creation</string>
+    <string name="suits">Suits</string>
+
 </resources>

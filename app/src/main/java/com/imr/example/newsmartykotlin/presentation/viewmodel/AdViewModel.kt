@@ -663,6 +663,9 @@ class AdViewModel(
         Log.d(TAG, "checkNavigation: from ====== $navFrom")
 
         viewModelScope.launch {
+            val isPurchased = dataStorePrefs.getIsPurchased().first()
+            val config = adRepository.appConfig.value
+
             val adTypeToShow = when {
                 proInterstitialAd != null -> AdType.INTERSTITIAL_PRO
                 proAppOpenAd != null -> AdType.APP_OPEN_PRO
@@ -674,24 +677,63 @@ class AdViewModel(
             val shouldShowAd = (shouldLoadAds || shouldTryProAd) && adTypeToShow != AdType.NONE
 
             Log.d(TAG, "checkNavigation: isPaused = $isPaused")
-            Log.d(TAG, "checkNavigation: isFirstSplash = $isFirstSplash, shouldShowAd = $shouldShowAd, adType = $adTypeToShow")
-            Log.d(TAG, "checkNavigation: proInterstitialAd = ${proInterstitialAd != null}, proAppOpenAd = ${proAppOpenAd != null}, appOpenAd = ${appOpenAd != null}, interstitialAd = ${interstitialAd != null}")
+            Log.d(TAG, "checkNavigation: isFirstSplash = $isFirstSplash")
+            Log.d(TAG, "checkNavigation: isPurchased = $isPurchased")
+            Log.d(TAG, "checkNavigation: premiumAfterSplashShow = ${config.premiumAfterSplashShow}")
+            Log.d(TAG, "checkNavigation: premiumHomeShow = ${config.premiumHomeShow}")
+            Log.d(TAG, "checkNavigation: shouldShowAd = $shouldShowAd")
+            Log.d(TAG, "checkNavigation: adType = $adTypeToShow")
 
+            _navigationState.value = when {
 
-            _navigationState.value = if (dataStorePrefs.getIsPurchased().first().not() && adRepository.appConfig.value.premiumAfterSplashShow) {
-                NavigationState.NavigateToPremium(shouldShowAd, adTypeToShow)
-            } else {
-                if (isFirstSplash) {
-                    NavigationState.NavigateToLanguage(shouldShowAd, adTypeToShow)
-                } else {
-                    NavigationState.NavigateToMain(shouldShowAd, adTypeToShow)
+                /*
+                 * FIRST TIME USER
+                 *
+                 * Splash -> Language -> Onboarding -> Premium -> Home
+                 *
+                 * Important:
+                 * Premium should NOT be shown directly after Splash on first time.
+                 * It will be shown after Onboarding.
+                 */
+                isFirstSplash -> {
+                    dataStorePrefs.isFirstSplash(false)
+
+                    NavigationState.NavigateToLanguage(
+                        showAd = shouldShowAd,
+                        adType = adTypeToShow
+                    )
+                }
+
+                /*
+                 * SECOND TIME USER
+                 *
+                 * Splash -> Premium -> Home
+                 *
+                 * Controlled by Remote Config.
+                 */
+                !isPurchased && config.premiumHomeShow -> {
+                    NavigationState.NavigateToPremium(
+                        showAd = shouldShowAd,
+                        adType = adTypeToShow
+                    )
+                }
+
+                /*
+                 * SECOND TIME USER
+                 *
+                 * Splash -> Home
+                 */
+                else -> {
+                    NavigationState.NavigateToMain(
+                        showAd = shouldShowAd,
+                        adType = adTypeToShow
+                    )
                 }
             }
 
             Log.d(TAG, "checkNavigation: Navigation state set to: ${_navigationState.value}")
         }
     }
-
     fun resetNavigationState() {
         _navigationState.value = NavigationState.Idle
         Log.d(TAG, "resetNavigationState: Reset to Idle")

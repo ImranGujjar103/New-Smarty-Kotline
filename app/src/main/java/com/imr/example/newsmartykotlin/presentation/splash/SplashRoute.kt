@@ -138,6 +138,7 @@ fun SplashRoute(
             }
 
             is NavigationState.NavigateToMain -> {
+
                 handleSplashNavigation(
                     activity = activity,
                     viewModel = viewModel,
@@ -145,7 +146,11 @@ fun SplashRoute(
                     showAd = state.showAd,
                     adType = state.adType,
                     isAdFailed = isAdFailed,
-                    moveToPremium = onNavigateToPremium,
+
+                    moveToPremium = {
+                        onNavigateToPremium()
+                    },
+
                     moveNext = {
                         val config = viewModel.adRepository.appConfig.value
 
@@ -159,8 +164,16 @@ fun SplashRoute(
             }
 
             is NavigationState.NavigateToPremium -> {
-                onNavigateToPremium()
-                viewModel.resetNavigationState()
+                handleSplashNavigation(
+                    activity = activity,
+                    viewModel = viewModel,
+                    adLoadingController = adLoadingController,
+                    showAd = state.showAd,
+                    adType = state.adType,
+                    isAdFailed = false,
+                    moveToPremium = onNavigateToPremium,
+                    moveNext = onNavigateToPremium
+                )
             }
 
             else -> Unit
