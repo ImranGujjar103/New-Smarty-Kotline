@@ -1,7 +1,7 @@
 package com.imr.example.newsmartykotlin.presentation.home
 
 import androidx.lifecycle.ViewModel
-import com.imr.example.newsmartykotlin.domain.usecase.GetHomeFeaturesUseCase
+import com.imr.example.newsmartykotlin.domain.usecase.home.GetHomeFeaturesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

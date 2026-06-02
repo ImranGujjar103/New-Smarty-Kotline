@@ -53,5 +53,27 @@
     <string name="bg_changer">BG Changer</string>
     <string name="my_creation">My Creation</string>
     <string name="suits">Suits</string>
+    <string name="select_image">Select Image</string>
+    <string name="no_images_to_show">No images to show.</string>
+    <string name="permission_required_to_access_your_photo_gallery">Permission required to access your photo gallery</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="unlock_your_best_looks">Unlock Your Best Looks!</string>
+    <string name="to_seamlessly_swap_suits_and_create_stunning_transformations_we_need_access_to_your_gallery_your_photos_stay_private_and_secure_only_you_can_see_them_grant_access_start_styling"><![CDATA[To seamlessly swap suits and create stunning transformations, we need access to your gallery. Your photos stay private and secure—only you can see them. Grant Access & Start Styling!]]></string>
+    <string name="deny">Deny</string>
+    <string name="allow">Allow</string>
+    <string name="permission_required">Permission Required</string>
+    <string name="gallery_access_is_required_to_continue_please_enable_it_from_settings">Gallery access is required to continue. Please enable it from Settings.</string>
+
+
+    <string name="crop_face">Crop Face</string>
+    <string name="crop_original">Original</string>
+    <string name="crop_free">Free</string>
+    <string name="crop_ratio_1_1">1:1</string>
+    <string name="crop_ratio_4_5">4:5</string>
+    <string name="crop_ratio_3_4">3:4</string>
+    <string name="crop_ratio_16_9">16:9</string>
+    <string name="crop_ratio_9_16">9:16</string>
+    <string name="failed_to_crop_image">Failed to crop image</string>
+
 
 </resources>

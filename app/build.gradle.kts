@@ -106,4 +106,8 @@ dependencies {
     implementation(libs.coil.network.okhttp)
 
     implementation (libs.billing)
+
+    // Import the base SDK.
+    implementation(libs.ml.computer.vision.segmentation)
+    implementation(libs.ml.computer.vision.image.segmentation.body.model)
 }

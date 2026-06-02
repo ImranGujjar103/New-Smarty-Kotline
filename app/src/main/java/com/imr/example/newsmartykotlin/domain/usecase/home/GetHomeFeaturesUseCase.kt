@@ -1,4 +1,4 @@
-package com.imr.example.newsmartykotlin.domain.usecase
+package com.imr.example.newsmartykotlin.domain.usecase.home
 
 import com.imr.example.newsmartykotlin.domain.model.HomeFeature
 import com.imr.example.newsmartykotlin.domain.repository.HomeRepository

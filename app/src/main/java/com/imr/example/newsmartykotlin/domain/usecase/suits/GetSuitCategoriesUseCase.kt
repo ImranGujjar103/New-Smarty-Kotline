@@ -1,4 +1,4 @@
-package com.imr.example.newsmartykotlin.domain.usecase
+package com.imr.example.newsmartykotlin.domain.usecase.suits
 
 import com.imr.example.newsmartykotlin.domain.model.SuitCategory
 import com.imr.example.newsmartykotlin.domain.repository.SuitRepository

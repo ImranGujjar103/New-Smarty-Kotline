@@ -10,10 +10,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.imr.example.newsmartykotlin.core.ads.AdLoadingState
+import com.imr.example.newsmartykotlin.presentation.bgremove.BgRemoveScreen
 import com.imr.example.newsmartykotlin.presentation.common.components.AdLoadingOverlay
+import com.imr.example.newsmartykotlin.presentation.crop.CropFaceScreen
+import com.imr.example.newsmartykotlin.presentation.gallery.GalleryScreen
 import com.imr.example.newsmartykotlin.presentation.home.HomeRoute
 import com.imr.example.newsmartykotlin.presentation.language.LanguageRoute
 import com.imr.example.newsmartykotlin.presentation.onboarding.OnboardingRoute
+import com.imr.example.newsmartykotlin.presentation.permission.GalleryPermissionScreen
+import com.imr.example.newsmartykotlin.presentation.photoeditor.PhotoEditorScreen
 import com.imr.example.newsmartykotlin.presentation.premium.PremiumRoute
 import com.imr.example.newsmartykotlin.presentation.splash.SplashRoute
 import com.imr.example.newsmartykotlin.presentation.suits.SuitRoute
@@ -136,7 +141,88 @@ fun NewSmartyKotlin(
                 SuitRoute(
                     onBackClick = {
                         navController.popBackStack()
+                    },
+                    onNavigateToGallery = { suitItem ->
+                        navController.navigate(        AppRoutes.GalleryPermission.createRoute(
+                            suitId = suitItem.id
+                        ))
                     }
+                )
+            }
+
+
+            composable(
+                route = AppRoutes.GalleryPermission.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.GalleryPermission.ARG_SUIT_ID) {
+                        type = NavType.StringType
+                    }
+                )
+            ) {
+                GalleryPermissionScreen(
+                    navController = navController
+                )
+            }
+
+            composable(
+                route = AppRoutes.Gallery.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.Gallery.ARG_SUIT_ID) {
+                        type = NavType.StringType
+                    }
+                )
+            ) {
+                GalleryScreen(
+                    navController = navController
+                )
+            }
+
+            composable(
+                route = AppRoutes.CropFace.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.CropFace.ARG_SUIT_ID) {
+                        type = NavType.StringType
+                    },
+                    navArgument(AppRoutes.CropFace.ARG_IMAGE_URI) {
+                        type = NavType.StringType
+                    }
+                )
+            ) {
+                CropFaceScreen(
+                    navController = navController
+                )
+            }
+
+            composable(
+                route = AppRoutes.BgRemove.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.BgRemove.ARG_SUIT_ID) {
+                        type = NavType.StringType
+                    },
+                    navArgument(AppRoutes.BgRemove.ARG_CROPPED_IMAGE_URI) {
+                        type = NavType.StringType
+                    }
+                )
+            ) {
+                BgRemoveScreen(
+                    navController = navController
+                )
+            }
+
+
+            composable(
+                route = AppRoutes.PhotoEditor.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.PhotoEditor.ARG_SUIT_ID) {
+                        type = NavType.StringType
+                    },
+                    navArgument(AppRoutes.PhotoEditor.ARG_CROPPED_IMAGE_URI) {
+                        type = NavType.StringType
+                    }
+                )
+            ) {
+                PhotoEditorScreen(
+                    navController = navController
                 )
             }
         }
