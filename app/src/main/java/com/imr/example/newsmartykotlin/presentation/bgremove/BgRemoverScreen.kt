@@ -23,15 +23,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
+import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
 import com.imr.example.newsmartykotlin.ui.theme.AppTypography
 import com.imr.example.newsmartykotlin.ui.theme.CardColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.RedColor
+import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
 import com.imr.example.newsmartykotlin.ui.theme.TextColor
 import com.imr.example.newsmartykotlin.ui.theme.WhiteColor
 import org.koin.androidx.compose.koinViewModel
@@ -49,7 +53,7 @@ fun BgRemoveScreen(
                 is BgRemoveEvent.NavigateNext -> {
                     navController.navigate(
                         AppRoutes.PhotoEditor.createRoute(
-                            suitId = event.suitId,
+                            suitUrl = event.suitId,
                             croppedImageUri = event.removedBgImageUri
                         )
                     ) {
@@ -70,14 +74,14 @@ fun BgRemoveScreen(
             .navigationBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(58.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
         Box(
             modifier = Modifier
-                .padding(horizontal = 32.dp)
+                .padding(horizontal = 20.dp)
                 .fillMaxWidth()
-                .height(475.dp)
-                .clip(RoundedCornerShape(18.dp))
+                .height(480.dp)
+                .clip(RoundedCornerShape(20.dp))
                 .background(WhiteColor),
             contentAlignment = Alignment.Center
         ) {
@@ -89,31 +93,33 @@ fun BgRemoveScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(22.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         Text(
             text = uiState.progressText,
-            style = AppTypography.Heading,
+            fontSize = 24.sp,
+            fontFamily = SfProDisplayBold,
             color = TextColor
         )
 
-        Spacer(modifier = Modifier.height(14.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         LinearProgressIndicator(
             progress = { uiState.progress },
             modifier = Modifier
-                .width(248.dp)
+                .width(250.dp)
                 .height(10.dp)
                 .clip(RoundedCornerShape(50.dp)),
             color = PrimaryColor,
             trackColor = WhiteColor
         )
 
-        Spacer(modifier = Modifier.height(14.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Removing Background....",
-            style = AppTypography.Body,
+            text = stringResource(R.string.removing_background),
+            fontSize = 12.sp,
+            fontFamily = SfProDisplayBold,
             color = TextColor
         )
 
@@ -122,7 +128,8 @@ fun BgRemoveScreen(
 
             Text(
                 text = error,
-                style = AppTypography.Body,
+                fontSize = 12.sp,
+                fontFamily = SfProDisplayBold,
                 color = RedColor
             )
         }

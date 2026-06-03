@@ -10,7 +10,7 @@ class PhotoEditorRepositoryImpl : PhotoEditorRepository {
             SuitItem(
                 id = "Jackets_02",
                 name = "Black Suit",
-                imageUrl = "https://your-domain.com/suits/jackets_02.png"
+                suitUrl = "https://your-domain.com/suits/jackets_02.png"
             )
         )
 

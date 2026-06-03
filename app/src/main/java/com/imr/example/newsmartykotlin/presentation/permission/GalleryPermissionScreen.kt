@@ -138,7 +138,7 @@ fun GalleryPermissionScreen(
                 GalleryPermissionEvent.NavigateGallery -> {
                     navController.navigate(
                         AppRoutes.Gallery.createRoute(
-                            suitId = viewModel.suitId
+                            suitUrl = viewModel.suitId
                         )
                     ) {
                         popUpTo(AppRoutes.GalleryPermission.route) {

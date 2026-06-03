@@ -5,7 +5,8 @@ import com.imr.example.newsmartykotlin.domain.model.SuitItem
 data class PhotoEditorUiState(
     val suitId: String = "",
     val faceImageUri: String = "",
-    val suitItem: SuitItem? = null,
+    val suitUrl: String = "",
+    val mergedImageUri: String? = null,
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 )

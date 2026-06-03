@@ -30,7 +30,7 @@ class GalleryPermissionViewModel(
     private val _event = MutableSharedFlow<GalleryPermissionEvent>()
     val event: SharedFlow<GalleryPermissionEvent> = _event.asSharedFlow()
     val suitId: String =
-        savedStateHandle[AppRoutes.GalleryPermission.ARG_SUIT_ID] ?: ""
+        savedStateHandle[AppRoutes.GalleryPermission.ARG_SUIT_URL] ?: ""
     init {
         observeDenyCount()
     }

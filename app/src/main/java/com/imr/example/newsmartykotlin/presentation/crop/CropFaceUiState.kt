@@ -6,7 +6,7 @@ import com.imr.example.newsmartykotlin.domain.model.CropAspectRatio
 data class CropFaceUiState(
     val suitId: String = "",
     val imageUri: String = "",
-    val selectedRatio: CropAspectRatio = CropAspectRatio.ORIGINAL,
+    val selectedRatio: CropAspectRatio = CropAspectRatio.FREE,
     val isCropping: Boolean = false,
     val errorMessage: String? = null,
     val croppedImageUri: String? = null,

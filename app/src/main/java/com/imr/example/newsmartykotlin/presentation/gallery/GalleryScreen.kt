@@ -183,7 +183,7 @@ fun GalleryScreen(
 
                                         navController.navigate(
                                             AppRoutes.CropFace.createRoute(
-                                                suitId = viewModel.suitId,
+                                                suitUrl = viewModel.suitId,
                                                 imageUri = selectedImage.uri
                                             )
                                         )

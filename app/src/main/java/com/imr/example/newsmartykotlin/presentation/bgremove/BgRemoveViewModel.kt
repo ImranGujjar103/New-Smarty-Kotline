@@ -19,7 +19,7 @@ class BgRemoveViewModel(
 ) : ViewModel() {
 
     private val suitId: String =
-        savedStateHandle[AppRoutes.BgRemove.ARG_SUIT_ID] ?: ""
+        savedStateHandle[AppRoutes.BgRemove.ARG_SUIT_URL] ?: ""
 
     private val croppedImageUri: String =
         savedStateHandle[AppRoutes.BgRemove.ARG_CROPPED_IMAGE_URI] ?: ""

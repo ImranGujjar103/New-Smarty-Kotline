@@ -184,7 +184,7 @@ private fun SuitGrid(
             key = { it.id }
         ) { item ->
             AsyncImage(
-                model = item.imageUrl,
+                model = item.suitUrl,
                 contentDescription = item.name,
                 modifier = Modifier
                     .fillMaxWidth()

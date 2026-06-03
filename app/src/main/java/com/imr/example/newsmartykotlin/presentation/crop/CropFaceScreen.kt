@@ -6,14 +6,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,15 +22,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -38,23 +37,25 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
@@ -65,12 +66,12 @@ import com.imr.example.newsmartykotlin.ui.theme.AppTypography
 import com.imr.example.newsmartykotlin.ui.theme.CardColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.RedColor
-import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayMedium
+import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
+import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayRegular
 import com.imr.example.newsmartykotlin.ui.theme.SubTextColor
 import com.imr.example.newsmartykotlin.ui.theme.TextColor
 import com.imr.example.newsmartykotlin.ui.theme.WhiteColor
 import org.koin.androidx.compose.koinViewModel
-import kotlin.math.abs
 
 
 @Composable
@@ -90,7 +91,7 @@ fun CropFaceScreen(
                 is CropFaceEvent.NavigateNext -> {
                     navController.navigate(
                         AppRoutes.BgRemove.createRoute(
-                            suitId = event.suitId,
+                            suitUrl = event.suitId,
                             croppedImageUri = event.croppedImageUri
                         )
                     )
@@ -120,6 +121,8 @@ fun CropFaceScreen(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
             )
         }
+        Spacer(modifier = Modifier.height(16.dp))
+
 
         CropImageArea(
             imageUri = uiState.imageUri,
@@ -146,45 +149,39 @@ private fun CropTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(86.dp)
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        WhiteColor,
-                        CardColor
-                    )
-                )
-            )
-            .padding(horizontal = 22.dp)
-            .padding(top = 22.dp),
+            .height(60.dp)
+            .background(CardColor)
+            .padding(horizontal = 22.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
-                .size(31.dp)
-                .background(
-                    color = PrimaryColor,
-                    shape = RoundedCornerShape(10.dp)
-                ),
+                .size(30.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(PrimaryColor)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {
+                    onBackClick()
+                },
+
             contentAlignment = Alignment.Center
         ) {
-            TextButton(
-                onClick = onBackClick,
-                contentPadding = PaddingValues(0.dp)
-            ) {
-                Text(
-                    text = "‹",
-                    color = WhiteColor,
-                    style = AppTypography.Title
-                )
-            }
+            Icon(
+                painter = painterResource(R.drawable.ic_back),
+                contentDescription = null,
+                tint = WhiteColor,
+                modifier = Modifier.size(12.dp)
+            )
         }
 
         Spacer(modifier = Modifier.width(14.dp))
 
         Text(
             text = stringResource(R.string.crop_face),
-            style = AppTypography.Title,
+            fontFamily = SfProDisplayBold,
+            fontSize = 18.sp,
             color = TextColor,
             modifier = Modifier.weight(1f)
         )
@@ -197,8 +194,10 @@ private fun CropTopBar(
                 containerColor = PrimaryColor,
                 disabledContainerColor = PrimaryColor.copy(alpha = 0.6f)
             ),
-            contentPadding = PaddingValues(horizontal = 18.dp),
-            modifier = Modifier.height(40.dp)
+            contentPadding = PaddingValues(0.dp),
+            modifier = Modifier
+                .width(60.dp)
+                .height(30.dp)
         ) {
             if (isLoading) {
                 CircularProgressIndicator(
@@ -210,7 +209,9 @@ private fun CropTopBar(
                 Text(
                     text = stringResource(R.string.next),
                     color = WhiteColor,
-                    style = AppTypography.Body
+                    fontSize = 14.sp,
+                    fontFamily = SfProDisplayBold,
+                    textAlign = TextAlign.Center
                 )
             }
         }
@@ -228,7 +229,7 @@ private fun CropImageArea(
     var cropRect by remember { mutableStateOf<Rect?>(null) }
 
     val handleRadiusPx = with(LocalDensity.current) { 5.dp.toPx() }
-    val minCropSizePx = with(LocalDensity.current) { 90.dp.toPx() }
+    val minCropSizePx = with(LocalDensity.current) { 120.dp.toPx() }
 
     val imageBounds = remember(containerSize) {
         if (containerSize.width == 0 || containerSize.height == 0) {
@@ -248,34 +249,53 @@ private fun CropImageArea(
             val width = containerSize.width.toFloat()
             val height = containerSize.height.toFloat()
 
-            val targetRatio = selectedRatio.ratio
+            cropRect = when (selectedRatio) {
 
-            val cropWidth: Float
-            val cropHeight: Float
+                CropAspectRatio.ORIGINAL -> {
+                    Rect(
+                        left = 0f,
+                        top = 0f,
+                        right = width,
+                        bottom = height
+                    )
+                }
 
-            if (targetRatio == null) {
-                cropWidth = width * 0.58f
-                cropHeight = height * 0.38f
-            } else {
-                val maxW = width * 0.62f
-                val maxH = height * 0.45f
+                CropAspectRatio.FREE -> {
+                    val size = minOf(width, height) * 0.65f
+                    val left = (width - size) / 2f
+                    val top = (height - size) / 2f
 
-                if (maxW / maxH > targetRatio) {
-                    cropHeight = maxH
-                    cropWidth = cropHeight * targetRatio
-                } else {
-                    cropWidth = maxW
-                    cropHeight = cropWidth / targetRatio
+                    Rect(
+                        offset = Offset(left, top),
+                        size = Size(size, size)
+                    )
+                }
+
+                else -> {
+                    val ratio = selectedRatio.ratio ?: 1f
+                    val maxW = width * 0.72f
+                    val maxH = height * 0.55f
+
+                    val cropWidth: Float
+                    val cropHeight: Float
+
+                    if (maxW / maxH > ratio) {
+                        cropHeight = maxH
+                        cropWidth = cropHeight * ratio
+                    } else {
+                        cropWidth = maxW
+                        cropHeight = cropWidth / ratio
+                    }
+
+                    val left = (width - cropWidth) / 2f
+                    val top = (height - cropHeight) / 2f
+
+                    Rect(
+                        offset = Offset(left, top),
+                        size = Size(cropWidth, cropHeight)
+                    )
                 }
             }
-
-            val left = (width - cropWidth) / 2f
-            val top = height * 0.08f
-
-            cropRect = Rect(
-                offset = Offset(left, top),
-                size = Size(cropWidth, cropHeight)
-            )
         }
     }
 
@@ -310,7 +330,6 @@ private fun CropImageArea(
             painter = rememberAsyncImagePainter(imageUri.toUri()),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
         )
 
         val currentCropRect = cropRect
@@ -342,6 +361,11 @@ private fun CropOverlay(
     var currentRect by remember { mutableStateOf(cropRect) }
     var dragMode by remember { mutableStateOf(CropDragMode.NONE) }
 
+    val isOriginal = selectedRatio == CropAspectRatio.ORIGINAL
+    val isFree = selectedRatio == CropAspectRatio.FREE
+    val canMove = !isOriginal
+    val canResize = isFree
+
     LaunchedEffect(cropRect) {
         currentRect = cropRect
     }
@@ -355,7 +379,9 @@ private fun CropOverlay(
                         dragMode = detectDragMode(
                             touch = offset,
                             rect = currentRect,
-                            handleTouchRadius = handleRadiusPx * 6f
+                            handleTouchRadius = handleRadiusPx * 6f,
+                            canMove = canMove,
+                            canResize = canResize
                         )
                     },
                     onDragEnd = {
@@ -375,7 +401,7 @@ private fun CropOverlay(
                             dragAmount = dragAmount,
                             bounds = imageBounds,
                             minSize = minCropSizePx,
-                            ratio = selectedRatio.ratio
+                            canResize = canResize
                         )
 
                         currentRect = updatedRect
@@ -384,8 +410,8 @@ private fun CropOverlay(
                 )
             }
     ) {
-        val overlayPath = androidx.compose.ui.graphics.Path().apply {
-            fillType = androidx.compose.ui.graphics.PathFillType.EvenOdd
+        val overlayPath = Path().apply {
+            fillType = PathFillType.EvenOdd
 
             addRect(
                 Rect(
@@ -411,17 +437,19 @@ private fun CropOverlay(
             style = Stroke(width = 2f)
         )
 
-        listOf(
-            Offset(currentRect.left, currentRect.top),
-            Offset(currentRect.right, currentRect.top),
-            Offset(currentRect.left, currentRect.bottom),
-            Offset(currentRect.right, currentRect.bottom)
-        ).forEach { point ->
-            drawCircle(
-                color = Color.White,
-                radius = handleRadiusPx,
-                center = point
-            )
+        if (canResize) {
+            listOf(
+                Offset(currentRect.left, currentRect.top),
+                Offset(currentRect.right, currentRect.top),
+                Offset(currentRect.left, currentRect.bottom),
+                Offset(currentRect.right, currentRect.bottom)
+            ).forEach { point ->
+                drawCircle(
+                    color = Color.White,
+                    radius = handleRadiusPx,
+                    center = point
+                )
+            }
         }
     }
 }
@@ -438,20 +466,28 @@ private enum class CropDragMode {
 private fun detectDragMode(
     touch: Offset,
     rect: Rect,
-    handleTouchRadius: Float
+    handleTouchRadius: Float,
+    canMove: Boolean,
+    canResize: Boolean
 ): CropDragMode {
-    val topLeft = Offset(rect.left, rect.top)
-    val topRight = Offset(rect.right, rect.top)
-    val bottomLeft = Offset(rect.left, rect.bottom)
-    val bottomRight = Offset(rect.right, rect.bottom)
+    if (canResize) {
+        val topLeft = Offset(rect.left, rect.top)
+        val topRight = Offset(rect.right, rect.top)
+        val bottomLeft = Offset(rect.left, rect.bottom)
+        val bottomRight = Offset(rect.right, rect.bottom)
 
-    return when {
-        touch.distanceTo(topLeft) <= handleTouchRadius -> CropDragMode.TOP_LEFT
-        touch.distanceTo(topRight) <= handleTouchRadius -> CropDragMode.TOP_RIGHT
-        touch.distanceTo(bottomLeft) <= handleTouchRadius -> CropDragMode.BOTTOM_LEFT
-        touch.distanceTo(bottomRight) <= handleTouchRadius -> CropDragMode.BOTTOM_RIGHT
-        rect.contains(touch) -> CropDragMode.MOVE
-        else -> CropDragMode.NONE
+        when {
+            touch.distanceTo(topLeft) <= handleTouchRadius -> return CropDragMode.TOP_LEFT
+            touch.distanceTo(topRight) <= handleTouchRadius -> return CropDragMode.TOP_RIGHT
+            touch.distanceTo(bottomLeft) <= handleTouchRadius -> return CropDragMode.BOTTOM_LEFT
+            touch.distanceTo(bottomRight) <= handleTouchRadius -> return CropDragMode.BOTTOM_RIGHT
+        }
+    }
+
+    return if (canMove && rect.contains(touch)) {
+        CropDragMode.MOVE
+    } else {
+        CropDragMode.NONE
     }
 }
 
@@ -461,24 +497,29 @@ private fun updateCropRect(
     dragAmount: Offset,
     bounds: Rect,
     minSize: Float,
-    ratio: Float?
+    canResize: Boolean
 ): Rect {
+
     if (dragMode == CropDragMode.NONE) return rect
 
     if (dragMode == CropDragMode.MOVE) {
-        val dx = dragAmount.x
-        val dy = dragAmount.y
 
         val maxLeft = bounds.right - rect.width
         val maxTop = bounds.bottom - rect.height
 
-        val newLeft = (rect.left + dx).coerceIn(bounds.left, maxLeft)
-        val newTop = (rect.top + dy).coerceIn(bounds.top, maxTop)
+        val newLeft = (rect.left + dragAmount.x)
+            .coerceIn(bounds.left, maxLeft)
+
+        val newTop = (rect.top + dragAmount.y)
+            .coerceIn(bounds.top, maxTop)
+
         return Rect(
             offset = Offset(newLeft, newTop),
             size = Size(rect.width, rect.height)
         )
     }
+
+    if (!canResize) return rect
 
     var left = rect.left
     var top = rect.top
@@ -486,6 +527,7 @@ private fun updateCropRect(
     var bottom = rect.bottom
 
     when (dragMode) {
+
         CropDragMode.TOP_LEFT -> {
             left += dragAmount.x
             top += dragAmount.y
@@ -509,53 +551,63 @@ private fun updateCropRect(
         else -> Unit
     }
 
-    left = left.coerceIn(bounds.left, right - minSize)
-    top = top.coerceIn(bounds.top, bottom - minSize)
-    right = right.coerceIn(left + minSize, bounds.right)
-    bottom = bottom.coerceIn(top + minSize, bounds.bottom)
-
-    if (ratio != null) {
-        val currentWidth = right - left
-        val currentHeight = bottom - top
-
-        if (abs(currentWidth / currentHeight - ratio) > 0.01f) {
-            val newHeight = currentWidth / ratio
-
-            when (dragMode) {
-                CropDragMode.TOP_LEFT,
-                CropDragMode.TOP_RIGHT -> {
-                    top = bottom - newHeight
-                    if (top < bounds.top) {
-                        top = bounds.top
-                        val newWidth = (bottom - top) * ratio
-                        if (dragMode == CropDragMode.TOP_LEFT) {
-                            left = right - newWidth
-                        } else {
-                            right = left + newWidth
-                        }
-                    }
-                }
-
-                CropDragMode.BOTTOM_LEFT,
-                CropDragMode.BOTTOM_RIGHT -> {
-                    bottom = top + newHeight
-                    if (bottom > bounds.bottom) {
-                        bottom = bounds.bottom
-                        val newWidth = (bottom - top) * ratio
-                        if (dragMode == CropDragMode.BOTTOM_LEFT) {
-                            left = right - newWidth
-                        } else {
-                            right = left + newWidth
-                        }
-                    }
-                }
-
-                else -> Unit
+    // Prevent inversion
+    if (right - left < minSize) {
+        when (dragMode) {
+            CropDragMode.TOP_LEFT,
+            CropDragMode.BOTTOM_LEFT -> {
+                left = right - minSize
             }
+
+            CropDragMode.TOP_RIGHT,
+            CropDragMode.BOTTOM_RIGHT -> {
+                right = left + minSize
+            }
+
+            else -> Unit
         }
     }
 
-    return Rect(left, top, right, bottom)
+    if (bottom - top < minSize) {
+        when (dragMode) {
+            CropDragMode.TOP_LEFT,
+            CropDragMode.TOP_RIGHT -> {
+                top = bottom - minSize
+            }
+
+            CropDragMode.BOTTOM_LEFT,
+            CropDragMode.BOTTOM_RIGHT -> {
+                bottom = top + minSize
+            }
+
+            else -> Unit
+        }
+    }
+
+    // Clamp inside bounds
+    left = left.coerceAtLeast(bounds.left)
+    top = top.coerceAtLeast(bounds.top)
+
+    right = right.coerceAtMost(bounds.right)
+    bottom = bottom.coerceAtMost(bounds.bottom)
+
+    // Re-check size after clamping
+    if (right - left < minSize) {
+        right = (left + minSize).coerceAtMost(bounds.right)
+        left = right - minSize
+    }
+
+    if (bottom - top < minSize) {
+        bottom = (top + minSize).coerceAtMost(bounds.bottom)
+        top = bottom - minSize
+    }
+
+    return Rect(
+        left = left,
+        top = top,
+        right = right,
+        bottom = bottom
+    )
 }
 
 private fun Offset.distanceTo(other: Offset): Float {
@@ -580,7 +632,7 @@ private fun CropRatioBar(
                 .horizontalScroll(rememberScrollState())
                 .padding(horizontal = 22.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(22.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             CropAspectRatio.entries.forEach { ratio ->
                 CropRatioItem(
@@ -603,78 +655,35 @@ private fun CropRatioItem(
 ) {
     Column(
         modifier = Modifier
-            .width(42.dp)
-            .clickable {
+            .width(36.dp)
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
                 onClick()
             },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         Box(
-            modifier = Modifier.size(23.dp),
+            modifier = Modifier.size(24.dp),
             contentAlignment = Alignment.Center
         ) {
-            Canvas(modifier = Modifier.fillMaxSize()) {
-                val strokeColor = if (selected) PrimaryColor else TextColor
-                val strokeWidth = if (selected) 2.2f else 1.4f
-
-                when (ratio) {
-                    CropAspectRatio.FREE -> {
-                        drawRect(
-                            color = strokeColor,
-                            topLeft = Offset(3f, 3f),
-                            size = Size(size.width - 6f, size.height - 6f),
-                            style = Stroke(width = strokeWidth)
-                        )
-                    }
-
-                    CropAspectRatio.ORIGINAL -> {
-                        drawRect(
-                            color = strokeColor,
-                            topLeft = Offset(4f, 2f),
-                            size = Size(size.width - 8f, size.height - 4f),
-                            style = Stroke(width = strokeWidth)
-                        )
-                    }
-
-                    CropAspectRatio.ONE_ONE -> {
-                        drawRect(
-                            color = strokeColor,
-                            topLeft = Offset(3f, 3f),
-                            size = Size(size.width - 6f, size.width - 6f),
-                            style = Stroke(width = strokeWidth)
-                        )
-                    }
-
-                    CropAspectRatio.FOUR_FIVE,
-                    CropAspectRatio.THREE_FOUR,
-                    CropAspectRatio.NINE_SIXTEEN -> {
-                        drawRect(
-                            color = strokeColor,
-                            topLeft = Offset(6f, 2f),
-                            size = Size(size.width - 12f, size.height - 4f),
-                            style = Stroke(width = strokeWidth)
-                        )
-                    }
-
-                    CropAspectRatio.SIXTEEN_NINE -> {
-                        drawRect(
-                            color = strokeColor,
-                            topLeft = Offset(2f, 7f),
-                            size = Size(size.width - 4f, size.height - 14f),
-                            style = Stroke(width = strokeWidth)
-                        )
-                    }
-                }
-            }
+            Icon(
+                painter = painterResource(id = ratio.iconResId ?: 0),
+                contentDescription = ratio.labelResName,
+                tint = if (selected) PrimaryColor else TextColor,
+                modifier = Modifier.size(24.dp)
+            )
         }
 
         Spacer(modifier = Modifier.height(5.dp))
 
         Text(
             text = ratio.labelResName,
-            fontFamily = SfProDisplayMedium,
+            fontFamily = SfProDisplayRegular,
             color = if (selected) PrimaryColor else SubTextColor,
-            style = AppTypography.Body
+            fontSize = 10.sp
         )
     }
 }

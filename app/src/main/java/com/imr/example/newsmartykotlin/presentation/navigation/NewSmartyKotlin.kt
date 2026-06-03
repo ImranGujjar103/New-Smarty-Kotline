@@ -13,11 +13,13 @@ import com.imr.example.newsmartykotlin.core.ads.AdLoadingState
 import com.imr.example.newsmartykotlin.presentation.bgremove.BgRemoveScreen
 import com.imr.example.newsmartykotlin.presentation.common.components.AdLoadingOverlay
 import com.imr.example.newsmartykotlin.presentation.crop.CropFaceScreen
+import com.imr.example.newsmartykotlin.presentation.eraser.EraserScreen
 import com.imr.example.newsmartykotlin.presentation.gallery.GalleryScreen
 import com.imr.example.newsmartykotlin.presentation.home.HomeRoute
 import com.imr.example.newsmartykotlin.presentation.language.LanguageRoute
 import com.imr.example.newsmartykotlin.presentation.onboarding.OnboardingRoute
 import com.imr.example.newsmartykotlin.presentation.permission.GalleryPermissionScreen
+import com.imr.example.newsmartykotlin.presentation.photoeditor.EditorAction
 import com.imr.example.newsmartykotlin.presentation.photoeditor.PhotoEditorScreen
 import com.imr.example.newsmartykotlin.presentation.premium.PremiumRoute
 import com.imr.example.newsmartykotlin.presentation.splash.SplashRoute
@@ -29,7 +31,6 @@ fun NewSmartyKotlin(
     navController: NavHostController
 ) {
     val isAdLoading = AdLoadingState.isShowing.collectAsStateWithLifecycle()
-
     Box {
         NavHost(
             navController = navController,
@@ -137,15 +138,39 @@ fun NewSmartyKotlin(
                 )
             }
 
-            composable(AppRoutes.Suits.route) {
+            composable(
+                route = AppRoutes.Suits.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.Suits.ARG_FROM_EDITOR) {
+                        type = NavType.BoolType
+                        defaultValue = false
+                    }
+                )
+            ) { backStackEntry ->
+
+                val fromEditor = backStackEntry.arguments
+                    ?.getBoolean(AppRoutes.Suits.ARG_FROM_EDITOR)
+                    ?: false
+
                 SuitRoute(
                     onBackClick = {
                         navController.popBackStack()
                     },
                     onNavigateToGallery = { suitItem ->
-                        navController.navigate(        AppRoutes.GalleryPermission.createRoute(
-                            suitId = suitItem.id
-                        ))
+
+                        if (fromEditor) {
+                            navController.previousBackStackEntry
+                                ?.savedStateHandle
+                                ?.set(SELECTED_SUIT_URL_KEY, suitItem.suitUrl)
+
+                            navController.popBackStack()
+                        } else {
+                            navController.navigate(
+                                AppRoutes.GalleryPermission.createRoute(
+                                    suitUrl = suitItem.suitUrl
+                                )
+                            )
+                        }
                     }
                 )
             }
@@ -154,7 +179,7 @@ fun NewSmartyKotlin(
             composable(
                 route = AppRoutes.GalleryPermission.route,
                 arguments = listOf(
-                    navArgument(AppRoutes.GalleryPermission.ARG_SUIT_ID) {
+                    navArgument(AppRoutes.GalleryPermission.ARG_SUIT_URL) {
                         type = NavType.StringType
                     }
                 )
@@ -167,7 +192,7 @@ fun NewSmartyKotlin(
             composable(
                 route = AppRoutes.Gallery.route,
                 arguments = listOf(
-                    navArgument(AppRoutes.Gallery.ARG_SUIT_ID) {
+                    navArgument(AppRoutes.Gallery.ARG_SUIT_URL) {
                         type = NavType.StringType
                     }
                 )
@@ -180,7 +205,7 @@ fun NewSmartyKotlin(
             composable(
                 route = AppRoutes.CropFace.route,
                 arguments = listOf(
-                    navArgument(AppRoutes.CropFace.ARG_SUIT_ID) {
+                    navArgument(AppRoutes.CropFace.ARG_SUIT_URL) {
                         type = NavType.StringType
                     },
                     navArgument(AppRoutes.CropFace.ARG_IMAGE_URI) {
@@ -196,7 +221,7 @@ fun NewSmartyKotlin(
             composable(
                 route = AppRoutes.BgRemove.route,
                 arguments = listOf(
-                    navArgument(AppRoutes.BgRemove.ARG_SUIT_ID) {
+                    navArgument(AppRoutes.BgRemove.ARG_SUIT_URL) {
                         type = NavType.StringType
                     },
                     navArgument(AppRoutes.BgRemove.ARG_CROPPED_IMAGE_URI) {
@@ -213,7 +238,7 @@ fun NewSmartyKotlin(
             composable(
                 route = AppRoutes.PhotoEditor.route,
                 arguments = listOf(
-                    navArgument(AppRoutes.PhotoEditor.ARG_SUIT_ID) {
+                    navArgument(AppRoutes.PhotoEditor.ARG_SUIT_URL) {
                         type = NavType.StringType
                     },
                     navArgument(AppRoutes.PhotoEditor.ARG_CROPPED_IMAGE_URI) {
@@ -221,9 +246,44 @@ fun NewSmartyKotlin(
                     }
                 )
             ) {
-                PhotoEditorScreen(
-                    navController = navController
+                PhotoEditorScreen(navController = navController,{ action ->
+                    when (action) {
+
+                        EditorAction.OUTFITS -> {
+                            navController.navigate(
+                                AppRoutes.Suits.createRoute(fromEditor = true)
+                            )
+                            // Open outfits
+                        }
+
+                        EditorAction.ERASER -> {
+                            // Open eraser
+                        }
+
+                        EditorAction.FACE_FLIP -> {
+                            // Flip face
+                        }
+
+                        EditorAction.SUIT_FLIP -> {
+                            // Flip suit
+                        }
+                    }
+
+                })
+            }
+
+            composable(
+                route = AppRoutes.Eraser.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.Eraser.ARG_FACE_IMAGE_URI) {
+                        type = NavType.StringType
+                    },
+                    navArgument(AppRoutes.Eraser.ARG_SUIT_URL) {
+                        type = NavType.StringType
+                    }
                 )
+            ) {
+                EraserScreen(navController = navController)
             }
         }
 

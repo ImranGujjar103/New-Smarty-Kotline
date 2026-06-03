@@ -2,34 +2,138 @@ package com.imr.example.newsmartykotlin.presentation.photoeditor
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSizeIn
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableFloatState
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
-import com.imr.example.newsmartykotlin.ui.theme.*
+import com.imr.example.newsmartykotlin.R
+import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
+import com.imr.example.newsmartykotlin.presentation.navigation.ERASED_IMAGE_RESULT_KEY
+import com.imr.example.newsmartykotlin.presentation.navigation.SELECTED_SUIT_URL_KEY
+import com.imr.example.newsmartykotlin.ui.theme.CardColor
+import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
+import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
+import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayRegular
+import com.imr.example.newsmartykotlin.ui.theme.SubTextColor
+import com.imr.example.newsmartykotlin.ui.theme.TextColor
+import com.imr.example.newsmartykotlin.ui.theme.WhiteColor
 import org.koin.androidx.compose.koinViewModel
+
+private enum class EditableLayer {
+    SUIT,
+    FACE
+}
 
 @Composable
 fun PhotoEditorScreen(
     navController: NavController,
+    onActionClick: (EditorAction) -> Unit,
     viewModel: PhotoEditorViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val selectedSuitUrlFlow = remember {
+        navController.currentBackStackEntry
+            ?.savedStateHandle
+            ?.getStateFlow<String?>(SELECTED_SUIT_URL_KEY, null)
+    }
+
+    val selectedSuitUrl by selectedSuitUrlFlow?.collectAsState() ?: remember {
+        mutableStateOf(null)
+    }
+    val erasedImageFlow = remember {
+        navController.currentBackStackEntry
+            ?.savedStateHandle
+            ?.getStateFlow<String?>(ERASED_IMAGE_RESULT_KEY, null)
+    }
+
+    val erasedImageUri by erasedImageFlow?.collectAsState() ?: remember {
+        mutableStateOf(null)
+    }
+
+    LaunchedEffect(erasedImageUri) {
+        erasedImageUri?.let { uri ->
+            viewModel.onEraserDone(uri)
+
+            navController.currentBackStackEntry
+                ?.savedStateHandle
+                ?.set(ERASED_IMAGE_RESULT_KEY, null)
+        }
+    }
+    LaunchedEffect(selectedSuitUrl) {
+        selectedSuitUrl?.let { newSuitUrl ->
+            viewModel.onSuitChanged(newSuitUrl)
+
+            navController.currentBackStackEntry
+                ?.savedStateHandle
+                ?.set(SELECTED_SUIT_URL_KEY, null)
+        }
+    }
+
+    val suitFlipX = remember { mutableFloatStateOf(1f) }
+    val faceFlipX = remember { mutableFloatStateOf(1f) }
+
+    var selectedLayer by remember { mutableStateOf(EditableLayer.FACE) }
+
+    val suitOffset = remember { mutableStateOf(Offset.Zero) }
+    val suitScale = remember { mutableFloatStateOf(1f) }
+    val suitRotation = remember { mutableFloatStateOf(0f) }
+
+    val faceOffset = remember { mutableStateOf(Offset(0f, -90f)) }
+    val faceScale = remember { mutableFloatStateOf(1f) }
+    val faceRotation = remember { mutableFloatStateOf(0f) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(WhiteColor)
+            .background(CardColor)
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
@@ -41,45 +145,186 @@ fun PhotoEditorScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f),
+                .weight(1f)
+                .background(WhiteColor)
+                .clipToBounds(),
             contentAlignment = Alignment.Center
         ) {
-            if (uiState.suitItem != null) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 38.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        painter = rememberAsyncImagePainter(uiState.suitItem!!.imageUrl),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(520.dp),
-                        contentScale = ContentScale.Fit
-                    )
+            BoxWithConstraints(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp)
+                    .clipToBounds(),
+                contentAlignment = Alignment.Center
+            ) {
+                val parentWidthDp = maxWidth
+                val parentHeightDp = maxHeight
 
-                    Image(
-                        painter = rememberAsyncImagePainter(uiState.faceImageUri.toUri()),
-                        contentDescription = null,
+                val faceWidthDp = minOf(122.dp, parentWidthDp * 0.35f)
+                val faceHeightDp = minOf(150.dp, parentHeightDp * 0.28f)
+
+                if (uiState.suitUrl.isNotEmpty()) {
+                    TransformableEditorImage(
+                        imageUri = uiState.suitUrl,
+                        selected = selectedLayer == EditableLayer.SUIT,
+                        offsetState = suitOffset,
+                        scaleState = suitScale,
+                        rotationState = suitRotation,
+                        flipXState = suitFlipX,
+                        minScale = 0.6f,
+                        maxScale = 3f,
                         modifier = Modifier
-                            .width(122.dp)
-                            .height(150.dp)
-                            .offset(y = (-62).dp),
-                        contentScale = ContentScale.Fit
+                            .requiredSizeIn(
+                                maxWidth = parentWidthDp,
+                                maxHeight = parentHeightDp
+                            )
+                            .wrapContentSize()
                     )
                 }
+
+                TransformableEditorImage(
+                    imageUri = uiState.mergedImageUri?.toUri() ?: uiState.faceImageUri.toUri(),
+                    selected = selectedLayer == EditableLayer.FACE,
+                    offsetState = faceOffset,
+                    scaleState = faceScale,
+                    rotationState = faceRotation,
+                    flipXState = faceFlipX,
+                    minScale = 0.4f,
+                    maxScale = 4f,
+                    modifier = Modifier
+                        .width(faceWidthDp)
+                        .height(faceHeightDp)
+                )
             }
 
-            FloatingSuitButton(
+            FloatingLayerButton(
+                selectedLayer = selectedLayer,
+                onClick = {
+                    selectedLayer = if (selectedLayer == EditableLayer.FACE) {
+                        EditableLayer.SUIT
+                    } else {
+                        EditableLayer.FACE
+                    }
+                },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(end = 24.dp, bottom = 28.dp)
             )
         }
 
-        EditorBottomBar()
+        Spacer(modifier = Modifier.height(4.dp))
+
+        EditorBottomBar { action ->
+            when (action) {
+                EditorAction.ERASER -> {
+                    navController.navigate(
+                        AppRoutes.Eraser.createRoute(
+                            faceImageUri = uiState.faceImageUri,
+                            suitUrl = uiState.suitUrl
+                        )
+                    )
+                }
+
+                EditorAction.FACE_FLIP -> {
+                    faceFlipX.floatValue *= -1f
+                }
+
+                EditorAction.SUIT_FLIP -> {
+                    suitFlipX.floatValue *= -1f
+                }
+
+                else -> {
+                    onActionClick(action)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TransformableEditorImage(
+    imageUri: Any,
+    selected: Boolean,
+    offsetState: MutableState<Offset>,
+    scaleState: MutableFloatState,
+    rotationState: MutableFloatState,
+    flipXState: MutableFloatState,
+    modifier: Modifier = Modifier,
+    minScale: Float = 0.6f,
+    maxScale: Float = 3f
+) {
+    Box(
+        modifier = modifier
+            .graphicsLayer {
+                translationX = offsetState.value.x
+                translationY = offsetState.value.y
+
+                // keep parent scale always positive
+                scaleX = scaleState.floatValue
+                scaleY = scaleState.floatValue
+
+                rotationZ = rotationState.floatValue
+            }
+            .pointerInput(selected) {
+                detectTransformGestures { _, pan, zoom, rotate ->
+                    if (selected) {
+                        offsetState.value += pan
+
+                        scaleState.floatValue =
+                            (scaleState.floatValue * zoom).coerceIn(minScale, maxScale)
+
+                        rotationState.floatValue += rotate
+                    }
+                }
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = rememberAsyncImagePainter(imageUri),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer {
+                    // flip only bitmap/image content
+                    scaleX = flipXState.floatValue
+                    scaleY = 1f
+                },
+            contentScale = ContentScale.Fit
+        )
+    }
+}
+
+@Composable
+private fun FloatingLayerButton(
+    selectedLayer: EditableLayer,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .size(50.dp)
+            .clip(CircleShape)
+            .background(PrimaryColor)
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
+                onClick()
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            painter = painterResource(
+                id = if (selectedLayer == EditableLayer.FACE) {
+                    R.drawable.ic_face
+                } else {
+                    R.drawable.ic_suit
+                }
+            ),
+            contentDescription = null,
+            tint = WhiteColor,
+            modifier = Modifier.size(20.dp)
+        )
     }
 }
 
@@ -91,40 +336,38 @@ private fun PhotoEditorTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(86.dp)
-            .background(
-                Brush.verticalGradient(
-                    listOf(WhiteColor, CardColor)
-                )
-            )
-            .padding(horizontal = 28.dp)
-            .padding(top = 22.dp),
+            .height(58.dp)
+            .background(CardColor)
+            .padding(horizontal = 28.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
-                .size(34.dp)
+                .size(30.dp)
                 .clip(RoundedCornerShape(10.dp))
-                .background(PrimaryColor),
+                .background(PrimaryColor)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {
+                    onBackClick()
+                },
             contentAlignment = Alignment.Center
         ) {
-            TextButton(
-                onClick = onBackClick,
-                contentPadding = PaddingValues(0.dp)
-            ) {
-                Text(
-                    text = "‹",
-                    color = WhiteColor,
-                    style = AppTypography.Title
-                )
-            }
+            Icon(
+                painter = painterResource(R.drawable.ic_back),
+                contentDescription = null,
+                tint = WhiteColor,
+                modifier = Modifier.size(12.dp)
+            )
         }
 
         Spacer(modifier = Modifier.width(14.dp))
 
         Text(
-            text = "Photo Editor",
-            style = AppTypography.Title,
+            text = stringResource(R.string.photo_editor),
+            fontFamily = SfProDisplayBold,
+            fontSize = 18.sp,
             color = TextColor,
             modifier = Modifier.weight(1f)
         )
@@ -133,40 +376,29 @@ private fun PhotoEditorTopBar(
             onClick = onNextClick,
             shape = RoundedCornerShape(10.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = PrimaryColor
+                containerColor = PrimaryColor,
+                disabledContainerColor = PrimaryColor.copy(alpha = 0.6f)
             ),
-            modifier = Modifier.height(42.dp)
+            contentPadding = PaddingValues(0.dp),
+            modifier = Modifier
+                .width(60.dp)
+                .height(30.dp)
         ) {
             Text(
-                text = "Next",
+                text = stringResource(R.string.next),
                 color = WhiteColor,
-                style = AppTypography.Body
+                fontSize = 14.sp,
+                fontFamily = SfProDisplayBold,
+                textAlign = TextAlign.Center
             )
         }
     }
 }
 
 @Composable
-private fun FloatingSuitButton(
-    modifier: Modifier = Modifier
+private fun EditorBottomBar(
+    onActionClick: (EditorAction) -> Unit
 ) {
-    Box(
-        modifier = modifier
-            .size(58.dp)
-            .clip(CircleShape)
-            .background(PrimaryColor),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "👔",
-            color = WhiteColor,
-            style = AppTypography.Title
-        )
-    }
-}
-
-@Composable
-private fun EditorBottomBar() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -176,27 +408,70 @@ private fun EditorBottomBar() {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        EditorBottomItem("👔", "Outfits")
-        EditorBottomItem("🩹", "Eraser")
-        EditorBottomItem("◯", "Face Flip")
-        EditorBottomItem("👔", "Suit Flip")
+
+        EditorBottomItem(
+            icon = R.drawable.ic_out_fits,
+            title = stringResource(R.string.outfits)
+        ) {
+            onActionClick(EditorAction.OUTFITS)
+        }
+
+        EditorBottomItem(
+            icon = R.drawable.ic_earser,
+            title = stringResource(R.string.eraser)
+        ) {
+            onActionClick(EditorAction.ERASER)
+        }
+
+        EditorBottomItem(
+            icon = R.drawable.ic_face_flip,
+            title = stringResource(R.string.face_flip)
+        ) {
+            onActionClick(EditorAction.FACE_FLIP)
+        }
+
+        EditorBottomItem(
+            icon = R.drawable.ic_suit_flip,
+            title = stringResource(R.string.suit_flip)
+        ) {
+            onActionClick(EditorAction.SUIT_FLIP)
+        }
     }
 }
-
 @Composable
 private fun EditorBottomItem(
-    icon: String,
-    title: String
+    icon: Int,
+    title: String,
+    onClick: () -> Unit
 ) {
     Column(
+        modifier = Modifier.clickable(
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() }
+        ) {
+            onClick()
+        },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = icon)
+        Image(
+            painter = painterResource(icon),
+            contentDescription = null,
+            modifier = Modifier.size(20.dp)
+        )
+
         Spacer(modifier = Modifier.height(4.dp))
+
         Text(
             text = title,
-            style = AppTypography.Body,
+            fontFamily = SfProDisplayRegular,
+            fontSize = 12.sp,
             color = SubTextColor
         )
     }
+}
+enum class EditorAction {
+    OUTFITS,
+    ERASER,
+    FACE_FLIP,
+    SUIT_FLIP
 }

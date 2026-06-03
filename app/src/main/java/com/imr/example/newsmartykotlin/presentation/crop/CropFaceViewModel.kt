@@ -21,7 +21,7 @@ class CropFaceViewModel(
 ) : ViewModel() {
 
     private val suitId: String =
-        savedStateHandle[AppRoutes.CropFace.ARG_SUIT_ID] ?: ""
+        savedStateHandle[AppRoutes.CropFace.ARG_SUIT_URL] ?: ""
 
     private val imageUri: String =
         savedStateHandle[AppRoutes.CropFace.ARG_IMAGE_URI] ?: ""

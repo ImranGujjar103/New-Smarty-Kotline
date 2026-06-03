@@ -1,5 +1,6 @@
 package com.imr.example.newsmartykotlin.presentation.photoeditor
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,15 +16,15 @@ class PhotoEditorViewModel(
     private val getPhotoEditorSuitUseCase: GetPhotoEditorSuitUseCase
 ) : ViewModel() {
 
-    private val suitId: String =
-        savedStateHandle[AppRoutes.PhotoEditor.ARG_SUIT_ID] ?: ""
+    private val suitUrl: String =
+        savedStateHandle[AppRoutes.PhotoEditor.ARG_SUIT_URL] ?: ""
 
     private val faceImageUri: String =
         savedStateHandle[AppRoutes.PhotoEditor.ARG_CROPPED_IMAGE_URI] ?: ""
 
     private val _uiState = MutableStateFlow(
         PhotoEditorUiState(
-            suitId = suitId,
+            suitUrl = suitUrl,
             faceImageUri = faceImageUri
         )
     )
@@ -37,15 +38,38 @@ class PhotoEditorViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
-            val suit = getPhotoEditorSuitUseCase(suitId)
+            Log.d("PhotoEditorVM", "suitUrl = $suitUrl")
 
+            Log.d("PhotoEditorVM", "loaded suit = $suitUrl")
             _uiState.update {
                 it.copy(
                     isLoading = false,
-                    suitItem = suit,
-                    errorMessage = if (suit == null) "Suit not found" else null
+                    suitUrl = suitUrl,
+                    errorMessage = null
                 )
             }
+
+            Log.d("PhotoEditorVM", "suitUrl = $suitUrl")
+            Log.d("PhotoEditorVM", "faceImageUri = $faceImageUri")
+        }
+    }
+
+
+    fun onEraserDone(newImageUri: String) {
+        _uiState.update {
+            it.copy(
+                mergedImageUri = newImageUri,
+                faceImageUri = newImageUri,
+                suitUrl = ""
+            )
+        }
+    }
+
+    fun onSuitChanged(newSuitUrl: String) {
+        _uiState.update {
+            it.copy(
+                suitUrl = newSuitUrl
+            )
         }
     }
 }

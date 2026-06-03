@@ -74,6 +74,12 @@
     <string name="crop_ratio_16_9">16:9</string>
     <string name="crop_ratio_9_16">9:16</string>
     <string name="failed_to_crop_image">Failed to crop image</string>
+    <string name="removing_background">Removing Background....</string>
+    <string name="photo_editor">Photo Editor</string>
+    <string name="outfits">Outfits</string>
+    <string name="eraser">Eraser</string>
+    <string name="face_flip">Face Flip</string>
+    <string name="suit_flip">Suit Flip</string>
 
 
 </resources>

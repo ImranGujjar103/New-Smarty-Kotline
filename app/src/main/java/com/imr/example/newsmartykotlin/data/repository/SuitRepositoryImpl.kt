@@ -54,7 +54,7 @@ class SuitRepositoryImpl(
                             SuitItem(
                                 id = name,
                                 name = name,
-                                imageUrl = link
+                                suitUrl = link
                             )
                         } else {
                             null

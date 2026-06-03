@@ -25,7 +25,7 @@ class GalleryViewModel(
     private val _event = MutableSharedFlow<GalleryEvent>()
     val event: SharedFlow<GalleryEvent> = _event.asSharedFlow()
     val suitId: String =
-        savedStateHandle[AppRoutes.Gallery.ARG_SUIT_ID] ?: ""
+        savedStateHandle[AppRoutes.Gallery.ARG_SUIT_URL] ?: ""
     fun loadGalleryImages() {
         viewModelScope.launch {
             _uiState.update {
