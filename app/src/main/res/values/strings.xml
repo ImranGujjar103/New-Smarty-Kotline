@@ -80,6 +80,16 @@
     <string name="eraser">Eraser</string>
     <string name="face_flip">Face Flip</string>
     <string name="suit_flip">Suit Flip</string>
+    <string name="size">Size</string>
+    <string name="offset">Offset</string>
+
+    <string name="background_and_text">Background and text</string>
+    <string name="background">Background</string>
+    <string name="add_text">Add Text</string>
+    <string name="stickers">Stickers</string>
+
+    <string name="add_text_here">Add Text Here</string>
+    <string name="cancel">Cancel</string>
 
 
 </resources>

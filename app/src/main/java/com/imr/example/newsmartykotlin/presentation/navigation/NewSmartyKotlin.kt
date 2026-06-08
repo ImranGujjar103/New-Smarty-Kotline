@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.imr.example.newsmartykotlin.core.ads.AdLoadingState
+import com.imr.example.newsmartykotlin.presentation.backgroundtext.BackgroundTextScreen
 import com.imr.example.newsmartykotlin.presentation.bgremove.BgRemoveScreen
 import com.imr.example.newsmartykotlin.presentation.common.components.AdLoadingOverlay
 import com.imr.example.newsmartykotlin.presentation.crop.CropFaceScreen
@@ -273,17 +274,27 @@ fun NewSmartyKotlin(
             }
 
             composable(
-                route = AppRoutes.Eraser.route,
+                route = "${AppRoutes.Eraser.route}/{${AppRoutes.Eraser.ARG_FACE_IMAGE_URI}}",
                 arguments = listOf(
                     navArgument(AppRoutes.Eraser.ARG_FACE_IMAGE_URI) {
-                        type = NavType.StringType
-                    },
-                    navArgument(AppRoutes.Eraser.ARG_SUIT_URL) {
                         type = NavType.StringType
                     }
                 )
             ) {
                 EraserScreen(navController = navController)
+            }
+
+            composable(
+                route = "${AppRoutes.BackgroundText.route}/{${AppRoutes.BackgroundText.ARG_IMAGE_PATH}}",
+                arguments = listOf(
+                    navArgument(AppRoutes.BackgroundText.ARG_IMAGE_PATH) {
+                        type = NavType.StringType
+                    }
+                )
+            ) {
+                BackgroundTextScreen(
+                    navController = navController
+                )
             }
         }
 

@@ -6,12 +6,13 @@ import com.imr.example.newsmartykotlin.domain.model.EraseStroke
 interface EraserRepository {
 
     suspend fun createPreviewBitmap(
-        faceImageUri: String,
-        suitUrl: String
+        faceImageUri: String
     ): Bitmap
 
     suspend fun saveErasedBitmap(
         sourceBitmap: Bitmap,
         strokes: List<EraseStroke>
     ): String
+
+    suspend fun saveBitmap(bitmap: Bitmap): String
 }

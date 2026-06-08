@@ -37,15 +37,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.layer.drawLayer
+import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -55,6 +61,7 @@ import androidx.core.net.toUri
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import com.imr.example.newsmartykotlin.R
+import com.imr.example.newsmartykotlin.core.utils.BitmapUtils
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
 import com.imr.example.newsmartykotlin.presentation.navigation.ERASED_IMAGE_RESULT_KEY
 import com.imr.example.newsmartykotlin.presentation.navigation.SELECTED_SUIT_URL_KEY
@@ -65,6 +72,7 @@ import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayRegular
 import com.imr.example.newsmartykotlin.ui.theme.SubTextColor
 import com.imr.example.newsmartykotlin.ui.theme.TextColor
 import com.imr.example.newsmartykotlin.ui.theme.WhiteColor
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 private enum class EditableLayer {
@@ -78,6 +86,10 @@ fun PhotoEditorScreen(
     onActionClick: (EditorAction) -> Unit,
     viewModel: PhotoEditorViewModel = koinViewModel()
 ) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val captureLayer = rememberGraphicsLayer()
+
     val uiState by viewModel.uiState.collectAsState()
     val selectedSuitUrlFlow = remember {
         navController.currentBackStackEntry
@@ -136,10 +148,25 @@ fun PhotoEditorScreen(
             .background(CardColor)
             .statusBarsPadding()
             .navigationBarsPadding()
-    ) {
+    )
+    {
         PhotoEditorTopBar(
             onBackClick = { navController.popBackStack() },
-            onNextClick = { }
+            onNextClick = {
+                scope.launch {
+                    val bitmap = captureLayer
+                        .toImageBitmap()
+                        .asAndroidBitmap()
+
+                    val imagePath = BitmapUtils.saveBitmapToCache(
+                        context = context,
+                        bitmap = bitmap
+                    )
+                    navController.navigate(
+                        AppRoutes.BackgroundText.createRoute(imagePath)
+                    )
+                }
+            }
         )
 
         Box(
@@ -154,7 +181,13 @@ fun PhotoEditorScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 24.dp)
-                    .clipToBounds(),
+                    .clipToBounds()
+                    .drawWithContent {
+                        captureLayer.record {
+                            this@drawWithContent.drawContent()
+                        }
+                        drawLayer(captureLayer)
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 val parentWidthDp = maxWidth
@@ -183,7 +216,7 @@ fun PhotoEditorScreen(
                 }
 
                 TransformableEditorImage(
-                    imageUri = uiState.mergedImageUri?.toUri() ?: uiState.faceImageUri.toUri(),
+                    imageUri = uiState.faceImageUri.toUri(),
                     selected = selectedLayer == EditableLayer.FACE,
                     offsetState = faceOffset,
                     scaleState = faceScale,
@@ -219,8 +252,7 @@ fun PhotoEditorScreen(
                 EditorAction.ERASER -> {
                     navController.navigate(
                         AppRoutes.Eraser.createRoute(
-                            faceImageUri = uiState.faceImageUri,
-                            suitUrl = uiState.suitUrl
+                            faceImageUri = uiState.faceImageUri
                         )
                     )
                 }

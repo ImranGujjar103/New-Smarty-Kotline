@@ -13,4 +13,8 @@ class SaveErasedImageUseCase(
     ): String {
         return repository.saveErasedBitmap(previewBitmap, strokes)
     }
+
+    suspend fun saveBitmap(bitmap: Bitmap): String {
+        return repository.saveBitmap(bitmap)
+    }
 }

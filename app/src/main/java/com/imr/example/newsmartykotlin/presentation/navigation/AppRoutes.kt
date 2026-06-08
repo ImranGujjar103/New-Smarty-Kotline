@@ -76,15 +76,22 @@ sealed class AppRoutes(val route: String) {
         }
     }
 
-    data object Eraser : AppRoutes("eraser/{faceImageUri}/{suitUrl}") {
+    object Eraser {
+        const val route = "eraser_screen"
         const val ARG_FACE_IMAGE_URI = "faceImageUri"
-        const val ARG_SUIT_URL = "suitUrl"
 
-        fun createRoute(
-            faceImageUri: String,
-            suitUrl: String
-        ): String {
-            return "eraser/${Uri.encode(faceImageUri)}/${Uri.encode(suitUrl)}"
+        fun createRoute(faceImageUri: String): String {
+            return "$route/${Uri.encode(faceImageUri)}"
+        }
+    }
+
+
+    object BackgroundText {
+        const val route = "background_text"
+        const val ARG_IMAGE_PATH = "imagePath"
+
+        fun createRoute(imagePath: String): String {
+            return "$route/${Uri.encode(imagePath)}"
         }
     }
 }

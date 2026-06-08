@@ -8,6 +8,5 @@ class CreateEraserPreviewUseCase(
 ) {
     suspend operator fun invoke(
         faceImageUri: String,
-        suitUrl: String
-    ) = repository.createPreviewBitmap(faceImageUri, suitUrl)
+    ) = repository.createPreviewBitmap(faceImageUri)
 }

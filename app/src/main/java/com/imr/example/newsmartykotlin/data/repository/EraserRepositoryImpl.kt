@@ -13,24 +13,13 @@ class EraserRepositoryImpl(
 ) : EraserRepository {
 
     override suspend fun createPreviewBitmap(
-        faceImageUri: String,
-        suitUrl: String
+        faceImageUri: String
     ): Bitmap = withContext(Dispatchers.IO) {
-        val faceBitmap = BitmapUtils.loadBitmap(context, faceImageUri)
+        BitmapUtils.loadBitmap(context, faceImageUri)
 
-        val suitBitmap = if (suitUrl.isNotEmpty()) {
-            runCatching {
-                BitmapUtils.loadBitmap(context, suitUrl)
-            }.getOrNull()
-        } else {
-            null
-        }
 
-        BitmapUtils.mergeSuitAndFace(
-            suitBitmap = suitBitmap,
-            faceBitmap = faceBitmap
-        )
     }
+
 
     override suspend fun saveErasedBitmap(
         previewBitmap: Bitmap,
@@ -44,6 +33,13 @@ class EraserRepositoryImpl(
         BitmapUtils.saveBitmapToCache(
             context = context,
             bitmap = erased
+        )
+    }
+
+    override suspend fun saveBitmap(bitmap: Bitmap): String {
+        return BitmapUtils.saveBitmapToCache(
+            context = context,
+            bitmap = bitmap
         )
     }
 }

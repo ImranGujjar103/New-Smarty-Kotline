@@ -14,7 +14,8 @@ import kotlinx.coroutines.launch
 class PhotoEditorViewModel(
     savedStateHandle: SavedStateHandle,
     private val getPhotoEditorSuitUseCase: GetPhotoEditorSuitUseCase
-) : ViewModel() {
+) : ViewModel()
+{
 
     private val suitUrl: String =
         savedStateHandle[AppRoutes.PhotoEditor.ARG_SUIT_URL] ?: ""
@@ -56,11 +57,10 @@ class PhotoEditorViewModel(
 
 
     fun onEraserDone(newImageUri: String) {
+        Log.d("PhotoEditorVM", "newImageUri = $newImageUri")
         _uiState.update {
             it.copy(
-                mergedImageUri = newImageUri,
                 faceImageUri = newImageUri,
-                suitUrl = ""
             )
         }
     }

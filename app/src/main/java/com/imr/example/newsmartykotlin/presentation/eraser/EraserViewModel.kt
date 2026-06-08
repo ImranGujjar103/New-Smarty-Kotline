@@ -1,5 +1,6 @@
 package com.imr.example.newsmartykotlin.presentation.eraser
 
+import android.graphics.Bitmap
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,18 +21,16 @@ class EraserViewModel(
     savedStateHandle: SavedStateHandle,
     private val createEraserPreviewUseCase: CreateEraserPreviewUseCase,
     private val saveErasedImageUseCase: SaveErasedImageUseCase
-) : ViewModel() {
+) : ViewModel()
+{
 
     private val faceImageUri: String =
         savedStateHandle[AppRoutes.Eraser.ARG_FACE_IMAGE_URI] ?: ""
 
-    private val suitUrl: String =
-        savedStateHandle[AppRoutes.Eraser.ARG_SUIT_URL] ?: ""
 
     private val _uiState = MutableStateFlow(
         EraserUiState(
             faceImageUri = faceImageUri,
-            suitUrl = suitUrl
         )
     )
     val uiState = _uiState.asStateFlow()
@@ -52,8 +51,7 @@ class EraserViewModel(
 
             runCatching {
                 createEraserPreviewUseCase(
-                    faceImageUri = faceImageUri,
-                    suitUrl = suitUrl
+                    faceImageUri = faceImageUri
                 )
             }.onSuccess { bitmap ->
                 _uiState.update {
@@ -72,6 +70,45 @@ class EraserViewModel(
             }
         }
     }
+    private fun updateUndoRedoState() {
+        _uiState.update {
+            it.copy(
+                canUndo = strokes.isNotEmpty(),
+                canRedo = redoStrokes.isNotEmpty()
+            )
+        }
+    }
+
+    fun addStroke(stroke: EraseStroke) {
+        strokes.add(stroke)
+        redoStrokes.clear()
+        updateUndoRedoState()
+    }
+    fun resetAll() {
+        strokes.clear()
+        redoStrokes.clear()
+
+        _uiState.update {
+            it.copy(
+                canUndo = false,
+                canRedo = false
+            )
+        }
+    }
+
+    fun undo() {
+        if (strokes.isNotEmpty()) {
+            redoStrokes.add(strokes.removeAt(strokes.lastIndex))
+            updateUndoRedoState()
+        }
+    }
+
+    fun redo() {
+        if (redoStrokes.isNotEmpty()) {
+            strokes.add(redoStrokes.removeAt(redoStrokes.lastIndex))
+            updateUndoRedoState()
+        }
+    }
 
     fun onBrushSizeChange(value: Float) {
         _uiState.update { it.copy(brushSize = value) }
@@ -79,23 +116,6 @@ class EraserViewModel(
 
     fun onBrushOffsetChange(value: Float) {
         _uiState.update { it.copy(brushOffset = value) }
-    }
-
-    fun addStroke(stroke: EraseStroke) {
-        strokes.add(stroke)
-        redoStrokes.clear()
-    }
-
-    fun undo() {
-        if (strokes.isNotEmpty()) {
-            redoStrokes.add(strokes.removeLast())
-        }
-    }
-
-    fun redo() {
-        if (redoStrokes.isNotEmpty()) {
-            strokes.add(redoStrokes.removeLast())
-        }
     }
 
     fun currentStrokes(): List<EraseStroke> {
@@ -108,17 +128,12 @@ class EraserViewModel(
         }
     }
 
-    fun onDoneClick() {
-        val bitmap = _uiState.value.previewBitmap ?: return
-
+    fun onDoneClick(finalBitmap: Bitmap) {
         viewModelScope.launch {
             _uiState.update { it.copy(isSaving = true) }
 
             runCatching {
-                saveErasedImageUseCase(
-                    previewBitmap = bitmap,
-                    strokes = strokes
-                )
+                saveErasedImageUseCase.saveBitmap(finalBitmap)
             }.onSuccess { uri ->
                 _uiState.update { it.copy(isSaving = false) }
                 _event.emit(EraserEvent.Done(uri))
