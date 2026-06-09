@@ -76,6 +76,8 @@ dependencies {
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.config)
     implementation(libs.androidx.lifecycle.process)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.compose.foundation.layout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -106,7 +108,8 @@ dependencies {
     implementation(libs.coil.network.okhttp)
 
     implementation (libs.billing)
-
+    /*color picker*/
+    implementation(libs.colorpickerview)
     // Import the base SDK.
     implementation(libs.ml.computer.vision.segmentation)
     implementation(libs.ml.computer.vision.image.segmentation.body.model)

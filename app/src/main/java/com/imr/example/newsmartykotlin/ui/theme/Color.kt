@@ -22,4 +22,20 @@ val PlaneCardStrokeColor = Color(0xFFE0E0E0)
 val PowerButtonColor = Color(0xFFEAF2FF)
 val PowerGreenColor = Color(0xFF00E6B8)
 val RedColor = Color(0xFFFF4D4D)
+val RedColor_ = Color(0xFFFF4F4F)
 val HomeBackgroundColor = Color(0xFFEFF3FB)
+val LightGrayColor = Color(0xFFD9D9D9)
+
+val OrangeColor = Color(0xFFF98D2A)
+
+val YellowColor = Color(0xFFF6E11D)
+
+val GreenColor = Color(0xFF56E723)
+
+val MintGreenColor = Color(0xFF28DCA6)
+
+val CyanColor = Color(0xFF14C7D2)
+
+val BlueColor = Color(0xFF2A6AE5)
+
+val PurpleColor = Color(0xFFAD4DF8)

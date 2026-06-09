@@ -1,4 +1,4 @@
-package com.imr.example.newsmartykotlin.presentation.backgroundtext
+package com.imr.example.newsmartykotlin.presentation.backgroundtext.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -39,7 +39,7 @@ fun AddTextDialog(
     value: String,
     onValueChange: (String) -> Unit,
     onCancelClick: () -> Unit,
-    onAllowClick: () -> Unit
+    onAddClick: () -> Unit
 ) {
     Dialog(
         onDismissRequest = onCancelClick
@@ -110,7 +110,7 @@ fun AddTextDialog(
                 }
 
                 Button(
-                    onClick = onAllowClick,
+                    onClick = onAddClick,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = PrimaryColor
                     ),
@@ -120,7 +120,7 @@ fun AddTextDialog(
                         .height(54.dp)
                 ) {
                     Text(
-                        text = stringResource(R.string.allow),
+                        text = stringResource(R.string.add),
                         color = WhiteColor,
                         fontSize = 14.sp,
                         fontFamily = SfProDisplayBold
