@@ -74,7 +74,11 @@ class BackgroundTextViewModel(
             it.copy(showStickerSheet = false)
         }
     }
-
+    fun updateBackground(backgroundUrl: String) {
+        _uiState.value = _uiState.value.copy(
+            backgroundPath = backgroundUrl
+        )
+    }
     fun addEmojiSticker(value: String) {
         val id = System.currentTimeMillis()
 

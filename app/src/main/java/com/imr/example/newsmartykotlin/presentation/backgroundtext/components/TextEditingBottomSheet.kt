@@ -232,7 +232,6 @@ private fun ColorOptionsRow(
     onColorClick: (Color) -> Unit
 ) {
     var showColorPicker by remember { mutableStateOf(false) }
-    val controller = rememberColorPickerController()
 
     val colors: List<TextColorItem> = listOf(
         TextColorItem.CustomPicker,
@@ -290,36 +289,13 @@ private fun ColorOptionsRow(
     }
 
     if (showColorPicker) {
-        AlertDialog(
-            onDismissRequest = { showColorPicker = false },
-            title = {
-                Text(
-                    text = "Choose Color",
-                    fontFamily = SfProDisplayBold,
-                    color = TextColor
-                )
+        CustomColorPickerDialog(
+            initialColor = selectedColor,
+            onDismiss = {
+                showColorPicker = false
             },
-            text = {
-                Color(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(260.dp),
-                    controller = controller,
-                    onColorChanged = { colorEnvelope ->
-                        onColorClick(colorEnvelope.color)
-                    }
-                )
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = { showColorPicker = false }
-                ) {
-                    Text(
-                        text = "Done",
-                        color = PrimaryColor,
-                        fontFamily = SfProDisplayBold
-                    )
-                }
+            onColorSelected = { color ->
+                onColorClick(color)
             }
         )
     }

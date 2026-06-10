@@ -101,6 +101,9 @@ dependencies {
     /*lifecycle*/
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+
     /*lottie*/
     implementation(libs.lottie.compose)
     /*coil*/

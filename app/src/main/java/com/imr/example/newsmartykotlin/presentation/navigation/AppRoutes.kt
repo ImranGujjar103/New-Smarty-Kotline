@@ -94,4 +94,16 @@ sealed class AppRoutes(val route: String) {
             return "$route/${Uri.encode(imagePath)}"
         }
     }
+
+    data object GalleryForBackground : AppRoutes("gallery_for_background") {
+        fun createRoute(): String = "gallery_for_background"
+    }
+
+    data object Saved : AppRoutes("saved/{imagePath}") {
+        const val ARG_IMAGE_PATH = "imagePath"
+
+        fun createRoute(imagePath: String): String {
+            return "saved/${Uri.encode(imagePath)}"
+        }
+    }
 }

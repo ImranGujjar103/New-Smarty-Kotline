@@ -47,6 +47,7 @@ import coil3.compose.AsyncImage
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.domain.model.GalleryImage
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
+import com.imr.example.newsmartykotlin.presentation.navigation.SELECTED_BACKGROUND_IMAGE_KEY
 import com.imr.example.newsmartykotlin.ui.theme.AppTypography
 import com.imr.example.newsmartykotlin.ui.theme.CardColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
@@ -60,6 +61,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun GalleryScreen(
     navController: NavController,
+    isForBackground: Boolean = false,
     viewModel: GalleryViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -172,21 +174,25 @@ fun GalleryScreen(
                             ) { image ->
                                 GalleryImageItem(
                                     image = image,
-                                    onImageClick = {
+                                    onImageClick = { selectedImage ->
 
-                                        selectedImage ->
+                                        if (isForBackground) {
+                                            navController.previousBackStackEntry
+                                                ?.savedStateHandle
+                                                ?.set(
+                                                    SELECTED_BACKGROUND_IMAGE_KEY,
+                                                    selectedImage.uri
+                                                )
 
-                                        Log.d(
-                                            "GallerySuitItem",
-                                            "Suit Id 33333 = ${viewModel.suitId}"
-                                        )
-
-                                        navController.navigate(
-                                            AppRoutes.CropFace.createRoute(
-                                                suitUrl = viewModel.suitId,
-                                                imageUri = selectedImage.uri
+                                            navController.popBackStack()
+                                        } else {
+                                            navController.navigate(
+                                                AppRoutes.CropFace.createRoute(
+                                                    suitUrl = viewModel.suitId,
+                                                    imageUri = selectedImage.uri
+                                                )
                                             )
-                                        )
+                                        }
                                     }
                                 )
                             }

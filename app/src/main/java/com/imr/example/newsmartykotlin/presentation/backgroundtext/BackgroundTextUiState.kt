@@ -6,6 +6,7 @@ import com.imr.example.newsmartykotlin.presentation.backgroundtext.model.Editabl
 
 data class BackgroundTextUiState(
     val imagePath: String = "",
+    val backgroundPath: String = "",
     val isSaving: Boolean = false,
     val errorMessage: String? = null,
     val stickers: List<EditableStickerItem> = emptyList(),

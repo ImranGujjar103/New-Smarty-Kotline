@@ -26,7 +26,7 @@ import com.google.android.gms.common.util.CollectionUtils.listOf
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
 import com.imr.example.newsmartykotlin.ui.theme.TextColor
-
+import kotlin.math.roundToInt
 @Composable
 fun CustomColorPickerDialog(
     initialColor: Color,

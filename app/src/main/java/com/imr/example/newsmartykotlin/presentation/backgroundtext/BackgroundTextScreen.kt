@@ -28,7 +28,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,10 +49,13 @@ import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.core.extensions.clickableNoRipple
+import com.imr.example.newsmartykotlin.presentation.backgroundtext.backgroundsheet.BackgroundBottomSheet
 import com.imr.example.newsmartykotlin.presentation.backgroundtext.components.AddTextDialog
 import com.imr.example.newsmartykotlin.presentation.backgroundtext.components.EditableSticker
 import com.imr.example.newsmartykotlin.presentation.backgroundtext.components.StickerBottomSheet
 import com.imr.example.newsmartykotlin.presentation.backgroundtext.components.TextEditingBottomSheet
+import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
+import com.imr.example.newsmartykotlin.presentation.navigation.SELECTED_BACKGROUND_IMAGE_KEY
 import com.imr.example.newsmartykotlin.ui.theme.CardColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
@@ -67,12 +73,30 @@ fun BackgroundTextScreen(
     val uiState by viewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
     val captureLayer = rememberGraphicsLayer()
+    var showBackgroundSheet by remember { mutableStateOf(false) }
+
+    val selectedBackgroundImage =
+        navController.currentBackStackEntry
+            ?.savedStateHandle
+            ?.getStateFlow<String?>(SELECTED_BACKGROUND_IMAGE_KEY, null)
+            ?.collectAsState()
+
+
+    LaunchedEffect(selectedBackgroundImage?.value) {
+        selectedBackgroundImage?.value?.let { uri ->
+            viewModel.updateBackground(uri)
+
+            navController.currentBackStackEntry
+                ?.savedStateHandle
+                ?.remove<String>(SELECTED_BACKGROUND_IMAGE_KEY)
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
                 is BackgroundTextEvent.Done -> {
-                    // navController.navigate(AppRoutes.FinalPreview.createRoute(event.imagePath))
+                     navController.navigate(AppRoutes.Saved.createRoute(event.imagePath))
                 }
             }
         }
@@ -133,6 +157,17 @@ fun BackgroundTextScreen(
                         },
                     contentAlignment = Alignment.Center
                 ) {
+                    if (uiState.backgroundPath.isNotEmpty()) {
+                        Image(
+                            painter = rememberAsyncImagePainter(uiState.backgroundPath),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 28.dp, vertical = 28.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
+
                     Image(
                         painter = rememberAsyncImagePainter(uiState.imagePath),
                         contentDescription = null,
@@ -181,6 +216,7 @@ fun BackgroundTextScreen(
             BackgroundTextBottomBar(
                 onBackgroundClick = {
                     viewModel.unselectAll()
+                    showBackgroundSheet = true
                 },
                 onTextClick = {
                     viewModel.showAddTextDialog()
@@ -206,8 +242,26 @@ fun BackgroundTextScreen(
                 modifier = Modifier.align(Alignment.BottomCenter)
             )
         }
-    }
 
+    }
+    if (showBackgroundSheet) {
+        BackgroundBottomSheet(
+            onDismiss = {
+                showBackgroundSheet = false
+            },
+            onBackgroundSelected = { backgroundUrl ->
+                navController.currentBackStackEntry
+                    ?.savedStateHandle
+                    ?.remove<String>(SELECTED_BACKGROUND_IMAGE_KEY)
+
+                viewModel.updateBackground(backgroundUrl)
+                showBackgroundSheet = false
+            },
+            onGalleryClick = {
+                navController.navigate(AppRoutes.GalleryForBackground.createRoute())
+            }
+        )
+    }
     if (uiState.showStickerSheet) {
         ModalBottomSheet(
             onDismissRequest = {

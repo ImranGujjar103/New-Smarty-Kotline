@@ -9,6 +9,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.google.android.gms.common.util.CollectionUtils.listOf
 import com.imr.example.newsmartykotlin.core.ads.AdLoadingState
 import com.imr.example.newsmartykotlin.presentation.backgroundtext.BackgroundTextScreen
 import com.imr.example.newsmartykotlin.presentation.bgremove.BgRemoveScreen
@@ -23,6 +24,7 @@ import com.imr.example.newsmartykotlin.presentation.permission.GalleryPermission
 import com.imr.example.newsmartykotlin.presentation.photoeditor.EditorAction
 import com.imr.example.newsmartykotlin.presentation.photoeditor.PhotoEditorScreen
 import com.imr.example.newsmartykotlin.presentation.premium.PremiumRoute
+import com.imr.example.newsmartykotlin.presentation.saved.SavedScreen
 import com.imr.example.newsmartykotlin.presentation.splash.SplashRoute
 import com.imr.example.newsmartykotlin.presentation.suits.SuitRoute
 
@@ -296,6 +298,27 @@ fun NewSmartyKotlin(
                     navController = navController
                 )
             }
+
+            composable(AppRoutes.GalleryForBackground.route) {
+                GalleryScreen(
+                    navController = navController,
+                    isForBackground = true
+                )
+            }
+
+            composable(
+                route = AppRoutes.Saved.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.Saved.ARG_IMAGE_PATH) {
+                        type = NavType.StringType
+                    }
+                )
+            ) {
+                SavedScreen(
+                    navController = navController
+                )
+            }
+
         }
 
         if (isAdLoading.value) {
