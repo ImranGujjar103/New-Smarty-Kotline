@@ -20,11 +20,18 @@ class CropFaceViewModel(
     private val cropImageUseCase: CropImageUseCase
 ) : ViewModel() {
 
+    private val isForBgRemover: Boolean =
+        savedStateHandle[AppRoutes.CropForBgRemover.ARG_IS_BG_REMOVER] ?: false
+
     private val suitId: String =
         savedStateHandle[AppRoutes.CropFace.ARG_SUIT_URL] ?: ""
 
     private val imageUri: String =
-        savedStateHandle[AppRoutes.CropFace.ARG_IMAGE_URI] ?: ""
+        if (isForBgRemover) {
+            savedStateHandle[AppRoutes.CropForBgRemover.ARG_IMAGE_URI] ?: ""
+        } else {
+            savedStateHandle[AppRoutes.CropFace.ARG_IMAGE_URI] ?: ""
+        }
 
     private val _uiState = MutableStateFlow(
         CropFaceUiState(
@@ -95,12 +102,21 @@ class CropFaceViewModel(
                     )
                 }
 
-                _event.emit(
-                    CropFaceEvent.NavigateNext(
-                        suitId = state.suitId,
-                        croppedImageUri = croppedUri
+                if (isForBgRemover) {
+                    _event.emit(
+                        CropFaceEvent.NavigateToBgRemoverRemove(
+                            croppedImageUri = croppedUri
+                        )
                     )
-                )
+                } else {
+                    _event.emit(
+                        CropFaceEvent.NavigateToSuitBgRemove(
+                            suitId = state.suitId,
+                            croppedImageUri = croppedUri
+                        )
+                    )
+                }
+
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(

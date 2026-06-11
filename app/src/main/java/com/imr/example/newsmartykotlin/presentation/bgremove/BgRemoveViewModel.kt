@@ -18,11 +18,18 @@ class BgRemoveViewModel(
     private val removeBackgroundUseCase: RemoveBackgroundUseCase
 ) : ViewModel() {
 
+    private val isForBgRemover: Boolean =
+        savedStateHandle[AppRoutes.BgRemoveForBgRemover.ARG_IS_BG_REMOVER] ?: false
+
     private val suitId: String =
         savedStateHandle[AppRoutes.BgRemove.ARG_SUIT_URL] ?: ""
 
     private val croppedImageUri: String =
-        savedStateHandle[AppRoutes.BgRemove.ARG_CROPPED_IMAGE_URI] ?: ""
+        if (isForBgRemover) {
+            savedStateHandle[AppRoutes.BgRemoveForBgRemover.ARG_CROPPED_IMAGE_URI] ?: ""
+        } else {
+            savedStateHandle[AppRoutes.BgRemove.ARG_CROPPED_IMAGE_URI] ?: ""
+        }
 
     private val _uiState = MutableStateFlow(
         BgRemoveUiState(
@@ -57,12 +64,20 @@ class BgRemoveViewModel(
 
                 delay(300)
 
-                _event.emit(
-                    BgRemoveEvent.NavigateNext(
-                        suitId = suitId,
-                        removedBgImageUri = resultUri
+                if (isForBgRemover) {
+                    _event.emit(
+                        BgRemoveEvent.NavigateToBgRemoverEditor(
+                            removedBgImageUri = resultUri
+                        )
                     )
-                )
+                } else {
+                    _event.emit(
+                        BgRemoveEvent.NavigateToSuitEditor(
+                            suitId = suitId,
+                            removedBgImageUri = resultUri
+                        )
+                    )
+                }
 
             } catch (e: Exception) {
                 _uiState.update {

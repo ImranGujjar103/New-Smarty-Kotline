@@ -88,10 +88,18 @@ fun CropFaceScreen(
                     navController.popBackStack()
                 }
 
-                is CropFaceEvent.NavigateNext -> {
+                is CropFaceEvent.NavigateToSuitBgRemove -> {
                     navController.navigate(
                         AppRoutes.BgRemove.createRoute(
                             suitUrl = event.suitId,
+                            croppedImageUri = event.croppedImageUri
+                        )
+                    )
+                }
+
+                is CropFaceEvent.NavigateToBgRemoverRemove -> {
+                    navController.navigate(
+                        AppRoutes.BgRemoveForBgRemover.createRoute(
                             croppedImageUri = event.croppedImageUri
                         )
                     )

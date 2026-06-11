@@ -69,7 +69,26 @@ fun GalleryScreen(
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
-                GalleryEvent.NavigateBack -> navController.popBackStack()
+                GalleryEvent.NavigateBack -> {
+                    navController.popBackStack()
+                }
+
+                is GalleryEvent.NavigateToCropFace -> {
+                    navController.navigate(
+                        AppRoutes.CropFace.createRoute(
+                            suitUrl = event.suitUrl,
+                            imageUri = event.imageUri
+                        )
+                    )
+                }
+
+                is GalleryEvent.NavigateToBgRemoverCrop -> {
+                    navController.navigate(
+                        AppRoutes.CropForBgRemover.createRoute(
+                            imageUri = event.imageUri
+                        )
+                    )
+                }
             }
         }
     }
@@ -175,7 +194,6 @@ fun GalleryScreen(
                                 GalleryImageItem(
                                     image = image,
                                     onImageClick = { selectedImage ->
-
                                         if (isForBackground) {
                                             navController.previousBackStackEntry
                                                 ?.savedStateHandle
@@ -186,12 +204,7 @@ fun GalleryScreen(
 
                                             navController.popBackStack()
                                         } else {
-                                            navController.navigate(
-                                                AppRoutes.CropFace.createRoute(
-                                                    suitUrl = viewModel.suitId,
-                                                    imageUri = selectedImage.uri
-                                                )
-                                            )
+                                            viewModel.onImageClick(selectedImage)
                                         }
                                     }
                                 )

@@ -1,5 +1,8 @@
+import org.gradle.internal.impldep.org.bouncycastle.oer.its.etsi102941.Url
+
 pluginManagement {
     repositories {
+        google()
         google {
             content {
                 includeGroupByRegex("com\\.android.*")
@@ -7,6 +10,8 @@ pluginManagement {
                 includeGroupByRegex("androidx.*")
             }
         }
+        mavenCentral()
+        gradlePluginPortal()
         // Huawei
         maven {
             url = uri("https://jitpack.io")
@@ -14,8 +19,7 @@ pluginManagement {
         maven {
             url = uri("https://developer.huawei.com/repo/")
         }
-        mavenCentral()
-        gradlePluginPortal()
+
     }
 }
 dependencyResolutionManagement {
@@ -23,7 +27,7 @@ dependencyResolutionManagement {
 
     repositories {
         google()
-
+        mavenCentral()
         maven {
             url = uri("https://jitpack.io")
         }
@@ -32,7 +36,7 @@ dependencyResolutionManagement {
             url = uri("https://developer.huawei.com/repo/")
         }
 
-        mavenCentral()
+
     }
 }
 

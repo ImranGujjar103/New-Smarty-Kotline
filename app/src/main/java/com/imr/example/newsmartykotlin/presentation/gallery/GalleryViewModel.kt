@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.imr.example.newsmartykotlin.domain.model.GalleryImage
 import com.imr.example.newsmartykotlin.domain.usecase.gallery.GetGalleryImagesUseCase
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -24,8 +25,13 @@ class GalleryViewModel(
 
     private val _event = MutableSharedFlow<GalleryEvent>()
     val event: SharedFlow<GalleryEvent> = _event.asSharedFlow()
+
     val suitId: String =
         savedStateHandle[AppRoutes.Gallery.ARG_SUIT_URL] ?: ""
+
+    private val isForBgRemover: Boolean =
+        savedStateHandle[AppRoutes.GalleryForBgRemover.ARG_IS_BG_REMOVER] ?: false
+
     fun loadGalleryImages() {
         viewModelScope.launch {
             _uiState.update {
@@ -55,14 +61,35 @@ class GalleryViewModel(
             }
         }
 
-        Log.d("GallerySuitItem", "Suit Id 222= $suitId")
-
+        Log.d("GalleryVM", "Suit Id = $suitId")
+        Log.d("GalleryVM", "isForBgRemover = $isForBgRemover")
     }
+
     fun onFolderClick(folderName: String) {
         _uiState.update {
             it.copy(selectedFolderName = folderName)
         }
     }
+
+    fun onImageClick(image: GalleryImage) {
+        viewModelScope.launch {
+            if (isForBgRemover) {
+                _event.emit(
+                    GalleryEvent.NavigateToBgRemoverCrop(
+                        imageUri = image.uri
+                    )
+                )
+            } else {
+                _event.emit(
+                    GalleryEvent.NavigateToCropFace(
+                        suitUrl = suitId,
+                        imageUri = image.uri
+                    )
+                )
+            }
+        }
+    }
+
     fun onBackClick() {
         viewModelScope.launch {
             _event.emit(GalleryEvent.NavigateBack)

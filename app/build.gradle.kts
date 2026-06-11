@@ -17,7 +17,7 @@ android {
     defaultConfig {
         applicationId = "com.imr.example.vpnapp"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0.0"
 
@@ -85,7 +85,8 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-
+//    implementation("androidx.concurrent:concurrent-futures:1.3.0")
+    implementation(libs.androidx.concurrent.futures)
     /*datastore*/
     implementation(libs.androidx.datastore.preferences)
 

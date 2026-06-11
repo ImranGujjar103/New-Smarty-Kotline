@@ -258,7 +258,8 @@ fun BackgroundTextScreen(
                 showBackgroundSheet = false
             },
             onGalleryClick = {
-                navController.navigate(AppRoutes.GalleryForBackground.createRoute())
+                navController.navigate(AppRoutes.GalleryForBackground.route)
+              //  navController.navigate(AppRoutes.GalleryForBackground.createRoute())
             }
         )
     }

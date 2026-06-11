@@ -11,33 +11,26 @@ sealed class AppRoutes(val route: String) {
 
     data object Suits : AppRoutes("suits?fromEditor={fromEditor}") {
         const val ARG_FROM_EDITOR = "fromEditor"
-
-        fun createRoute(fromEditor: Boolean = false): String {
-            return "suits?fromEditor=$fromEditor"
-        }
+        fun createRoute(fromEditor: Boolean = false): String =
+            "suits?fromEditor=$fromEditor"
     }
+
     data object Language : AppRoutes("language/{fromSplash}") {
         const val ARG_FROM_SPLASH = "fromSplash"
-
-        fun createRoute(fromSplash: Boolean): String {
-            return "language/$fromSplash"
-        }
+        fun createRoute(fromSplash: Boolean): String =
+            "language/$fromSplash"
     }
 
     data object GalleryPermission : AppRoutes("gallery_permission/{suitUrl}") {
         const val ARG_SUIT_URL = "suitUrl"
-
-        fun createRoute(suitUrl: String): String {
-            return "gallery_permission/${Uri.encode(suitUrl)}"
-        }
+        fun createRoute(suitUrl: String): String =
+            "gallery_permission/${Uri.encode(suitUrl)}"
     }
 
     data object Gallery : AppRoutes("gallery/{suitUrl}") {
         const val ARG_SUIT_URL = "suitUrl"
-
-        fun createRoute(suitUrl: String): String {
-            return "gallery/${Uri.encode(suitUrl)}"
-        }
+        fun createRoute(suitUrl: String): String =
+            "gallery/${Uri.encode(suitUrl)}"
     }
 
     data object CropFace : AppRoutes("crop_face/{suitUrl}/{imageUri}") {
@@ -47,9 +40,8 @@ sealed class AppRoutes(val route: String) {
         fun createRoute(
             suitUrl: String,
             imageUri: String
-        ): String {
-            return "crop_face/${Uri.encode(suitUrl)}/${Uri.encode(imageUri)}"
-        }
+        ): String =
+            "crop_face/${Uri.encode(suitUrl)}/${Uri.encode(imageUri)}"
     }
 
     data object BgRemove : AppRoutes("bg_remove/{suitUrl}/{croppedImageUri}") {
@@ -59,9 +51,8 @@ sealed class AppRoutes(val route: String) {
         fun createRoute(
             suitUrl: String,
             croppedImageUri: String
-        ): String {
-            return "bg_remove/${Uri.encode(suitUrl)}/${Uri.encode(croppedImageUri)}"
-        }
+        ): String =
+            "bg_remove/${Uri.encode(suitUrl)}/${Uri.encode(croppedImageUri)}"
     }
 
     data object PhotoEditor : AppRoutes("photo_editor/{suitUrl}/{croppedImageUri}") {
@@ -71,39 +62,68 @@ sealed class AppRoutes(val route: String) {
         fun createRoute(
             suitUrl: String,
             croppedImageUri: String
-        ): String {
-            return "photo_editor/${Uri.encode(suitUrl)}/${Uri.encode(croppedImageUri)}"
-        }
+        ): String =
+            "photo_editor/${Uri.encode(suitUrl)}/${Uri.encode(croppedImageUri)}"
+    }
+
+    data object GalleryForBgRemover : AppRoutes(
+        "gallery_for_bg_remover?isBgRemover={isBgRemover}"
+    ) {
+        const val ARG_IS_BG_REMOVER = "isBgRemover"
+
+        fun createRoute(): String =
+            "gallery_for_bg_remover?isBgRemover=true"
+    }
+
+    data object CropForBgRemover : AppRoutes(
+        "crop_for_bg_remover/{imageUri}?isBgRemover={isBgRemover}"
+    ) {
+        const val ARG_IMAGE_URI = "imageUri"
+        const val ARG_IS_BG_REMOVER = "isBgRemover"
+
+        fun createRoute(imageUri: String): String =
+            "crop_for_bg_remover/${Uri.encode(imageUri)}?isBgRemover=true"
+    }
+
+    data object BgRemoveForBgRemover : AppRoutes(
+        "bg_remove_for_bg_remover/{croppedImageUri}?isBgRemover={isBgRemover}"
+    ) {
+        const val ARG_CROPPED_IMAGE_URI = "croppedImageUri"
+        const val ARG_IS_BG_REMOVER = "isBgRemover"
+
+        fun createRoute(croppedImageUri: String): String =
+            "bg_remove_for_bg_remover/${Uri.encode(croppedImageUri)}?isBgRemover=true"
+    }
+
+    data object BgRemoverEditor : AppRoutes("bg_remover_editor/{removedImageUri}") {
+        const val ARG_REMOVED_IMAGE_URI = "removedImageUri"
+
+        fun createRoute(removedImageUri: String): String =
+            "bg_remover_editor/${Uri.encode(removedImageUri)}"
     }
 
     object Eraser {
         const val route = "eraser_screen"
         const val ARG_FACE_IMAGE_URI = "faceImageUri"
 
-        fun createRoute(faceImageUri: String): String {
-            return "$route/${Uri.encode(faceImageUri)}"
-        }
+        fun createRoute(faceImageUri: String): String =
+            "$route/${Uri.encode(faceImageUri)}"
     }
-
 
     object BackgroundText {
         const val route = "background_text"
         const val ARG_IMAGE_PATH = "imagePath"
 
-        fun createRoute(imagePath: String): String {
-            return "$route/${Uri.encode(imagePath)}"
-        }
+        fun createRoute(imagePath: String): String =
+            "$route/${Uri.encode(imagePath)}"
     }
 
-    data object GalleryForBackground : AppRoutes("gallery_for_background") {
-        fun createRoute(): String = "gallery_for_background"
-    }
+    data object GalleryForBackground : AppRoutes("gallery_for_background")
 
     data object Saved : AppRoutes("saved/{imagePath}") {
         const val ARG_IMAGE_PATH = "imagePath"
 
-        fun createRoute(imagePath: String): String {
-            return "saved/${Uri.encode(imagePath)}"
-        }
+        fun createRoute(imagePath: String): String =
+            "saved/${Uri.encode(imagePath)}"
     }
 }

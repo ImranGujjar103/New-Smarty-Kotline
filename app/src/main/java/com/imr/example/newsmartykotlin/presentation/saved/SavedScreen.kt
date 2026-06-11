@@ -1,5 +1,6 @@
 package com.imr.example.newsmartykotlin.presentation.saved
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.Image
@@ -41,8 +42,8 @@ fun SavedScreen(
         viewModel.event.collect { event ->
             when (event) {
                 SavedEvent.NavigateTryMore -> {
-                    navController.navigate(AppRoutes.Home.route) {
-                        popUpTo(AppRoutes.Home.route) {
+                    navController.navigate(AppRoutes.Gallery.route) {
+                        popUpTo(AppRoutes.Gallery.route) {
                             inclusive = true
                         }
                     }
@@ -67,7 +68,14 @@ fun SavedScreen(
             .padding(horizontal = 22.dp)
     ) {
         SavedTopBar(
-            onSaveClick = {}
+            onHomeClick = {
+                navController.navigate(AppRoutes.Home.route) {
+                    popUpTo(AppRoutes.Home.route) {
+                        inclusive = true
+                    }
+                }
+
+            }
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -119,7 +127,7 @@ fun SavedScreen(
 
 @Composable
 private fun SavedTopBar(
-    onSaveClick: () -> Unit
+    onHomeClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -139,7 +147,7 @@ private fun SavedTopBar(
                 .size(34.dp)
                 .clip(RoundedCornerShape(12.dp))
                 .background(PrimaryColor)
-                .clickable { onSaveClick() },
+                .clickable { onHomeClick() },
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -243,9 +251,10 @@ private fun ShareIconButton(
 }
 
 private fun shareSavedImage(
-    context: android.content.Context,
+    context: Context,
     imagePath: String
 ) {
+
     val uri: Uri = if (imagePath.startsWith("content://")) {
         imagePath.toUri()
     } else {

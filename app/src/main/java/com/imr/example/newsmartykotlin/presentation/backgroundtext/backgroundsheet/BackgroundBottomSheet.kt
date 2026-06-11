@@ -34,6 +34,9 @@ fun BackgroundBottomSheet(
             onBackgroundClick = { background ->
                 onBackgroundSelected(background.imageUrl)
                 onDismiss()
+            },
+            onCloseClick = {
+                onDismiss()
             }
         )
     }

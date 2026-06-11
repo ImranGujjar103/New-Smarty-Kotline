@@ -12,6 +12,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun HomeRoute(
     onNavigateToSuits: () -> Unit,
+    onNavigateToBgChanger: () -> Unit,
     viewModel: HomeViewModel = koinViewModel()
 ) {
 
@@ -44,6 +45,7 @@ fun HomeRoute(
                 }
 
                 "bg_changer" -> {
+                    onNavigateToBgChanger()
                     // TODO Navigate BG Changer
                 }
 

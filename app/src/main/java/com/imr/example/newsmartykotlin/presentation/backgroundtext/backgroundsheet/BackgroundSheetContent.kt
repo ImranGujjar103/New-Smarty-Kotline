@@ -36,7 +36,7 @@ fun BackgroundSheetContent(
     onRetryClick: () -> Unit,
     onGalleryClick: () -> Unit,
     onBackgroundClick: (BackgroundData) -> Unit,
-    onCloseClick: () -> Unit = {}
+    onCloseClick: () -> Unit
 ) {
     var selectedCategoryIndex by remember { mutableIntStateOf(0) }
 

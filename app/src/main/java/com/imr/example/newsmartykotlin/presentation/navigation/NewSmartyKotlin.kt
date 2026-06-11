@@ -1,6 +1,5 @@
 package com.imr.example.newsmartykotlin.presentation.navigation
 
-
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -13,6 +12,7 @@ import com.google.android.gms.common.util.CollectionUtils.listOf
 import com.imr.example.newsmartykotlin.core.ads.AdLoadingState
 import com.imr.example.newsmartykotlin.presentation.backgroundtext.BackgroundTextScreen
 import com.imr.example.newsmartykotlin.presentation.bgremove.BgRemoveScreen
+import com.imr.example.newsmartykotlin.presentation.bgremovereditor.BgRemoverEditorScreen
 import com.imr.example.newsmartykotlin.presentation.common.components.AdLoadingOverlay
 import com.imr.example.newsmartykotlin.presentation.crop.CropFaceScreen
 import com.imr.example.newsmartykotlin.presentation.eraser.EraserScreen
@@ -28,12 +28,12 @@ import com.imr.example.newsmartykotlin.presentation.saved.SavedScreen
 import com.imr.example.newsmartykotlin.presentation.splash.SplashRoute
 import com.imr.example.newsmartykotlin.presentation.suits.SuitRoute
 
-
 @Composable
 fun NewSmartyKotlin(
     navController: NavHostController
 ) {
     val isAdLoading = AdLoadingState.isShowing.collectAsStateWithLifecycle()
+
     Box {
         NavHost(
             navController = navController,
@@ -42,24 +42,18 @@ fun NewSmartyKotlin(
             composable(AppRoutes.Splash.route) {
                 SplashRoute(
                     onNavigateToLanguage = {
-                        navController.navigate(AppRoutes.Language.createRoute(fromSplash = true)) {
-                            popUpTo(AppRoutes.Splash.route) {
-                                inclusive = true
-                            }
+                        navController.navigate(AppRoutes.Language.createRoute(true)) {
+                            popUpTo(AppRoutes.Splash.route) { inclusive = true }
                         }
                     },
                     onNavigateToPremium = {
                         navController.navigate(AppRoutes.Premium.route) {
-                            popUpTo(AppRoutes.Splash.route) {
-                                inclusive = true
-                            }
+                            popUpTo(AppRoutes.Splash.route) { inclusive = true }
                         }
                     },
                     onNavigateToHome = {
                         navController.navigate(AppRoutes.Home.route) {
-                            popUpTo(AppRoutes.Splash.route) {
-                                inclusive = true
-                            }
+                            popUpTo(AppRoutes.Splash.route) { inclusive = true }
                         }
                     }
                 )
@@ -74,7 +68,6 @@ fun NewSmartyKotlin(
                     }
                 )
             ) { backStackEntry ->
-
                 val fromSplash = backStackEntry.arguments
                     ?.getBoolean(AppRoutes.Language.ARG_FROM_SPLASH)
                     ?: false
@@ -83,24 +76,18 @@ fun NewSmartyKotlin(
                     fromSplash = fromSplash,
                     onNavigateToOnboarding = {
                         navController.navigate(AppRoutes.Onboarding.route) {
-                            popUpTo(AppRoutes.Language.route) {
-                                inclusive = true
-                            }
+                            popUpTo(AppRoutes.Language.route) { inclusive = true }
                         }
                     },
                     onNavigateToHome = {
                         navController.navigate(AppRoutes.Home.route) {
-                            popUpTo(AppRoutes.Language.route) {
-                                inclusive = true
-                            }
+                            popUpTo(AppRoutes.Language.route) { inclusive = true }
                         }
                     },
                     onBackClick = {
                         if (fromSplash) {
                             navController.navigate(AppRoutes.Onboarding.route) {
-                                popUpTo(AppRoutes.Language.route) {
-                                    inclusive = true
-                                }
+                                popUpTo(AppRoutes.Language.route) { inclusive = true }
                             }
                         } else {
                             navController.popBackStack()
@@ -113,9 +100,7 @@ fun NewSmartyKotlin(
                 OnboardingRoute(
                     onNavigateToPremium = {
                         navController.navigate(AppRoutes.Premium.route) {
-                            popUpTo(AppRoutes.Onboarding.route) {
-                                inclusive = true
-                            }
+                            popUpTo(AppRoutes.Onboarding.route) { inclusive = true }
                         }
                     }
                 )
@@ -125,9 +110,7 @@ fun NewSmartyKotlin(
                 PremiumRoute(
                     onCloseClick = {
                         navController.navigate(AppRoutes.Home.route) {
-                            popUpTo(AppRoutes.Premium.route) {
-                                inclusive = true
-                            }
+                            popUpTo(AppRoutes.Premium.route) { inclusive = true }
                         }
                     }
                 )
@@ -137,6 +120,9 @@ fun NewSmartyKotlin(
                 HomeRoute(
                     onNavigateToSuits = {
                         navController.navigate(AppRoutes.Suits.route)
+                    },
+                    onNavigateToBgChanger = {
+                        navController.navigate(AppRoutes.GalleryForBgRemover.createRoute())
                     }
                 )
             }
@@ -150,17 +136,13 @@ fun NewSmartyKotlin(
                     }
                 )
             ) { backStackEntry ->
-
                 val fromEditor = backStackEntry.arguments
                     ?.getBoolean(AppRoutes.Suits.ARG_FROM_EDITOR)
                     ?: false
 
                 SuitRoute(
-                    onBackClick = {
-                        navController.popBackStack()
-                    },
+                    onBackClick = { navController.popBackStack() },
                     onNavigateToGallery = { suitItem ->
-
                         if (fromEditor) {
                             navController.previousBackStackEntry
                                 ?.savedStateHandle
@@ -169,15 +151,12 @@ fun NewSmartyKotlin(
                             navController.popBackStack()
                         } else {
                             navController.navigate(
-                                AppRoutes.GalleryPermission.createRoute(
-                                    suitUrl = suitItem.suitUrl
-                                )
+                                AppRoutes.GalleryPermission.createRoute(suitItem.suitUrl)
                             )
                         }
                     }
                 )
             }
-
 
             composable(
                 route = AppRoutes.GalleryPermission.route,
@@ -187,9 +166,7 @@ fun NewSmartyKotlin(
                     }
                 )
             ) {
-                GalleryPermissionScreen(
-                    navController = navController
-                )
+                GalleryPermissionScreen(navController = navController)
             }
 
             composable(
@@ -200,9 +177,7 @@ fun NewSmartyKotlin(
                     }
                 )
             ) {
-                GalleryScreen(
-                    navController = navController
-                )
+                GalleryScreen(navController = navController)
             }
 
             composable(
@@ -216,9 +191,7 @@ fun NewSmartyKotlin(
                     }
                 )
             ) {
-                CropFaceScreen(
-                    navController = navController
-                )
+                CropFaceScreen(navController = navController)
             }
 
             composable(
@@ -232,11 +205,8 @@ fun NewSmartyKotlin(
                     }
                 )
             ) {
-                BgRemoveScreen(
-                    navController = navController
-                )
+                BgRemoveScreen(navController = navController)
             }
-
 
             composable(
                 route = AppRoutes.PhotoEditor.route,
@@ -249,30 +219,22 @@ fun NewSmartyKotlin(
                     }
                 )
             ) {
-                PhotoEditorScreen(navController = navController,{ action ->
-                    when (action) {
+                PhotoEditorScreen(
+                    navController = navController,
+                    onActionClick =  { action ->
+                        when (action) {
+                            EditorAction.OUTFITS -> {
+                                navController.navigate(
+                                    AppRoutes.Suits.createRoute(fromEditor = true)
+                                )
+                            }
 
-                        EditorAction.OUTFITS -> {
-                            navController.navigate(
-                                AppRoutes.Suits.createRoute(fromEditor = true)
-                            )
-                            // Open outfits
-                        }
-
-                        EditorAction.ERASER -> {
-                            // Open eraser
-                        }
-
-                        EditorAction.FACE_FLIP -> {
-                            // Flip face
-                        }
-
-                        EditorAction.SUIT_FLIP -> {
-                            // Flip suit
+                            EditorAction.ERASER -> Unit
+                            EditorAction.FACE_FLIP -> Unit
+                            EditorAction.SUIT_FLIP -> Unit
                         }
                     }
-
-                })
+                )
             }
 
             composable(
@@ -294,9 +256,7 @@ fun NewSmartyKotlin(
                     }
                 )
             ) {
-                BackgroundTextScreen(
-                    navController = navController
-                )
+                BackgroundTextScreen(navController = navController)
             }
 
             composable(AppRoutes.GalleryForBackground.route) {
@@ -307,6 +267,59 @@ fun NewSmartyKotlin(
             }
 
             composable(
+                route = AppRoutes.GalleryForBgRemover.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.GalleryForBgRemover.ARG_IS_BG_REMOVER) {
+                        type = NavType.BoolType
+                        defaultValue = false
+                    }
+                )
+            ) {
+                GalleryScreen(navController = navController)
+            }
+
+            composable(
+                route = AppRoutes.CropForBgRemover.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.CropForBgRemover.ARG_IMAGE_URI) {
+                        type = NavType.StringType
+                    },
+                    navArgument(AppRoutes.CropForBgRemover.ARG_IS_BG_REMOVER) {
+                        type = NavType.BoolType
+                        defaultValue = false
+                    }
+                )
+            ) {
+                CropFaceScreen(navController = navController)
+            }
+
+            composable(
+                route = AppRoutes.BgRemoveForBgRemover.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.BgRemoveForBgRemover.ARG_CROPPED_IMAGE_URI) {
+                        type = NavType.StringType
+                    },
+                    navArgument(AppRoutes.BgRemoveForBgRemover.ARG_IS_BG_REMOVER) {
+                        type = NavType.BoolType
+                        defaultValue = false
+                    }
+                )
+            ) {
+                BgRemoveScreen(navController = navController)
+            }
+
+            composable(
+                route = AppRoutes.BgRemoverEditor.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.BgRemoverEditor.ARG_REMOVED_IMAGE_URI) {
+                        type = NavType.StringType
+                    }
+                )
+            ) {
+                BgRemoverEditorScreen(navController = navController)
+            }
+
+            composable(
                 route = AppRoutes.Saved.route,
                 arguments = listOf(
                     navArgument(AppRoutes.Saved.ARG_IMAGE_PATH) {
@@ -314,11 +327,8 @@ fun NewSmartyKotlin(
                     }
                 )
             ) {
-                SavedScreen(
-                    navController = navController
-                )
+                SavedScreen(navController = navController)
             }
-
         }
 
         if (isAdLoading.value) {

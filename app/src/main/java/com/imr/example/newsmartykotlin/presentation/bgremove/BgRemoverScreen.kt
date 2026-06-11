@@ -50,7 +50,7 @@ fun BgRemoveScreen(
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
-                is BgRemoveEvent.NavigateNext -> {
+                is BgRemoveEvent.NavigateToSuitEditor -> {
                     navController.navigate(
                         AppRoutes.PhotoEditor.createRoute(
                             suitUrl = event.suitId,
@@ -58,6 +58,18 @@ fun BgRemoveScreen(
                         )
                     ) {
                         popUpTo(AppRoutes.BgRemove.route) {
+                            inclusive = true
+                        }
+                    }
+                }
+
+                is BgRemoveEvent.NavigateToBgRemoverEditor -> {
+                    navController.navigate(
+                        AppRoutes.BgRemoverEditor.createRoute(
+                            removedImageUri = event.removedBgImageUri
+                        )
+                    ) {
+                        popUpTo(AppRoutes.BgRemoveForBgRemover.route) {
                             inclusive = true
                         }
                     }
