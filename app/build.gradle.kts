@@ -17,7 +17,7 @@ android {
     defaultConfig {
         applicationId = "com.imr.example.vpnapp"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0.0"
 
@@ -112,8 +112,6 @@ dependencies {
     implementation(libs.coil.network.okhttp)
 
     implementation (libs.billing)
-    /*color picker*/
-    implementation(libs.colorpickerview)
     // Import the base SDK.
     implementation(libs.ml.computer.vision.segmentation)
     implementation(libs.ml.computer.vision.image.segmentation.body.model)

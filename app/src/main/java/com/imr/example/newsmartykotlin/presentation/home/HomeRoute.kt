@@ -13,9 +13,9 @@ import org.koin.androidx.compose.koinViewModel
 fun HomeRoute(
     onNavigateToSuits: () -> Unit,
     onNavigateToBgChanger: () -> Unit,
+    onNavigateToPassportPic: () -> Unit,
     viewModel: HomeViewModel = koinViewModel()
 ) {
-
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val activity = context as ComponentActivity
@@ -26,32 +26,15 @@ fun HomeRoute(
 
     HomeScreen(
         state = state,
-        onCrownClick = {
-            // TODO Premium Screen
-        },
-        onSettingClick = {
-            // TODO Settings Screen
-        },
+        onCrownClick = {},
+        onSettingClick = {},
         onChangeClick = onNavigateToSuits,
         onFeatureClick = { feature ->
             when (feature.id) {
-
-                "face_swap" -> {
-                    // TODO Navigate Face Swap
-                }
-
-                "passport_pic" -> {
-                    // TODO Navigate Passport Pic
-                }
-
-                "bg_changer" -> {
-                    onNavigateToBgChanger()
-                    // TODO Navigate BG Changer
-                }
-
-                "my_creation" -> {
-                    // TODO Navigate My Creation
-                }
+                "passport_pic" -> onNavigateToPassportPic()
+                "bg_changer" -> onNavigateToBgChanger()
+                "face_swap" -> {}
+                "my_creation" -> {}
             }
         }
     )

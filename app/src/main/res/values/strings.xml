@@ -105,5 +105,125 @@
     <string name="share">Share</string>
     <string name="editor">Editor</string>
 
+    <string name="select_document_type">Select document type</string>
+    <string name="search_hint_passport">e.g. USA Passport</string>
+    <string name="all">All</string>
+    <string name="passport">Passport</string>
+    <string name="visa">Visa</string>
+    <string name="standard">Standard</string>
+    <string name="pixel">Pixel</string>
+    <string name="camera">Camera</string>
+
+    <string name="united_states" translatable="false">United States</string>
+    <string name="canada" translatable="false">Canada</string>
+    <string name="mexico" translatable="false">Mexico</string>
+    <string name="guatemala" translatable="false">Guatemala</string>
+    <string name="cuba" translatable="false">Cuba</string>
+    <string name="jamaica" translatable="false">Jamaica</string>
+    <string name="haiti" translatable="false">Haiti</string>
+    <string name="dominican_republic" translatable="false">Dominican Republic</string>
+    <string name="panama" translatable="false">Panama</string>
+    <string name="costa_rica" translatable="false">Costa Rica</string>
+
+    <string name="brazil" translatable="false">Brazil</string>
+    <string name="argentina" translatable="false">Argentina</string>
+    <string name="chile" translatable="false">Chile</string>
+    <string name="colombia" translatable="false">Colombia</string>
+    <string name="peru" translatable="false">Peru</string>
+    <string name="venezuela" translatable="false">Venezuela</string>
+    <string name="ecuador" translatable="false">Ecuador</string>
+    <string name="bolivia" translatable="false">Bolivia</string>
+    <string name="paraguay" translatable="false">Paraguay</string>
+    <string name="uruguay" translatable="false">Uruguay</string>
+
+    <string name="united_kingdom" translatable="false">United Kingdom</string>
+    <string name="france" translatable="false">France</string>
+    <string name="germany" translatable="false">Germany</string>
+    <string name="italy" translatable="false">Italy</string>
+    <string name="spain" translatable="false">Spain</string>
+    <string name="netherlands" translatable="false">Netherlands</string>
+    <string name="belgium" translatable="false">Belgium</string>
+    <string name="sweden" translatable="false">Sweden</string>
+    <string name="norway" translatable="false">Norway</string>
+    <string name="denmark" translatable="false">Denmark</string>
+    <string name="finland" translatable="false">Finland</string>
+    <string name="poland" translatable="false">Poland</string>
+    <string name="czech_republic" translatable="false">Czech Republic</string>
+    <string name="slovakia" translatable="false">Slovakia</string>
+    <string name="hungary" translatable="false">Hungary</string>
+    <string name="austria" translatable="false">Austria</string>
+    <string name="switzerland" translatable="false">Switzerland</string>
+    <string name="greece" translatable="false">Greece</string>
+    <string name="portugal" translatable="false">Portugal</string>
+    <string name="ireland" translatable="false">Ireland</string>
+    <string name="romania" translatable="false">Romania</string>
+    <string name="bulgaria" translatable="false">Bulgaria</string>
+    <string name="croatia" translatable="false">Croatia</string>
+    <string name="serbia" translatable="false">Serbia</string>
+    <string name="ukraine" translatable="false">Ukraine</string>
+    <string name="russia" translatable="false">Russia</string>
+    <string name="turkey" translatable="false">Turkey</string>
+    <string name="iceland" translatable="false">Iceland</string>
+    <string name="lithuania" translatable="false">Lithuania</string>
+    <string name="latvia" translatable="false">Latvia</string>
+
+    <string name="india" translatable="false">India</string>
+    <string name="pakistan" translatable="false">Pakistan</string>
+    <string name="bangladesh" translatable="false">Bangladesh</string>
+    <string name="china" translatable="false">China</string>
+    <string name="japan" translatable="false">Japan</string>
+    <string name="south_korea" translatable="false">South Korea</string>
+    <string name="malaysia" translatable="false">Malaysia</string>
+    <string name="singapore" translatable="false">Singapore</string>
+    <string name="indonesia" translatable="false">Indonesia</string>
+    <string name="thailand" translatable="false">Thailand</string>
+    <string name="vietnam" translatable="false">Vietnam</string>
+    <string name="philippines" translatable="false">Philippines</string>
+    <string name="sri_lanka" translatable="false">Sri Lanka</string>
+    <string name="nepal" translatable="false">Nepal</string>
+    <string name="afghanistan" translatable="false">Afghanistan</string>
+    <string name="iran" translatable="false">Iran</string>
+    <string name="iraq" translatable="false">Iraq</string>
+    <string name="saudi_arabia" translatable="false">Saudi Arabia</string>
+    <string name="uae" translatable="false">United Arab Emirates</string>
+    <string name="qatar" translatable="false">Qatar</string>
+    <string name="kuwait" translatable="false">Kuwait</string>
+    <string name="oman" translatable="false">Oman</string>
+    <string name="jordan" translatable="false">Jordan</string>
+    <string name="israel" translatable="false">Israel</string>
+    <string name="kazakhstan" translatable="false">Kazakhstan</string>
+
+    <string name="south_africa" translatable="false">South Africa</string>
+    <string name="nigeria" translatable="false">Nigeria</string>
+    <string name="egypt" translatable="false">Egypt</string>
+    <string name="kenya" translatable="false">Kenya</string>
+    <string name="ethiopia" translatable="false">Ethiopia</string>
+    <string name="ghana" translatable="false">Ghana</string>
+    <string name="tanzania" translatable="false">Tanzania</string>
+    <string name="uganda" translatable="false">Uganda</string>
+    <string name="morocco" translatable="false">Morocco</string>
+    <string name="algeria" translatable="false">Algeria</string>
+    <string name="tunisia" translatable="false">Tunisia</string>
+    <string name="zimbabwe" translatable="false">Zimbabwe</string>
+    <string name="cameroon" translatable="false">Cameroon</string>
+    <string name="senegal" translatable="false">Senegal</string>
+    <string name="angola" translatable="false">Angola</string>
+
+    <string name="australia" translatable="false">Australia</string>
+    <string name="new_zealand" translatable="false">New Zealand</string>
+    <string name="fiji" translatable="false">Fiji</string>
+    <string name="papua_new_guinea" translatable="false">Papua New Guinea</string>
+    <string name="samoa" translatable="false">Samoa</string>
+
+    <string name="luxembourg" translatable="false">Luxembourg</string>
+    <string name="malta" translatable="false">Malta</string>
+    <string name="mongolia" translatable="false">Mongolia</string>
+    <string name="belarus" translatable="false">Belarus</string>
+    <string name="moldova" translatable="false">Moldova</string>
+    <string name="georgia" translatable="false">Georgia</string>
+    <string name="azerbaijan" translatable="false">Azerbaijan</string>
+    <string name="armenia" translatable="false">Armenia</string>
+    <string name="kyrgyzstan" translatable="false">Kyrgyzstan</string>
+    <string name="uzbekistan" translatable="false">Uzbekistan</string>
 
 </resources>

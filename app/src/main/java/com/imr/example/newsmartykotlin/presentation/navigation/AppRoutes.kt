@@ -126,4 +126,19 @@ sealed class AppRoutes(val route: String) {
         fun createRoute(imagePath: String): String =
             "saved/${Uri.encode(imagePath)}"
     }
+
+    data object PassportCountry : AppRoutes("passport_country")
+
+    data object PassportDetail : AppRoutes("passport_detail/{countryId}/{documentType}") {
+        const val ARG_COUNTRY_ID = "countryId"
+        const val ARG_DOCUMENT_TYPE = "documentType"
+
+        fun createRoute(
+            countryId: String,
+            documentType: String
+        ): String {
+            return "passport_detail/${Uri.encode(countryId)}/${Uri.encode(documentType)}"
+        }
+    }
+
 }

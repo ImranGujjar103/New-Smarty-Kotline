@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.google.android.gms.common.util.CollectionUtils.listOf
 import com.imr.example.newsmartykotlin.core.ads.AdLoadingState
+import com.imr.example.newsmartykotlin.domain.model.DocumentType
 import com.imr.example.newsmartykotlin.presentation.backgroundtext.BackgroundTextScreen
 import com.imr.example.newsmartykotlin.presentation.bgremove.BgRemoveScreen
 import com.imr.example.newsmartykotlin.presentation.bgremovereditor.BgRemoverEditorScreen
@@ -20,6 +21,8 @@ import com.imr.example.newsmartykotlin.presentation.gallery.GalleryScreen
 import com.imr.example.newsmartykotlin.presentation.home.HomeRoute
 import com.imr.example.newsmartykotlin.presentation.language.LanguageRoute
 import com.imr.example.newsmartykotlin.presentation.onboarding.OnboardingRoute
+import com.imr.example.newsmartykotlin.presentation.passport.PassportCountryRoute
+import com.imr.example.newsmartykotlin.presentation.passport.PassportDetailRoute
 import com.imr.example.newsmartykotlin.presentation.permission.GalleryPermissionScreen
 import com.imr.example.newsmartykotlin.presentation.photoeditor.EditorAction
 import com.imr.example.newsmartykotlin.presentation.photoeditor.PhotoEditorScreen
@@ -123,6 +126,9 @@ fun NewSmartyKotlin(
                     },
                     onNavigateToBgChanger = {
                         navController.navigate(AppRoutes.GalleryForBgRemover.createRoute())
+                    },
+                    onNavigateToPassportPic = {
+                        navController.navigate(AppRoutes.PassportCountry.route)
                     }
                 )
             }
@@ -329,6 +335,51 @@ fun NewSmartyKotlin(
             ) {
                 SavedScreen(navController = navController)
             }
+
+            composable(AppRoutes.PassportCountry.route) {
+                PassportCountryRoute(
+                    onBackClick = { navController.popBackStack() },
+                    onCountryClick = { country, selectedType ->
+                        navController.navigate(
+                            AppRoutes.PassportDetail.createRoute(
+                                countryId = country.id,
+                                documentType = selectedType.name
+                            )
+                        )
+                    }
+                )
+            }
+
+            composable(
+                route = AppRoutes.PassportDetail.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.PassportDetail.ARG_COUNTRY_ID) {
+                        type = NavType.StringType
+                    },
+                    navArgument(AppRoutes.PassportDetail.ARG_DOCUMENT_TYPE) {
+                        type = NavType.StringType
+                    }
+                )
+            ) { backStackEntry ->
+
+                val countryId = backStackEntry.arguments
+                    ?.getString(AppRoutes.PassportDetail.ARG_COUNTRY_ID)
+                    .orEmpty()
+
+                val documentType = backStackEntry.arguments
+                    ?.getString(AppRoutes.PassportDetail.ARG_DOCUMENT_TYPE)
+                    ?.let { DocumentType.valueOf(it) }
+                    ?: DocumentType.PASSPORT
+
+                PassportDetailRoute(
+                    countryId = countryId,
+                    selectedType = documentType,
+                    onBackClick = { navController.popBackStack() },
+                    onCameraClick = { },
+                    onGalleryClick = { }
+                )
+            }
+
         }
 
         if (isAdLoading.value) {
