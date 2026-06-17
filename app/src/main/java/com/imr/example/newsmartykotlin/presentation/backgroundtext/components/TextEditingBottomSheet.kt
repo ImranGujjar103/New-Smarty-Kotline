@@ -227,7 +227,7 @@ private fun FontOptionsGrid(
 }
 
 @Composable
-private fun ColorOptionsRow(
+ fun ColorOptionsRow(
     selectedColor: Color,
     onColorClick: (Color) -> Unit
 ) {

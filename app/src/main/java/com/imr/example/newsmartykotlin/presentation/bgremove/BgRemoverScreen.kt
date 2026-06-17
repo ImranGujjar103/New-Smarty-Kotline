@@ -136,7 +136,6 @@ fun BgRemoveScreen(
                 painter = painter,
                 contentDescription = null,
                 modifier = Modifier
-                    .width(260.dp)
                     .aspectRatio(aspectRatio),
                 contentScale = ContentScale.Fit
             )

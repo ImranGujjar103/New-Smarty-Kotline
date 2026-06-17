@@ -1,18 +1,22 @@
 package com.imr.example.newsmartykotlin.presentation.passport.cropper
 
 import android.graphics.RectF
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -30,6 +34,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PaintingStyle.Companion.Stroke
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -115,8 +121,7 @@ fun PassportCropperScreen(
                             imageBounds = imageRect,
                             cropRect = cropRect
                         )
-                    },
-                contentScale = ContentScale.Crop
+                    }
             )
 
             PassportFixedCropFrame(
@@ -135,7 +140,7 @@ fun PassportCropperScreen(
                         }
                     },
                 inchText = uiState.inchText,
-                pixelText = uiState.pixelText,
+                passportPixel = uiState.pixelText,
                 onCropRectReady = { rect ->
                     cropRect = rect
 
@@ -194,51 +199,76 @@ private fun PassportCropperTopBar(
 
 @Composable
 private fun PassportFixedCropFrame(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     inchText: String,
-    pixelText: String,
+    passportPixel: String,
     onCropRectReady: (RectF) -> Unit
 ) {
-    Box(
+    val pixelSize = remember(passportPixel) {
+        parsePassportPixel(passportPixel)
+    }
+
+    val aspectRatio = remember(pixelSize) {
+        pixelSize.first.toFloat() / pixelSize.second.toFloat()
+    }
+
+    BoxWithConstraints(
         modifier = modifier
-            .size(320.dp)
-            .onGloballyPositioned { coordinates ->
-                val position = coordinates.positionInRoot()
-                onCropRectReady(
-                    RectF(
-                        position.x,
-                        position.y,
-                        position.x + coordinates.size.width,
-                        position.y + coordinates.size.height
-                    )
-                )
-            }
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .background(Color.Transparent)
-        )
+        val maxFrameWidth = maxWidth.coerceAtMost(320.dp)
+        val frameHeight = maxFrameWidth / aspectRatio
 
         Box(
             modifier = Modifier
-                .matchParentSize()
-                .background(Color.White.copy(alpha = 0.05f))
-        )
+                .width(maxFrameWidth)
+                .height(frameHeight)
+                .onGloballyPositioned { coordinates ->
+                    val position = coordinates.positionInRoot()
 
-        androidx.compose.foundation.Canvas(
-            modifier = Modifier.matchParentSize()
+                    onCropRectReady(
+                        RectF(
+                            position.x,
+                            position.y,
+                            position.x + coordinates.size.width,
+                            position.y + coordinates.size.height
+                        )
+                    )
+                }
         ) {
-            drawRect(
-                color = Color.White,
-                style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2f)
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(Color.White.copy(alpha = 0.05f))
             )
 
-            val r = 6.dp.toPx()
-            drawCircle(Color.White, r, Offset(0f, 0f))
-            drawCircle(Color.White, r, Offset(size.width, 0f))
-            drawCircle(Color.White, r, Offset(0f, size.height))
-            drawCircle(Color.White, r, Offset(size.width, size.height))
+            Canvas(
+                modifier = Modifier.matchParentSize()
+            ) {
+                drawRect(
+                    color = Color.White,
+                    style = Stroke(width = 2f)
+                )
+
+                val r = 6.dp.toPx()
+
+                drawCircle(Color.White, r, Offset(0f, 0f))
+                drawCircle(Color.White, r, Offset(size.width, 0f))
+                drawCircle(Color.White, r, Offset(0f, size.height))
+                drawCircle(Color.White, r, Offset(size.width, size.height))
+            }
         }
     }
+}
+
+private fun parsePassportPixel(pixelText: String): Pair<Int, Int> {
+    val regex = Regex("""(\d+)\s*x\s*(\d+)""")
+    val match = regex.find(pixelText)
+
+    val width = match?.groupValues?.getOrNull(1)?.toIntOrNull() ?: 413
+    val height = match?.groupValues?.getOrNull(2)?.toIntOrNull() ?: 531
+
+    return width to height
 }

@@ -1,5 +1,6 @@
 package com.imr.example.newsmartykotlin.presentation.passport.result
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 class PassportResultViewModel(
     savedStateHandle: SavedStateHandle,
@@ -65,7 +67,7 @@ class PassportResultViewModel(
 
     fun onBackgroundClick() {
         viewModelScope.launch {
-            _event.emit(PassportResultEvent.NavigateToBackground(imageUri))
+
         }
     }
 
@@ -75,10 +77,11 @@ class PassportResultViewModel(
         }
     }
 
+    @SuppressLint("Recycle")
     private fun getFileSizeText(uri: String): String {
         return runCatching {
             val size = context.contentResolver
-                .openAssetFileDescriptor(Uri.parse(uri), "r")
+                .openAssetFileDescriptor(uri.toUri(), "r")
                 ?.length ?: 0L
 
             if (size <= 0L) {

@@ -3,6 +3,7 @@ package com.imr.example.newsmartykotlin.presentation.passport.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -48,7 +49,7 @@ fun PassportCountryItem(
             .background(WhiteColor, RoundedCornerShape(16.dp))
             .clip(RoundedCornerShape(16.dp))
             .clickable(onClick = onClick)
-            .padding(10.dp),
+            .padding(horizontal = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
@@ -63,24 +64,28 @@ fun PassportCountryItem(
 
         Spacer(Modifier.width(20.dp))
 
-        Column(modifier = Modifier.weight(1f)) {
+        Column(modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.Center) {
             Text(
                 text = stringResource(country.nameRes),
                 fontFamily = SfProDisplayBold,
-                fontSize = 16.sp,
+                fontSize = 14.sp,
+                lineHeight = 16.sp,
                 color = TextColor
             )
 
             Text(
                 text = country.getSizeMm(selectedType),
                 fontFamily = SfProDisplayRegular,
-                fontSize = 13.sp,
+                fontSize = 12.sp,
+                lineHeight = 16.sp,
                 color = DisabledTextColor
             )
         }
 
         Icon(
-            painter = painterResource(R.drawable.ic_arrow_right),
+            modifier = Modifier.padding(end = 10.dp),
+            painter = painterResource(R.drawable.ic_flag_next),
             contentDescription = null,
             tint = TextColor
         )
