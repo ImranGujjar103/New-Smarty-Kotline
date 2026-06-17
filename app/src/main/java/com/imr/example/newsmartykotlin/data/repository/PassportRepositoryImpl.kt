@@ -1,6 +1,5 @@
 package com.imr.example.newsmartykotlin.data.repository
 
-import com.google.android.gms.common.util.CollectionUtils.listOf
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.domain.model.PassportCountry
 import com.imr.example.newsmartykotlin.domain.repository.PassportRepository

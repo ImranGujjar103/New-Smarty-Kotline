@@ -7,7 +7,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.google.android.gms.common.util.CollectionUtils.listOf
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.presentation.backgroundtext.model.TextFontOption
 

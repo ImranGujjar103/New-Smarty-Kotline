@@ -129,15 +129,103 @@ sealed class AppRoutes(val route: String) {
 
     data object PassportCountry : AppRoutes("passport_country")
 
-    data object PassportDetail : AppRoutes("passport_detail/{countryId}/{documentType}") {
+    data object GalleryForPassport : AppRoutes(
+        "gallery_for_passport/{countryId}/{documentType}?isForPassport={isForPassport}"
+    ) {
         const val ARG_COUNTRY_ID = "countryId"
         const val ARG_DOCUMENT_TYPE = "documentType"
+        const val ARG_IS_FOR_PASSPORT = "isForPassport"
 
         fun createRoute(
             countryId: String,
             documentType: String
         ): String {
-            return "passport_detail/${Uri.encode(countryId)}/${Uri.encode(documentType)}"
+            return "gallery_for_passport/${Uri.encode(countryId)}/${Uri.encode(documentType)}?isForPassport=true"
+        }
+    }
+
+    data object PassportCropper : AppRoutes(
+        "passport_cropper/{imageUri}/{countryId}/{documentType}"
+    ) {
+        const val ARG_IMAGE_URI = "imageUri"
+        const val ARG_COUNTRY_ID = "countryId"
+        const val ARG_DOCUMENT_TYPE = "documentType"
+
+        fun createRoute(
+            imageUri: String,
+            countryId: String,
+            documentType: String
+        ): String {
+            return "passport_cropper/${Uri.encode(imageUri)}/${Uri.encode(countryId)}/${Uri.encode(documentType)}"
+        }
+    }
+
+    data object PassportBgRemove : AppRoutes(
+        "passport_bg_remove/{croppedImageUri}/{countryId}/{documentType}?isForPassport={isForPassport}"
+    ) {
+        const val ARG_CROPPED_IMAGE_URI = "croppedImageUri"
+        const val ARG_COUNTRY_ID = "countryId"
+        const val ARG_DOCUMENT_TYPE = "documentType"
+        const val ARG_IS_FOR_PASSPORT = "isForPassport"
+
+        fun createRoute(
+            croppedImageUri: String,
+            countryId: String,
+            documentType: String
+        ): String {
+            return "passport_bg_remove/${Uri.encode(croppedImageUri)}/${Uri.encode(countryId)}/${Uri.encode(documentType)}?isForPassport=true"
+        }
+    }
+
+    data object PassportDetail : AppRoutes(
+        "passport_detail/{countryId}/{documentType}?finalImageUri={finalImageUri}"
+    ) {
+        const val ARG_COUNTRY_ID = "countryId"
+        const val ARG_DOCUMENT_TYPE = "documentType"
+        const val ARG_FINAL_IMAGE_URI = "finalImageUri"
+
+        fun createRoute(
+            countryId: String,
+            documentType: String,
+            finalImageUri: String? = null
+        ): String {
+            val base = "passport_detail/${Uri.encode(countryId)}/${Uri.encode(documentType)}"
+            return if (finalImageUri.isNullOrEmpty()) {
+                "$base?finalImageUri="
+            } else {
+                "$base?finalImageUri=${Uri.encode(finalImageUri)}"
+            }
+        }
+    }
+
+    data object GalleryPermissionForPassport : AppRoutes(
+        "gallery_permission_for_passport/{countryId}/{documentType}?isForPassport={isForPassport}"
+    ) {
+        const val ARG_COUNTRY_ID = "countryId"
+        const val ARG_DOCUMENT_TYPE = "documentType"
+        const val ARG_IS_FOR_PASSPORT = "isForPassport"
+
+        fun createRoute(
+            countryId: String,
+            documentType: String
+        ): String {
+            return "gallery_permission_for_passport/${Uri.encode(countryId)}/${Uri.encode(documentType)}?isForPassport=true"
+        }
+    }
+
+    data object PassportResult : AppRoutes(
+        "passport_result/{imageUri}/{countryId}/{documentType}"
+    ) {
+        const val ARG_IMAGE_URI = "imageUri"
+        const val ARG_COUNTRY_ID = "countryId"
+        const val ARG_DOCUMENT_TYPE = "documentType"
+
+        fun createRoute(
+            imageUri: String,
+            countryId: String,
+            documentType: String
+        ): String {
+            return "passport_result/${Uri.encode(imageUri)}/${Uri.encode(countryId)}/${Uri.encode(documentType)}"
         }
     }
 

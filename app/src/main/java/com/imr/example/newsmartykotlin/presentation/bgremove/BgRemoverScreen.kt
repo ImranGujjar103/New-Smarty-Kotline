@@ -5,8 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -19,6 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,7 +34,6 @@ import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
-import com.imr.example.newsmartykotlin.ui.theme.AppTypography
 import com.imr.example.newsmartykotlin.ui.theme.CardColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.RedColor
@@ -46,6 +48,25 @@ fun BgRemoveScreen(
     viewModel: BgRemoveViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    val painter = rememberAsyncImagePainter(
+        model = uiState.croppedImageUri.toUri()
+    )
+
+    val painterState = painter.state
+
+    var aspectRatio by remember {
+        mutableFloatStateOf(1f)
+    }
+
+    LaunchedEffect(painterState) {
+        val width = painter.intrinsicSize.width
+        val height = painter.intrinsicSize.height
+
+        if (width > 0f && height > 0f) {
+            aspectRatio = width / height
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -74,6 +95,20 @@ fun BgRemoveScreen(
                         }
                     }
                 }
+
+                is BgRemoveEvent.NavigateToPassportResult -> {
+                    navController.navigate(
+                        AppRoutes.PassportResult.createRoute(
+                            imageUri = event.removedBgImageUri,
+                            countryId = event.countryId,
+                            documentType = event.documentType
+                        )
+                    ) {
+                        popUpTo(AppRoutes.PassportBgRemove.route) {
+                            inclusive = true
+                        }
+                    }
+                }
             }
         }
     }
@@ -91,17 +126,19 @@ fun BgRemoveScreen(
         Box(
             modifier = Modifier
                 .padding(horizontal = 20.dp)
-                .fillMaxWidth()
+                .width(320.dp)
                 .height(480.dp)
                 .clip(RoundedCornerShape(20.dp))
                 .background(WhiteColor),
             contentAlignment = Alignment.Center
         ) {
             Image(
-                painter = rememberAsyncImagePainter(uiState.croppedImageUri.toUri()),
+                painter = painter,
                 contentDescription = null,
-                modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Crop
+                modifier = Modifier
+                    .width(260.dp)
+                    .aspectRatio(aspectRatio),
+                contentScale = ContentScale.Fit
             )
         }
 

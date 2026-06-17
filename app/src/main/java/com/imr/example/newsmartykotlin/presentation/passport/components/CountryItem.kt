@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -43,7 +44,9 @@ fun PassportCountryItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .height(50.dp)
             .background(WhiteColor, RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(16.dp))
             .clickable(onClick = onClick)
             .padding(10.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -52,7 +55,7 @@ fun PassportCountryItem(
             painter = painterResource(country.flagRes),
             contentDescription = null,
             modifier = Modifier
-                .size(31.dp)
+                .size(30.dp)
                 .clip(CircleShape)
                 .background(Color.White),
             contentScale = ContentScale.Crop

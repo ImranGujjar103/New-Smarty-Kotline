@@ -146,6 +146,19 @@ fun GalleryPermissionScreen(
                         }
                     }
                 }
+
+                is GalleryPermissionEvent.NavigatePassportGallery -> {
+                    navController.navigate(
+                        AppRoutes.GalleryForPassport.createRoute(
+                            countryId = event.countryId,
+                            documentType = event.documentType
+                        )
+                    ) {
+                        popUpTo(AppRoutes.GalleryPermissionForPassport.route) {
+                            inclusive = true
+                        }
+                    }
+                }
             }
         }
     }

@@ -22,31 +22,45 @@ class GalleryPermissionViewModel(
     private val incrementPermissionDenyCountUseCase: IncrementPermissionDenyCountUseCase,
     private val resetPermissionDenyCountUseCase: ResetPermissionDenyCountUseCase
 ) : ViewModel() {
-    private val TAG = "GalleryPermissionViewModel"
+
+    private val tag = "GalleryPermissionVM"
 
     private val _uiState = MutableStateFlow(GalleryPermissionUiState())
     val uiState = _uiState.asStateFlow()
 
     private val _event = MutableSharedFlow<GalleryPermissionEvent>()
     val event: SharedFlow<GalleryPermissionEvent> = _event.asSharedFlow()
+
     val suitId: String =
         savedStateHandle[AppRoutes.GalleryPermission.ARG_SUIT_URL] ?: ""
+
+    private val isForPassport: Boolean =
+        savedStateHandle[AppRoutes.GalleryPermissionForPassport.ARG_IS_FOR_PASSPORT] ?: false
+
+    private val countryId: String =
+        savedStateHandle[AppRoutes.GalleryPermissionForPassport.ARG_COUNTRY_ID] ?: ""
+
+    private val documentType: String =
+        savedStateHandle[AppRoutes.GalleryPermissionForPassport.ARG_DOCUMENT_TYPE] ?: ""
+
     init {
         observeDenyCount()
     }
 
-
     private fun observeDenyCount() {
         viewModelScope.launch {
             getPermissionDenyCountUseCase().collect { count ->
-                Log.d(TAG, "observeDenyCount: $count")
+                Log.d(tag, "observeDenyCount: $count")
                 _uiState.update {
                     it.copy(denyCount = count)
                 }
             }
         }
 
-        Log.d("GallerySuitItem", "Suit Id = $suitId")
+        Log.d(tag, "Suit Id = $suitId")
+        Log.d(tag, "isForPassport = $isForPassport")
+        Log.d(tag, "countryId = $countryId")
+        Log.d(tag, "documentType = $documentType")
     }
 
     fun onGrantPermissionClick() {
@@ -97,7 +111,16 @@ class GalleryPermissionViewModel(
                 )
             }
 
-            _event.emit(GalleryPermissionEvent.NavigateGallery)
+            if (isForPassport) {
+                _event.emit(
+                    GalleryPermissionEvent.NavigatePassportGallery(
+                        countryId = countryId,
+                        documentType = documentType
+                    )
+                )
+            } else {
+                _event.emit(GalleryPermissionEvent.NavigateGallery)
+            }
         }
     }
 

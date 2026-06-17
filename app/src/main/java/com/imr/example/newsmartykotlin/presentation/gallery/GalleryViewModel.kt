@@ -1,6 +1,5 @@
 package com.imr.example.newsmartykotlin.presentation.gallery
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,19 +25,25 @@ class GalleryViewModel(
     private val _event = MutableSharedFlow<GalleryEvent>()
     val event: SharedFlow<GalleryEvent> = _event.asSharedFlow()
 
-    val suitId: String =
+    private val suitId: String =
         savedStateHandle[AppRoutes.Gallery.ARG_SUIT_URL] ?: ""
 
     private val isForBgRemover: Boolean =
         savedStateHandle[AppRoutes.GalleryForBgRemover.ARG_IS_BG_REMOVER] ?: false
 
+    private val isForPassport: Boolean =
+        savedStateHandle[AppRoutes.GalleryForPassport.ARG_IS_FOR_PASSPORT] ?: false
+
+    private val countryId: String =
+        savedStateHandle[AppRoutes.GalleryForPassport.ARG_COUNTRY_ID] ?: ""
+
+    private val documentType: String =
+        savedStateHandle[AppRoutes.GalleryForPassport.ARG_DOCUMENT_TYPE] ?: ""
+
     fun loadGalleryImages() {
         viewModelScope.launch {
             _uiState.update {
-                it.copy(
-                    isLoading = true,
-                    errorMessage = null
-                )
+                it.copy(isLoading = true, errorMessage = null)
             }
 
             try {
@@ -60,9 +65,6 @@ class GalleryViewModel(
                 }
             }
         }
-
-        Log.d("GalleryVM", "Suit Id = $suitId")
-        Log.d("GalleryVM", "isForBgRemover = $isForBgRemover")
     }
 
     fun onFolderClick(folderName: String) {
@@ -73,19 +75,33 @@ class GalleryViewModel(
 
     fun onImageClick(image: GalleryImage) {
         viewModelScope.launch {
-            if (isForBgRemover) {
-                _event.emit(
-                    GalleryEvent.NavigateToBgRemoverCrop(
-                        imageUri = image.uri
+            when {
+                isForPassport -> {
+                    _event.emit(
+                        GalleryEvent.NavigateToPassportCrop(
+                            imageUri = image.uri,
+                            countryId = countryId,
+                            documentType = documentType
+                        )
                     )
-                )
-            } else {
-                _event.emit(
-                    GalleryEvent.NavigateToCropFace(
-                        suitUrl = suitId,
-                        imageUri = image.uri
+                }
+
+                isForBgRemover -> {
+                    _event.emit(
+                        GalleryEvent.NavigateToBgRemoverCrop(
+                            imageUri = image.uri
+                        )
                     )
-                )
+                }
+
+                else -> {
+                    _event.emit(
+                        GalleryEvent.NavigateToCropFace(
+                            suitUrl = suitId,
+                            imageUri = image.uri
+                        )
+                    )
+                }
             }
         }
     }

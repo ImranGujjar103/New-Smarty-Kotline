@@ -8,7 +8,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.google.android.gms.common.util.CollectionUtils.listOf
 import com.imr.example.newsmartykotlin.core.ads.AdLoadingState
 import com.imr.example.newsmartykotlin.domain.model.DocumentType
 import com.imr.example.newsmartykotlin.presentation.backgroundtext.BackgroundTextScreen
@@ -23,6 +22,8 @@ import com.imr.example.newsmartykotlin.presentation.language.LanguageRoute
 import com.imr.example.newsmartykotlin.presentation.onboarding.OnboardingRoute
 import com.imr.example.newsmartykotlin.presentation.passport.PassportCountryRoute
 import com.imr.example.newsmartykotlin.presentation.passport.PassportDetailRoute
+import com.imr.example.newsmartykotlin.presentation.passport.cropper.PassportCropperScreen
+import com.imr.example.newsmartykotlin.presentation.passport.result.PassportResultScreen
 import com.imr.example.newsmartykotlin.presentation.permission.GalleryPermissionScreen
 import com.imr.example.newsmartykotlin.presentation.photoeditor.EditorAction
 import com.imr.example.newsmartykotlin.presentation.photoeditor.PhotoEditorScreen
@@ -358,6 +359,11 @@ fun NewSmartyKotlin(
                     },
                     navArgument(AppRoutes.PassportDetail.ARG_DOCUMENT_TYPE) {
                         type = NavType.StringType
+                    },
+                    navArgument(AppRoutes.PassportDetail.ARG_FINAL_IMAGE_URI) {
+                        type = NavType.StringType
+                        defaultValue = ""
+                        nullable = true
                     }
                 )
             ) { backStackEntry ->
@@ -375,9 +381,115 @@ fun NewSmartyKotlin(
                     countryId = countryId,
                     selectedType = documentType,
                     onBackClick = { navController.popBackStack() },
-                    onCameraClick = { },
-                    onGalleryClick = { }
+                    onCameraImageCaptured = { imageUri ->
+                        navController.navigate(
+                            AppRoutes.PassportCropper.createRoute(
+                                imageUri = imageUri,
+                                countryId = countryId,
+                                documentType = documentType.name
+                            )
+                        )
+                    },
+                    onGalleryClick = {
+                        navController.navigate(
+                            AppRoutes.GalleryPermissionForPassport.createRoute(
+                                countryId = countryId,
+                                documentType = documentType.name
+                            )
+                        )
+                    }
                 )
+            }
+
+            composable(
+                route = AppRoutes.GalleryForPassport.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.GalleryForPassport.ARG_COUNTRY_ID) {
+                        type = NavType.StringType
+                    },
+                    navArgument(AppRoutes.GalleryForPassport.ARG_DOCUMENT_TYPE) {
+                        type = NavType.StringType
+                    },
+                    navArgument(AppRoutes.GalleryForPassport.ARG_IS_FOR_PASSPORT) {
+                        type = NavType.BoolType
+                        defaultValue = false
+                    }
+                )
+            ) {
+                GalleryScreen(navController = navController)
+            }
+
+            composable(
+                route = AppRoutes.PassportCropper.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.PassportCropper.ARG_IMAGE_URI) {
+                        type = NavType.StringType
+                    },
+                    navArgument(AppRoutes.PassportCropper.ARG_COUNTRY_ID) {
+                        type = NavType.StringType
+                    },
+                    navArgument(AppRoutes.PassportCropper.ARG_DOCUMENT_TYPE) {
+                        type = NavType.StringType
+                    }
+                )
+            ) {
+                PassportCropperScreen(navController = navController)
+            }
+
+            composable(
+                route = AppRoutes.PassportBgRemove.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.PassportBgRemove.ARG_CROPPED_IMAGE_URI) {
+                        type = NavType.StringType
+                    },
+                    navArgument(AppRoutes.PassportBgRemove.ARG_COUNTRY_ID) {
+                        type = NavType.StringType
+                    },
+                    navArgument(AppRoutes.PassportBgRemove.ARG_DOCUMENT_TYPE) {
+                        type = NavType.StringType
+                    },
+                    navArgument(AppRoutes.PassportBgRemove.ARG_IS_FOR_PASSPORT) {
+                        type = NavType.BoolType
+                        defaultValue = false
+                    }
+                )
+            ) {
+                BgRemoveScreen(navController = navController)
+            }
+
+            composable(
+                route = AppRoutes.GalleryPermissionForPassport.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.GalleryPermissionForPassport.ARG_COUNTRY_ID) {
+                        type = NavType.StringType
+                    },
+                    navArgument(AppRoutes.GalleryPermissionForPassport.ARG_DOCUMENT_TYPE) {
+                        type = NavType.StringType
+                    },
+                    navArgument(AppRoutes.GalleryPermissionForPassport.ARG_IS_FOR_PASSPORT) {
+                        type = NavType.BoolType
+                        defaultValue = false
+                    }
+                )
+            ) {
+                GalleryPermissionScreen(navController = navController)
+            }
+
+            composable(
+                route = AppRoutes.PassportResult.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.PassportResult.ARG_IMAGE_URI) {
+                        type = NavType.StringType
+                    },
+                    navArgument(AppRoutes.PassportResult.ARG_COUNTRY_ID) {
+                        type = NavType.StringType
+                    },
+                    navArgument(AppRoutes.PassportResult.ARG_DOCUMENT_TYPE) {
+                        type = NavType.StringType
+                    }
+                )
+            ) {
+                PassportResultScreen(navController = navController)
             }
 
         }

@@ -12,12 +12,20 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 class BgRemoveViewModel(
     savedStateHandle: SavedStateHandle,
     private val removeBackgroundUseCase: RemoveBackgroundUseCase
 ) : ViewModel() {
+    private val isForPassport: Boolean =
+        savedStateHandle[AppRoutes.PassportBgRemove.ARG_IS_FOR_PASSPORT] ?: false
 
+    private val passportCountryId: String =
+        savedStateHandle[AppRoutes.PassportBgRemove.ARG_COUNTRY_ID] ?: ""
+
+    private val passportDocumentType: String =
+        savedStateHandle[AppRoutes.PassportBgRemove.ARG_DOCUMENT_TYPE] ?: ""
     private val isForBgRemover: Boolean =
         savedStateHandle[AppRoutes.BgRemoveForBgRemover.ARG_IS_BG_REMOVER] ?: false
 
@@ -25,10 +33,18 @@ class BgRemoveViewModel(
         savedStateHandle[AppRoutes.BgRemove.ARG_SUIT_URL] ?: ""
 
     private val croppedImageUri: String =
-        if (isForBgRemover) {
-            savedStateHandle[AppRoutes.BgRemoveForBgRemover.ARG_CROPPED_IMAGE_URI] ?: ""
-        } else {
-            savedStateHandle[AppRoutes.BgRemove.ARG_CROPPED_IMAGE_URI] ?: ""
+        when {
+            isForPassport -> {
+                savedStateHandle[AppRoutes.PassportBgRemove.ARG_CROPPED_IMAGE_URI] ?: ""
+            }
+
+            isForBgRemover -> {
+                savedStateHandle[AppRoutes.BgRemoveForBgRemover.ARG_CROPPED_IMAGE_URI] ?: ""
+            }
+
+            else -> {
+                savedStateHandle[AppRoutes.BgRemove.ARG_CROPPED_IMAGE_URI] ?: ""
+            }
         }
 
     private val _uiState = MutableStateFlow(
@@ -62,21 +78,34 @@ class BgRemoveViewModel(
                     )
                 }
 
-                delay(300)
+                delay(300.milliseconds)
+                when {
+                    isForPassport -> {
+                        _event.emit(
+                            BgRemoveEvent.NavigateToPassportResult(
+                                removedBgImageUri = resultUri,
+                                countryId = passportCountryId,
+                                documentType = passportDocumentType
+                            )
+                        )
+                    }
 
-                if (isForBgRemover) {
-                    _event.emit(
-                        BgRemoveEvent.NavigateToBgRemoverEditor(
-                            removedBgImageUri = resultUri
+                    isForBgRemover -> {
+                        _event.emit(
+                            BgRemoveEvent.NavigateToBgRemoverEditor(
+                                removedBgImageUri = resultUri
+                            )
                         )
-                    )
-                } else {
-                    _event.emit(
-                        BgRemoveEvent.NavigateToSuitEditor(
-                            suitId = suitId,
-                            removedBgImageUri = resultUri
+                    }
+
+                    else -> {
+                        _event.emit(
+                            BgRemoveEvent.NavigateToSuitEditor(
+                                suitId = suitId,
+                                removedBgImageUri = resultUri
+                            )
                         )
-                    )
+                    }
                 }
 
             } catch (e: Exception) {

@@ -12,15 +12,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.rememberAsyncImagePainter
+import coil3.toUri
 import com.imr.example.newsmartykotlin.ui.theme.TextColor
 
 @Composable
 fun PassportPreviewBox(
     imageRes: Int,
+    imageUri: String?,
     pixelText: String,
     inchText: String
 ) {
@@ -33,10 +35,13 @@ fun PassportPreviewBox(
         )
         {
             Image(
-                painter = painterResource(imageRes),
+                painter = if (imageUri.isNullOrBlank()) {
+                    painterResource(imageRes)
+                } else {
+                    rememberAsyncImagePainter(imageUri.toUri())
+                },
                 contentDescription = null,
-                modifier = Modifier.size(150.dp),
-                contentScale = ContentScale.Crop
+                modifier = Modifier.size(150.dp)
             )
 
             // Top horizontal line

@@ -1,6 +1,5 @@
 package com.imr.example.newsmartykotlin.presentation.gallery
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -86,6 +85,16 @@ fun GalleryScreen(
                     navController.navigate(
                         AppRoutes.CropForBgRemover.createRoute(
                             imageUri = event.imageUri
+                        )
+                    )
+                }
+
+                is GalleryEvent.NavigateToPassportCrop -> {
+                    navController.navigate(
+                        AppRoutes.PassportCropper.createRoute(
+                            imageUri = event.imageUri,
+                            countryId = event.countryId,
+                            documentType = event.documentType
                         )
                     )
                 }

@@ -44,6 +44,7 @@ import com.imr.example.newsmartykotlin.ui.theme.WhiteColor
 fun PassportDetailScreen(
     country: PassportCountry,
     selectedType: DocumentType,
+    finalImageUri: String?,
     onBackClick: () -> Unit,
     onCameraClick: () -> Unit,
     onGalleryClick: () -> Unit
@@ -90,6 +91,7 @@ fun PassportDetailScreen(
 
         PassportPreviewBox(
             imageRes = R.drawable.ic_passport_sample,
+            imageUri = finalImageUri,
             pixelText = country.getPixel(selectedType),
             inchText = country.getSizeInch(selectedType)
         )
