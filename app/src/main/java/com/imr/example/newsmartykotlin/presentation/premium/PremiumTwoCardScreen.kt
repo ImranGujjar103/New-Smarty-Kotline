@@ -57,11 +57,11 @@ fun PremiumTwoCardScreen(
             tint = WhiteColor,
             modifier = Modifier
                 .padding(top = 20.dp)
-                .size(44.dp)
+                .size(40.dp)
                 .clip(CircleShape)
                 .background(DisabledTextColor)
                 .clickable { onCloseClick() }
-                .padding(10.dp)
+                .padding(12.dp)
         )
 
         Column(

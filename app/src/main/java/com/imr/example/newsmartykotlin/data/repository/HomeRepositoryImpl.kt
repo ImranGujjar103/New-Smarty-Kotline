@@ -9,11 +9,6 @@ class HomeRepositoryImpl : HomeRepository {
     override fun getHomeFeatures(): List<HomeFeature> {
         return listOf(
             HomeFeature(
-                id = "face_swap",
-                titleRes = R.string.face_swap,
-                imageRes = R.drawable.img_face_swap
-            ),
-            HomeFeature(
                 id = "passport_pic",
                 titleRes = R.string.passport_pic,
                 imageRes = R.drawable.img_passport_pic

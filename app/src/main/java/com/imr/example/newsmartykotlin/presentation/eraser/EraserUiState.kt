@@ -12,5 +12,6 @@ data class EraserUiState(
     val errorMessage: String? = null,
 
     val canUndo: Boolean = false,
-    val canRedo: Boolean = false
+    val canRedo: Boolean = false,
+    val showResetDialog: Boolean = false
 )

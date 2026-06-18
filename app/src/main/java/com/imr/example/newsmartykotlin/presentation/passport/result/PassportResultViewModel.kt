@@ -2,10 +2,11 @@ package com.imr.example.newsmartykotlin.presentation.passport.result
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.net.Uri
+import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.imr.example.newsmartykotlin.core.utils.ImageSaver
 import com.imr.example.newsmartykotlin.domain.model.DocumentType
 import com.imr.example.newsmartykotlin.domain.model.getPixel
 import com.imr.example.newsmartykotlin.domain.model.getSizeInch
@@ -16,7 +17,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import androidx.core.net.toUri
 
 class PassportResultViewModel(
     savedStateHandle: SavedStateHandle,
@@ -64,16 +64,37 @@ class PassportResultViewModel(
             _event.emit(PassportResultEvent.TryAgain)
         }
     }
-
     fun onBackgroundClick() {
         viewModelScope.launch {
-
+            _event.emit(
+                PassportResultEvent.NavigateToBackground(
+                    _uiState.value.imageUri
+                )
+            )
         }
     }
 
+    fun onBackgroundImageUpdated(updatedImageUri: String) {
+        _uiState.value = _uiState.value.copy(
+            imageUri = updatedImageUri,
+            fileSizeText = getFileSizeText(updatedImageUri)
+        )
+    }
+
     fun onSaveClick() {
+        val savedUri = ImageSaver.saveImageToPictures(
+            context = context,
+            sourceUri = _uiState.value.imageUri
+        )
+
         viewModelScope.launch {
-            _event.emit(PassportResultEvent.SaveImage(imageUri))
+            savedUri?.let {
+                _event.emit(
+                    PassportResultEvent.ImageSaved(
+                        uri = it.toString()
+                    )
+                )
+            }
         }
     }
 

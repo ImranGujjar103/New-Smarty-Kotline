@@ -1,5 +1,6 @@
 package com.imr.example.newsmartykotlin.presentation.navigation
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -14,6 +15,7 @@ import com.imr.example.newsmartykotlin.presentation.backgroundtext.BackgroundTex
 import com.imr.example.newsmartykotlin.presentation.bgremove.BgRemoveScreen
 import com.imr.example.newsmartykotlin.presentation.bgremovereditor.BgRemoverEditorScreen
 import com.imr.example.newsmartykotlin.presentation.common.components.AdLoadingOverlay
+import com.imr.example.newsmartykotlin.presentation.creation.MyCreationScreen
 import com.imr.example.newsmartykotlin.presentation.crop.CropFaceScreen
 import com.imr.example.newsmartykotlin.presentation.eraser.EraserScreen
 import com.imr.example.newsmartykotlin.presentation.gallery.GalleryScreen
@@ -22,6 +24,7 @@ import com.imr.example.newsmartykotlin.presentation.language.LanguageRoute
 import com.imr.example.newsmartykotlin.presentation.onboarding.OnboardingRoute
 import com.imr.example.newsmartykotlin.presentation.passport.PassportCountryRoute
 import com.imr.example.newsmartykotlin.presentation.passport.PassportDetailRoute
+import com.imr.example.newsmartykotlin.presentation.passport.background.PassportBackgroundScreen
 import com.imr.example.newsmartykotlin.presentation.passport.cropper.PassportCropperScreen
 import com.imr.example.newsmartykotlin.presentation.passport.result.PassportResultScreen
 import com.imr.example.newsmartykotlin.presentation.permission.GalleryPermissionScreen
@@ -29,6 +32,7 @@ import com.imr.example.newsmartykotlin.presentation.photoeditor.EditorAction
 import com.imr.example.newsmartykotlin.presentation.photoeditor.PhotoEditorScreen
 import com.imr.example.newsmartykotlin.presentation.premium.PremiumRoute
 import com.imr.example.newsmartykotlin.presentation.saved.SavedScreen
+import com.imr.example.newsmartykotlin.presentation.settings.SettingsScreen
 import com.imr.example.newsmartykotlin.presentation.splash.SplashRoute
 import com.imr.example.newsmartykotlin.presentation.suits.SuitRoute
 
@@ -130,6 +134,15 @@ fun NewSmartyKotlin(
                     },
                     onNavigateToPassportPic = {
                         navController.navigate(AppRoutes.PassportCountry.route)
+                    },
+                    onNavigateToMyCreation = {
+                        navController.navigate(AppRoutes.MyCreation.route)
+                    },
+                    onNavigateToSettings = {
+                        navController.navigate(AppRoutes.Settings.route)
+                    },
+                    onNavigateToPremium = {
+                        navController.navigate(AppRoutes.Premium.route)
                     }
                 )
             }
@@ -273,6 +286,14 @@ fun NewSmartyKotlin(
                 )
             }
 
+            composable(AppRoutes.MyCreation.route) {
+                MyCreationScreen(navController = navController)
+            }
+
+            composable(AppRoutes.Settings.route) {
+                SettingsScreen(navController = navController)
+            }
+
             composable(
                 route = AppRoutes.GalleryForBgRemover.route,
                 arguments = listOf(
@@ -326,16 +347,7 @@ fun NewSmartyKotlin(
                 BgRemoverEditorScreen(navController = navController)
             }
 
-            composable(
-                route = AppRoutes.Saved.route,
-                arguments = listOf(
-                    navArgument(AppRoutes.Saved.ARG_IMAGE_PATH) {
-                        type = NavType.StringType
-                    }
-                )
-            ) {
-                SavedScreen(navController = navController)
-            }
+
 
             composable(AppRoutes.PassportCountry.route) {
                 PassportCountryRoute(
@@ -490,6 +502,88 @@ fun NewSmartyKotlin(
                 )
             ) {
                 PassportResultScreen(navController = navController)
+            }
+
+            composable(
+                route = AppRoutes.Background.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.Background.ARG_IMAGE_URI) {
+                        type = NavType.StringType
+                    }
+                )
+            ) {
+                PassportBackgroundScreen(
+                    navController = navController
+                )
+            }
+
+            composable(
+                route = AppRoutes.PassportTryMoreDetail.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.PassportTryMoreDetail.ARG_COUNTRY_ID) {
+                        type = NavType.StringType
+                    },
+                    navArgument(AppRoutes.PassportTryMoreDetail.ARG_DOCUMENT_TYPE) {
+                        type = NavType.StringType
+                    }
+                )
+            ) { backStackEntry ->
+
+                val countryId = backStackEntry.arguments
+                    ?.getString(AppRoutes.PassportTryMoreDetail.ARG_COUNTRY_ID)
+                    .orEmpty()
+
+                val documentType = DocumentType.PASSPORT
+
+                PassportDetailRoute(
+                    countryId = countryId,
+                    selectedType = documentType,
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    onCameraImageCaptured = { imageUri ->
+                        navController.navigate(
+                            AppRoutes.PassportCropper.createRoute(
+                                imageUri = imageUri,
+                                countryId = countryId,
+                                documentType = documentType.name
+                            )
+                        )
+                    },
+                    onGalleryClick = {
+                        navController.navigate(
+                            AppRoutes.GalleryPermissionForPassport.createRoute(
+                                countryId = countryId,
+                                documentType = documentType.name
+                            )
+                        )
+                    }
+                )
+            }
+
+            composable(
+                route = AppRoutes.Saved.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.Saved.ARG_IMAGE_PATH) {
+                        type = NavType.StringType
+                        nullable = true
+                        defaultValue = ""
+                    },
+                    navArgument(AppRoutes.Saved.ARG_IS_FOR_PASSPORT) {
+                        type = NavType.BoolType
+                        defaultValue = false
+                    },
+                    navArgument(AppRoutes.Saved.ARG_COUNTRY_ID) {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    },
+                    navArgument(AppRoutes.Saved.ARG_DOCUMENT_TYPE) {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    }
+                )
+            ) {
+                SavedScreen(navController = navController)
             }
 
         }

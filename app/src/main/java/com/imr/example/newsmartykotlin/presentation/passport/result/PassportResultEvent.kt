@@ -9,8 +9,7 @@ sealed interface PassportResultEvent {
     data class NavigateToBackground(
         val imageUri: String
     ) : PassportResultEvent
-
-    data class SaveImage(
-        val imageUri: String
+    data class ImageSaved(
+        val uri: String
     ) : PassportResultEvent
 }

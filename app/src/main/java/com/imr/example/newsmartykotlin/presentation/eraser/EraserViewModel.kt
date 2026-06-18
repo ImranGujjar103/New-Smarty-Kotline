@@ -84,6 +84,15 @@ class EraserViewModel(
         redoStrokes.clear()
         updateUndoRedoState()
     }
+
+    fun showResetDialog() {
+        _uiState.update { it.copy(showResetDialog = true) }
+    }
+
+    fun hideResetDialog() {
+        _uiState.update { it.copy(showResetDialog = false) }
+    }
+
     fun resetAll() {
         strokes.clear()
         redoStrokes.clear()
@@ -91,7 +100,8 @@ class EraserViewModel(
         _uiState.update {
             it.copy(
                 canUndo = false,
-                canRedo = false
+                canRedo = false,
+                showResetDialog = false
             )
         }
     }

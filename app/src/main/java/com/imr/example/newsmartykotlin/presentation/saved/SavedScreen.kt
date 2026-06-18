@@ -55,6 +55,18 @@ fun SavedScreen(
                         imagePath = event.imagePath
                     )
                 }
+                is SavedEvent.NavigatePassportTryMore -> {
+                    navController.navigate(
+                        AppRoutes.PassportTryMoreDetail.createRoute(
+                            countryId = event.countryId,
+                            documentType = event.documentType
+                        )
+                    ) {
+                        popUpTo(AppRoutes.Saved.route) {
+                            inclusive = true
+                        }
+                    }
+                }
             }
         }
     }

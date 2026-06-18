@@ -1,5 +1,6 @@
 package com.imr.example.newsmartykotlin.presentation.passport.result
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,15 +29,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ImageRequest
+import coil3.request.allowHardware
 import coil3.toUri
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
+import com.imr.example.newsmartykotlin.presentation.navigation.RESULT_UPDATED_IMAGE_URI
 import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
@@ -51,6 +56,22 @@ fun PassportResultScreen(
     viewModel: PassportResultViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val updatedImageUri = navController.currentBackStackEntry
+        ?.savedStateHandle
+        ?.getStateFlow(RESULT_UPDATED_IMAGE_URI, "")
+        ?.collectAsState()
+
+    LaunchedEffect(updatedImageUri?.value) {
+        val uri = updatedImageUri?.value.orEmpty()
+
+        if (uri.isNotBlank()) {
+            viewModel.onBackgroundImageUpdated(uri)
+
+            navController.currentBackStackEntry
+                ?.savedStateHandle
+                ?.remove<String>(RESULT_UPDATED_IMAGE_URI)
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -74,12 +95,30 @@ fun PassportResultScreen(
 
                 is PassportResultEvent.NavigateToBackground -> {
                     navController.navigate(
-                        AppRoutes.BackgroundText.createRoute(event.imageUri)
+                        AppRoutes.Background.createRoute(event.imageUri)
                     )
                 }
 
-                is PassportResultEvent.SaveImage -> {
-                    // connect your existing save/download use case here
+                is PassportResultEvent.ImageSaved -> {
+                    navController.navigate(
+                        AppRoutes.Saved.createRoute(
+                            imagePath = event.uri,
+                            isForPassport = true,
+                            countryId = uiState.countryId,
+                            documentType = uiState.documentType
+                        )
+                    ) {
+                        popUpTo(AppRoutes.PassportResult.route) {
+                            inclusive = true
+                        }
+                    }
+                    Toast.makeText(
+                        navController.context,
+                        navController.context.getString(
+                            R.string.image_saved_successfully
+                        ),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -204,7 +243,12 @@ private fun PassportResultPreview(
         )
         {
             Image(
-                painter = rememberAsyncImagePainter(imageUri.toUri()),
+                painter = rememberAsyncImagePainter(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(imageUri.toUri())
+                        .allowHardware(false)
+                        .build()
+                ),
                 contentDescription = null,
                 modifier = Modifier.size(150.dp)
             )

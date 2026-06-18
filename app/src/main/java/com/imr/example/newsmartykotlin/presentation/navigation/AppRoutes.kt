@@ -120,12 +120,8 @@ sealed class AppRoutes(val route: String) {
 
     data object GalleryForBackground : AppRoutes("gallery_for_background")
 
-    data object Saved : AppRoutes("saved/{imagePath}") {
-        const val ARG_IMAGE_PATH = "imagePath"
-
-        fun createRoute(imagePath: String): String =
-            "saved/${Uri.encode(imagePath)}"
-    }
+    data object MyCreation : AppRoutes("my_creation")
+    data object Settings : AppRoutes("settings")
 
     data object PassportCountry : AppRoutes("passport_country")
 
@@ -226,6 +222,48 @@ sealed class AppRoutes(val route: String) {
             documentType: String
         ): String {
             return "passport_result/${Uri.encode(imageUri)}/${Uri.encode(countryId)}/${Uri.encode(documentType)}"
+        }
+    }
+
+    object Background : AppRoutes("background/{imageUri}") {
+        const val ARG_IMAGE_URI = "imageUri"
+
+        fun createRoute(imageUri: String): String {
+            return "background/${Uri.encode(imageUri)}"
+        }
+    }
+    data object Saved : AppRoutes(
+        "saved?imagePath={imagePath}&isForPassport={isForPassport}&countryId={countryId}&documentType={documentType}"
+    ) {
+        const val ARG_IMAGE_PATH = "imagePath"
+        const val ARG_IS_FOR_PASSPORT = "isForPassport"
+        const val ARG_COUNTRY_ID = "countryId"
+        const val ARG_DOCUMENT_TYPE = "documentType"
+
+        fun createRoute(
+            imagePath: String,
+            isForPassport: Boolean = false,
+            countryId: String = "",
+            documentType: String = ""
+        ): String {
+            return "saved" +
+                    "?imagePath=${Uri.encode(imagePath)}" +
+                    "&isForPassport=$isForPassport" +
+                    "&countryId=${Uri.encode(countryId)}" +
+                    "&documentType=${Uri.encode(documentType)}"
+        }
+    }
+    data object PassportTryMoreDetail : AppRoutes(
+        "passport_try_more_detail/{countryId}/{documentType}"
+    ) {
+        const val ARG_COUNTRY_ID = "countryId"
+        const val ARG_DOCUMENT_TYPE = "documentType"
+
+        fun createRoute(
+            countryId: String,
+            documentType: String
+        ): String {
+            return "passport_try_more_detail/${Uri.encode(countryId)}/${Uri.encode(documentType)}"
         }
     }
 

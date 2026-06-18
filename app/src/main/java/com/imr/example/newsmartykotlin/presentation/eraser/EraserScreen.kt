@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -27,6 +28,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -71,6 +73,8 @@ import androidx.compose.ui.draw.drawWithContent
 
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.layer.drawLayer
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.window.Dialog
 
 import kotlinx.coroutines.launch
 
@@ -296,13 +300,7 @@ fun EraserScreen(
             canRedo = uiState.canRedo,
             onBrushSizeChange = viewModel::onBrushSizeChange,
             onBrushOffsetChange = viewModel::onBrushOffsetChange,
-            onResetClick = {
-                localStrokes.clear()
-                currentPoints = emptyList()
-                fingerPoint = null
-                brushPreviewPoint = null
-                viewModel.resetAll()
-            },
+            onResetClick = viewModel::showResetDialog,
             onUndoClick = {
                 viewModel.undo()
                 localStrokes.clear()
@@ -314,6 +312,19 @@ fun EraserScreen(
                 localStrokes.addAll(viewModel.currentStrokes())
             },
             onBackClick = viewModel::onBackClick
+        )
+    }
+
+    if (uiState.showResetDialog) {
+        EraserResetDialog(
+            onDismiss = viewModel::hideResetDialog,
+            onConfirm = {
+                localStrokes.clear()
+                currentPoints = emptyList()
+                fingerPoint = null
+                brushPreviewPoint = null
+                viewModel.resetAll()
+            }
         )
     }
 }
@@ -547,6 +558,81 @@ private fun EraserSliderRow(
                 )
             }
         )
+    }
+}
+
+@Composable
+private fun EraserResetDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = RoundedCornerShape(24.dp),
+            color = Color.White
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(24.dp)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Reset",
+                    fontFamily = SfProDisplayBold,
+                    fontSize = 20.sp,
+                    color = TextColor
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "All editing will be lost. Are you sure you want to reset ?",
+                    fontSize = 14.sp,
+                    color = TextColor.copy(alpha = 0.7f),
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(52.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(CardColor)
+                            .clickable { onDismiss() },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Cancel",
+                            fontFamily = SfProDisplayBold,
+                            color = TextColor
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(52.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(PrimaryColor)
+                            .clickable { onConfirm() },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Reset",
+                            fontFamily = SfProDisplayBold,
+                            color = WhiteColor
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 

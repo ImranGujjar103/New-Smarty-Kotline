@@ -8,6 +8,7 @@ import com.imr.example.newsmartykotlin.domain.repository.PassportRepository
 import com.imr.example.newsmartykotlin.domain.usecase.passport.CropPassportImageUseCase
 import com.imr.example.newsmartykotlin.presentation.passport.PassportCountryViewModel
 import com.imr.example.newsmartykotlin.presentation.passport.PassportDetailViewModel
+import com.imr.example.newsmartykotlin.presentation.passport.background.PassportBackgroundViewModel
 import com.imr.example.newsmartykotlin.presentation.passport.cropper.PassportCropperViewModel
 import com.imr.example.newsmartykotlin.presentation.passport.result.PassportResultViewModel
 import org.koin.android.ext.koin.androidContext
@@ -55,4 +56,6 @@ val passportModule = module {
             passportRepository = get()
         )
     }
+
+    viewModel { PassportBackgroundViewModel(get()) }
 }

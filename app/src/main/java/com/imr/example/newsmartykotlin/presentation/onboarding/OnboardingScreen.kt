@@ -41,7 +41,6 @@ import com.imr.example.newsmartykotlin.presentation.language.components.Language
 import com.imr.example.newsmartykotlin.ui.theme.CardColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
-import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayRegular
 import com.imr.example.newsmartykotlin.ui.theme.TextColor
 import com.imr.example.newsmartykotlin.ui.theme.WhiteColor
 
@@ -142,6 +141,8 @@ private fun OnboardingPageContent(
                 .padding(horizontal = 20.dp)
         ) {
             Text(
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
                 text = stringResource(page.titleRes),
                 fontFamily = SfProDisplayBold,
                 fontSize = 20.sp,
@@ -151,9 +152,11 @@ private fun OnboardingPageContent(
                 Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
                     text = stringResource(page.descRes),
-                    fontFamily = SfProDisplayRegular,
-                    fontSize = 14.sp,
+                    fontFamily = SfProDisplayBold,
+                    fontSize = 20.sp,
                     lineHeight = 20.sp,
                     color = TextColor
                 )

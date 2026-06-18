@@ -17,8 +17,8 @@ val onboardingPages = listOf(
     ),
     OnboardingPage(
         imageRes = R.drawable.img_ob2,
-        titleRes = R.string.fun_face_swap,
-        descRes = R.string.transform_your_photos
+        titleRes = R.string.make_passport_size,
+        descRes = R.string.photos
     ),
     OnboardingPage(
         imageRes = R.drawable.img_ob3,

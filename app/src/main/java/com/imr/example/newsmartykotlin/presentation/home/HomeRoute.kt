@@ -14,6 +14,9 @@ fun HomeRoute(
     onNavigateToSuits: () -> Unit,
     onNavigateToBgChanger: () -> Unit,
     onNavigateToPassportPic: () -> Unit,
+    onNavigateToMyCreation: () -> Unit,
+    onNavigateToSettings: () -> Unit,
+    onNavigateToPremium: () -> Unit,
     viewModel: HomeViewModel = koinViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -26,15 +29,15 @@ fun HomeRoute(
 
     HomeScreen(
         state = state,
-        onCrownClick = {},
-        onSettingClick = {},
+        onCrownClick = onNavigateToPremium,
+        onSettingClick = onNavigateToSettings,
         onChangeClick = onNavigateToSuits,
         onFeatureClick = { feature ->
             when (feature.id) {
                 "passport_pic" -> onNavigateToPassportPic()
                 "bg_changer" -> onNavigateToBgChanger()
                 "face_swap" -> {}
-                "my_creation" -> {}
+                "my_creation" -> onNavigateToMyCreation()
             }
         }
     )
