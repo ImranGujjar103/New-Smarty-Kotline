@@ -38,6 +38,8 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,7 +67,7 @@ import com.imr.example.newsmartykotlin.core.utils.BitmapUtils
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
 import com.imr.example.newsmartykotlin.presentation.navigation.ERASED_IMAGE_RESULT_KEY
 import com.imr.example.newsmartykotlin.presentation.navigation.SELECTED_SUIT_URL_KEY
-import com.imr.example.newsmartykotlin.ui.theme.CardColor
+import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayRegular
@@ -79,6 +81,16 @@ private enum class EditableLayer {
     SUIT,
     FACE
 }
+
+private val OffsetSaver = Saver<MutableState<Offset>, List<Float>>(
+    save = { listOf(it.value.x, it.value.y) },
+    restore = { mutableStateOf(Offset(it[0], it[1])) }
+)
+
+private val FloatStateSaver = Saver<MutableFloatState, Float>(
+    save = { it.floatValue },
+    restore = { mutableFloatStateOf(it) }
+)
 
 @Composable
 fun PhotoEditorScreen(
@@ -129,27 +141,29 @@ fun PhotoEditorScreen(
         }
     }
 
-    val suitFlipX = remember { mutableFloatStateOf(1f) }
-    val faceFlipX = remember { mutableFloatStateOf(1f) }
+    val suitFlipX = rememberSaveable(saver = FloatStateSaver) { mutableFloatStateOf(1f) }
+    val faceFlipX = rememberSaveable(saver = FloatStateSaver) { mutableFloatStateOf(1f) }
 
-    var selectedLayer by remember { mutableStateOf(EditableLayer.FACE) }
+    var selectedLayer by rememberSaveable { mutableStateOf(EditableLayer.FACE) }
 
-    val suitOffset = remember { mutableStateOf(Offset.Zero) }
-    val suitScale = remember { mutableFloatStateOf(1f) }
-    val suitRotation = remember { mutableFloatStateOf(0f) }
+    val suitOffset = rememberSaveable(saver = OffsetSaver) { mutableStateOf(Offset.Zero) }
+    val suitScale = rememberSaveable(saver = FloatStateSaver) { mutableFloatStateOf(1f) }
+    val suitRotation = rememberSaveable(saver = FloatStateSaver) { mutableFloatStateOf(0f) }
 
-    val faceOffset = remember { mutableStateOf(Offset(0f, -90f)) }
-    val faceScale = remember { mutableFloatStateOf(1f) }
-    val faceRotation = remember { mutableFloatStateOf(0f) }
+    val faceOffset = rememberSaveable(saver = OffsetSaver) { mutableStateOf(Offset(0f, -90f)) }
+    val faceScale = rememberSaveable(saver = FloatStateSaver) { mutableFloatStateOf(1f) }
+    val faceRotation = rememberSaveable(saver = FloatStateSaver) { mutableFloatStateOf(0f) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(CardColor)
+            .background(HomeBackgroundColor)
             .statusBarsPadding()
             .navigationBarsPadding()
     )
     {
+        Spacer(modifier = Modifier.height(25.dp))
+
         PhotoEditorTopBar(
             onBackClick = { navController.popBackStack() },
             onNextClick = {
@@ -168,6 +182,7 @@ fun PhotoEditorScreen(
                 }
             }
         )
+        Spacer(modifier = Modifier.height(20.dp))
 
         Box(
             modifier = Modifier
@@ -368,9 +383,9 @@ private fun PhotoEditorTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(58.dp)
-            .background(CardColor)
-            .padding(horizontal = 28.dp),
+            .height(30.dp)
+            .background(HomeBackgroundColor)
+            .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -390,7 +405,7 @@ private fun PhotoEditorTopBar(
                 painter = painterResource(R.drawable.ic_back),
                 contentDescription = null,
                 tint = WhiteColor,
-                modifier = Modifier.size(12.dp)
+                modifier = Modifier.size(10.dp)
             )
         }
 
@@ -434,9 +449,9 @@ private fun EditorBottomBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(82.dp)
+            .height(70.dp)
             .background(WhiteColor)
-            .padding(horizontal = 22.dp),
+            .padding(horizontal = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -488,7 +503,7 @@ private fun EditorBottomItem(
         Image(
             painter = painterResource(icon),
             contentDescription = null,
-            modifier = Modifier.size(20.dp)
+            modifier = Modifier.size(24.dp)
         )
 
         Spacer(modifier = Modifier.height(4.dp))
@@ -496,7 +511,7 @@ private fun EditorBottomItem(
         Text(
             text = title,
             fontFamily = SfProDisplayRegular,
-            fontSize = 12.sp,
+            fontSize = 10.sp,
             color = SubTextColor
         )
     }

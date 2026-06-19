@@ -25,6 +25,7 @@ fun HomeRoute(
 
     LaunchedEffect(Unit) {
         activity.setupLightSystemBars()
+        viewModel.isFirstSplash(false)
     }
 
     HomeScreen(
@@ -36,7 +37,6 @@ fun HomeRoute(
             when (feature.id) {
                 "passport_pic" -> onNavigateToPassportPic()
                 "bg_changer" -> onNavigateToBgChanger()
-                "face_swap" -> {}
                 "my_creation" -> onNavigateToMyCreation()
             }
         }

@@ -34,6 +34,7 @@ import com.imr.example.newsmartykotlin.presentation.language.components.Language
 import com.imr.example.newsmartykotlin.presentation.language.components.LanguageItem
 import com.imr.example.newsmartykotlin.ui.theme.CardColor
 import com.imr.example.newsmartykotlin.ui.theme.DisabledTextColor
+import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayRegular
@@ -50,7 +51,7 @@ fun LanguageScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(CardColor)
+            .background(HomeBackgroundColor)
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {

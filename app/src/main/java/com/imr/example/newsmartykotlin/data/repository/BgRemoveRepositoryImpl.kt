@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Log
 import com.huawei.hmf.tasks.Task
 import com.huawei.hms.mlsdk.common.MLFrame
 import com.huawei.hms.mlsdk.imgseg.MLImageSegmentation
@@ -36,6 +37,7 @@ class BgRemoveRepositoryImpl(
             val segmentation = analyseImage(bitmap)
 
             val foregroundBitmap = segmentation.foreground
+                ?: throw IllegalStateException("Foreground segmentation failed")
 
             val outputDir = File(context.cacheDir, "bg_removed")
             if (!outputDir.exists()) {
@@ -78,6 +80,7 @@ class BgRemoveRepositoryImpl(
             }
 
             task.addOnFailureListener { exception ->
+                Log.d("ErrorTesting", "analyseImage: bg remover error is ==== >>>>> ${exception.message}")
                 if (continuation.isActive) {
                     continuation.resumeWithException(exception)
                 }

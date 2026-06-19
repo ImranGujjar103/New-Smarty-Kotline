@@ -47,8 +47,6 @@
     <string name="suit_changer">Suit Changer</string>
     <string name="suit_changer_subtitle">The easiest way to personalize your looks.</string>
     <string name="lets_change">Let’s Change</string>
-
-    <string name="face_swap">Face Swap</string>
     <string name="passport_pic">Passport Pic</string>
     <string name="bg_changer">BG Changer</string>
     <string name="my_creation">My Creation</string>
@@ -64,6 +62,10 @@
     <string name="permission_required">Permission Required</string>
     <string name="gallery_access_is_required_to_continue_please_enable_it_from_settings">Gallery access is required to continue. Please enable it from Settings.</string>
 
+
+    <string name="camera_access_is_required_to_continue_please_enable_it_from_settings">Camera access is required to continue. Please enable it from Settings.</string>
+    <string name="camera_permission_required">Camera Permission Required</string>
+    <string name="to_take_photos_for_your_passport_we_need_access_to_your_camera_please_grant_permission_to_continue">To take photos for your passport, we need access to your camera. Please grant permission to continue.</string>
 
     <string name="crop_face">Crop Face</string>
     <string name="crop_original">Original</string>
@@ -243,4 +245,5 @@
     <string name="help_us_improve">Help us Improve</string>
     <string name="tell_a_friend">Tell a Friend</string>
     <string name="share_the_app">Share the App</string>
+    <string name="crop">Crop</string>
 </resources>

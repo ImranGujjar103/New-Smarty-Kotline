@@ -131,7 +131,7 @@ fun PassportResultScreen(
             .statusBarsPadding()
             .navigationBarsPadding()
             .padding(horizontal = 20.dp)
-            .padding(top = 28.dp)
+            .padding(top = 25.dp)
     ) {
         PassportResultTopBar(
             onBackClick = viewModel::onBackClick

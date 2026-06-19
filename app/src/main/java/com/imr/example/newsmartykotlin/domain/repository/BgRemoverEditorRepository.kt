@@ -5,6 +5,7 @@ import com.imr.example.newsmartykotlin.presentation.bgremovereditor.BgEditorBack
 interface BgRemoverEditorRepository {
     suspend fun exportImage(
         removedImageUri: String,
-        background: BgEditorBackground
+        background: BgEditorBackground,
+        flipX: Float
     ): String
 }

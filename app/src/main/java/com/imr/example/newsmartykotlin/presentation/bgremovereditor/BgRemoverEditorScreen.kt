@@ -1,9 +1,11 @@
 package com.imr.example.newsmartykotlin.presentation.bgremovereditor
 
+
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,17 +27,23 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -46,16 +54,18 @@ import coil3.compose.rememberAsyncImagePainter
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.presentation.backgroundtext.backgroundsheet.BackgroundBottomSheet
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
+import com.imr.example.newsmartykotlin.presentation.navigation.ERASED_IMAGE_RESULT_KEY
+import com.imr.example.newsmartykotlin.presentation.navigation.SELECTED_BACKGROUND_IMAGE_KEY
+import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
 import com.imr.example.newsmartykotlin.ui.theme.TextColor
 import org.koin.androidx.compose.koinViewModel
-import androidx.compose.foundation.layout.*
 
-import androidx.compose.runtime.*
-
-import com.imr.example.newsmartykotlin.presentation.navigation.SELECTED_BACKGROUND_IMAGE_KEY
-
+private val FloatStateSaver = Saver<MutableFloatState, Float>(
+    save = { it.floatValue },
+    restore = { mutableFloatStateOf(it) }
+)
 
 @Composable
 fun BgRemoverEditorScreen(
@@ -69,6 +79,28 @@ fun BgRemoverEditorScreen(
             ?.savedStateHandle
             ?.getStateFlow<String?>(SELECTED_BACKGROUND_IMAGE_KEY, null)
             ?.collectAsState()
+
+    val erasedImageFlow = remember {
+        navController.currentBackStackEntry
+            ?.savedStateHandle
+            ?.getStateFlow<String?>(ERASED_IMAGE_RESULT_KEY, null)
+    }
+
+    val erasedImageUri by erasedImageFlow?.collectAsState() ?: remember {
+        mutableStateOf(null)
+    }
+
+    val context = LocalContext.current
+
+    LaunchedEffect(erasedImageUri) {
+        erasedImageUri?.let { uri ->
+            viewModel.onEraserDone(uri)
+
+            navController.currentBackStackEntry
+                ?.savedStateHandle
+                ?.set(ERASED_IMAGE_RESULT_KEY, null)
+        }
+    }
 
     LaunchedEffect(selectedBackgroundImage?.value) {
         selectedBackgroundImage?.value?.let { uri ->
@@ -86,10 +118,19 @@ fun BgRemoverEditorScreen(
                 BgRemoverEditorEvent.Back -> navController.popBackStack()
 
                 is BgRemoverEditorEvent.Saved -> {
-                    navController.navigate(AppRoutes.Saved.createRoute(event.imagePath))
+                    navController.navigate(
+                        AppRoutes.Saved.createRoute(
+                            imagePath = event.imagePath,
+                            isForBgRemover = true
+                        )
+                    )
                 }
 
-                is BgRemoverEditorEvent.Error -> Unit
+                is BgRemoverEditorEvent.Error -> {
+
+                    Log.d("ErrorTesting", "BgRemoverEditorScreen: error is =====>  ${event.message}")
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -97,9 +138,11 @@ fun BgRemoverEditorScreen(
     BgRemoverEditorContent(
         uiState = uiState,
         onAction = viewModel::onAction,
-        onBackgroundSelected = viewModel::updateBackground,
         onGalleryClick = {
             navController.navigate(AppRoutes.GalleryForBackground.route)
+        },
+        onEraserClick = {
+            navController.navigate(AppRoutes.Eraser.createRoute(uiState.removedImageUri))
         }
     )
 }
@@ -108,10 +151,9 @@ fun BgRemoverEditorScreen(
 private fun BgRemoverEditorContent(
     uiState: BgRemoverEditorUiState,
     onAction: (BgRemoverEditorAction) -> Unit,
-    onBackgroundSelected: (String) -> Unit,
-    onGalleryClick: () -> Unit
+    onGalleryClick: () -> Unit,
+    onEraserClick: () -> Unit
 ) {
-    val isDark = isSystemInDarkTheme()
     var showBackgroundSheet by remember { mutableStateOf(true) }
 
     Box(
@@ -119,18 +161,25 @@ private fun BgRemoverEditorContent(
             .fillMaxSize()
             .statusBarsPadding()
             .navigationBarsPadding()
-            .background(if (isDark) Color(0xFF111827) else Color(0xFFEFF3FB))
+            .background(HomeBackgroundColor)
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
+            Spacer(modifier = Modifier.height(25.dp))
+
             EditorTopBar(
                 onBackClick = {
                     onAction(BgRemoverEditorAction.BackClick)
                 },
                 onSaveClick = {
                     onAction(BgRemoverEditorAction.SaveClick)
-                }
+                },
+                onEraserClick = onEraserClick,
+                onFlipClick = {
+                    onAction(BgRemoverEditorAction.FlipClick)
+                },
+                isFlipped = uiState.flipX == -1f
             )
 
             Box(
@@ -182,7 +231,7 @@ private fun BgRemoverEditorContent(
                         showBackgroundSheet = false
                     },
                     onBackgroundSelected = { backgroundUrl ->
-                        onBackgroundSelected(backgroundUrl)
+                        onAction(BgRemoverEditorAction.BackgroundClick(BgEditorBackground.GalleryImage(backgroundUrl)))
                         showBackgroundSheet = false
                     },
                     onGalleryClick = {
@@ -209,13 +258,15 @@ private fun BgRemoverEditorContent(
 @Composable
 private fun EditorTopBar(
     onBackClick: () -> Unit,
-    onSaveClick: () -> Unit
+    onSaveClick: () -> Unit,
+    onEraserClick: () -> Unit,
+    onFlipClick: () -> Unit,
+    isFlipped: Boolean
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .statusBarsPadding()
-            .height(72.dp)
+            .height(30.dp)
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -224,7 +275,7 @@ private fun EditorTopBar(
                 .size(30.dp)
                 .clip(RoundedCornerShape(10.dp))
                 .background(PrimaryColor)
-                .clickable(true,onClick = onBackClick),
+                .clickable { onBackClick() },
             contentAlignment = Alignment.Center
 
         ) {
@@ -251,14 +302,14 @@ private fun EditorTopBar(
             modifier = Modifier
                 .size(30.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(PrimaryColor)
-                .clickable(true, onClick = {}),
+                .background(if (isFlipped) Color.White else PrimaryColor)
+                .clickable { onFlipClick() },
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_flip),
                 contentDescription = null,
-                tint = Color.White,
+                tint = if (isFlipped) PrimaryColor else Color.White,
                 modifier = Modifier.size(12.dp)
             )
         }
@@ -270,7 +321,7 @@ private fun EditorTopBar(
                 .size(30.dp)
                 .clip(RoundedCornerShape(12.dp))
                 .background(PrimaryColor)
-                .clickable(true, onClick = {}),
+                .clickable { onEraserClick() },
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -289,7 +340,7 @@ private fun EditorTopBar(
                 .height(30.dp)
                 .width(60.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .clickable(true, onClick = onSaveClick),
+                .clickable { onSaveClick() },
             contentAlignment = Alignment.Center
 
 
@@ -348,7 +399,12 @@ private fun EditorPreview(
         Image(
             painter = rememberAsyncImagePainter(uiState.removedImageUri),
             contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer {
+                    scaleX = uiState.flipX
+                    scaleY = 1f
+                },
             contentScale = ContentScale.Fit
         )
     }

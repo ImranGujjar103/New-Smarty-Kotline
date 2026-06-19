@@ -37,7 +37,8 @@ val passportModule = module {
     viewModel {
         PassportDetailViewModel(
             savedStateHandle = get(),
-            repository = get()
+            repository = get(),
+            dataStorePrefs = get()
         )
     }
 

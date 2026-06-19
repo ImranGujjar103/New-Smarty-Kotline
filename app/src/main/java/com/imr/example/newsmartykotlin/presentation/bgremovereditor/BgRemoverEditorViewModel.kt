@@ -41,6 +41,12 @@ class BgRemoverEditorViewModel(
 
             BgRemoverEditorAction.SaveClick -> saveImage()
 
+            BgRemoverEditorAction.FlipClick -> {
+                _uiState.value = _uiState.value.copy(
+                    flipX = _uiState.value.flipX * -1f
+                )
+            }
+
             is BgRemoverEditorAction.TabClick -> {
                 _uiState.value = _uiState.value.copy(
                     selectedTab = action.tab
@@ -63,6 +69,12 @@ class BgRemoverEditorViewModel(
         )
     }
 
+    fun onEraserDone(uri: String) {
+        _uiState.value = _uiState.value.copy(
+            removedImageUri = uri
+        )
+    }
+
     private fun saveImage() {
         viewModelScope.launch {
             try {
@@ -70,7 +82,8 @@ class BgRemoverEditorViewModel(
 
                 val imagePath = exportBgRemoverImageUseCase(
                     removedImageUri = _uiState.value.removedImageUri,
-                    background = _uiState.value.selectedBackground
+                    background = _uiState.value.selectedBackground,
+                    flipX = _uiState.value.flipX
                 )
 
                 _uiState.value = _uiState.value.copy(isSaving = false)

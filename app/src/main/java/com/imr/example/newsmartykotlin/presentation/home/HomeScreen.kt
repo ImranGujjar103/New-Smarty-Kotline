@@ -1,6 +1,5 @@
 package com.imr.example.newsmartykotlin.presentation.home
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,7 +27,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,17 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.domain.model.HomeFeature
-import androidx.compose.runtime.getValue
-
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieComposition
-import com.imr.example.newsmartykotlin.ui.theme.CardColor
 import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
-import com.imr.example.newsmartykotlin.ui.theme.Orang1Color
-import com.imr.example.newsmartykotlin.ui.theme.Orang2Color
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayRegular
@@ -72,6 +59,7 @@ fun HomeScreen(
     onChangeClick: () -> Unit,
     onFeatureClick: (HomeFeature) -> Unit
 ) {
+
 
     HomeContent(
         state = state,
@@ -103,7 +91,7 @@ private fun HomeContent(
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        WhiteColor,
+                        HomeBackgroundColor,
                         HomeBackgroundColor
                     )
                 )
@@ -116,7 +104,7 @@ private fun HomeContent(
                 .fillMaxSize()
                 .padding(horizontal = 20.dp)
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(25.dp))
 
             HomeTopBar(
                 onCrownClick = onCrownClick,

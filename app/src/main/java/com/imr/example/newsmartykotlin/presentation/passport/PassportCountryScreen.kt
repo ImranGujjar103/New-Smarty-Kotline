@@ -1,6 +1,7 @@
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -41,6 +42,7 @@ import com.imr.example.newsmartykotlin.presentation.passport.components.Passport
 import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
+import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayRegular
 import com.imr.example.newsmartykotlin.ui.theme.TextColor
 import com.imr.example.newsmartykotlin.ui.theme.WhiteColor
 
@@ -63,47 +65,33 @@ fun PassportCountryScreen(
             .navigationBarsPadding()
             .padding(horizontal = 20.dp)
     ) {
+        Spacer(Modifier.height(25.dp))
+        PassportTopBar(
+            title = stringResource(R.string.select_document_type),
+            onBackClick = onBackClick
+        )
+
         Spacer(Modifier.height(20.dp))
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(
-                onClick = onBackClick,
-                modifier = Modifier
-                    .size(38.dp)
-                    .background(PrimaryColor, RoundedCornerShape(12.dp))
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_back),
-                    contentDescription = null,
-                    tint = WhiteColor
-                )
-            }
-
-            Spacer(Modifier.width(14.dp))
-
-            Text(
-                text = stringResource(R.string.select_document_type),
-                fontFamily = SfProDisplayBold,
-                fontSize = 20.sp,
-                color = TextColor
-            )
-        }
-
-        Spacer(Modifier.height(28.dp))
 
         TextField(
             value = search,
+            textStyle = LocalTextStyle.current.copy(
+                fontSize = 12.sp
+            ),
             onValueChange = {
                 search = it
                 onSearchChange(it)
             },
             placeholder = {
-                Text(text = stringResource(R.string.search_hint_passport))
+                Text(text = stringResource(R.string.search_hint_passport),
+                    fontSize = 12.sp,
+                    fontFamily = SfProDisplayRegular
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
-            shape = RoundedCornerShape(18.dp),
+                .height(50.dp),
+            shape = RoundedCornerShape(16.dp),
             singleLine = true,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = WhiteColor,
@@ -133,7 +121,7 @@ fun PassportCountryScreen(
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             tabs.forEach { item ->
                 val type = item.first
@@ -180,5 +168,44 @@ fun PassportCountryScreen(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun PassportTopBar(
+    title: String,
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(30.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .clickable(true, onClick = onBackClick)
+                .background(
+                    color = PrimaryColor,
+                    shape = RoundedCornerShape(10.dp)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_back),
+                contentDescription = stringResource(R.string.back),
+                tint = WhiteColor
+            )
+        }
+
+        Spacer(modifier = Modifier.width(14.dp))
+
+        Text(
+            text = title,
+            fontFamily = SfProDisplayBold,
+            fontSize = 18.sp,
+            color = TextColor
+        )
     }
 }

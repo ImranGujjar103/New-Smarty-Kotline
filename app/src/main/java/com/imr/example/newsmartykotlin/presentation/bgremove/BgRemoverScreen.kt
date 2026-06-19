@@ -1,5 +1,6 @@
 package com.imr.example.newsmartykotlin.presentation.bgremove
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -34,7 +35,7 @@ import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
-import com.imr.example.newsmartykotlin.ui.theme.CardColor
+import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.RedColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
@@ -116,7 +117,7 @@ fun BgRemoveScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(CardColor)
+            .background(HomeBackgroundColor)
             .statusBarsPadding()
             .navigationBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -172,6 +173,7 @@ fun BgRemoveScreen(
         )
 
         uiState.errorMessage?.let { error ->
+            Log.d("ErrorTesting", "BgRemoveScreen: error is  === >>> >> $error")
             Spacer(modifier = Modifier.height(14.dp))
 
             Text(

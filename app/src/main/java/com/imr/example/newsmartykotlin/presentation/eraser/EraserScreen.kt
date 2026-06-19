@@ -43,20 +43,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.layer.CompositingStrategy
+import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.domain.model.ErasePoint
@@ -64,19 +75,14 @@ import com.imr.example.newsmartykotlin.domain.model.EraseStroke
 import com.imr.example.newsmartykotlin.presentation.navigation.ERASED_IMAGE_RESULT_KEY
 import com.imr.example.newsmartykotlin.ui.theme.CardColor
 import com.imr.example.newsmartykotlin.ui.theme.DisabledTextColor
+import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
 import com.imr.example.newsmartykotlin.ui.theme.TextColor
 import com.imr.example.newsmartykotlin.ui.theme.WhiteColor
-import org.koin.androidx.compose.koinViewModel
-import androidx.compose.ui.draw.drawWithContent
-
-import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.graphics.layer.drawLayer
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.window.Dialog
-
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
+import kotlin.math.roundToInt
 
 
 @Composable
@@ -86,6 +92,10 @@ fun EraserScreen(
 ) {
     val scope = rememberCoroutineScope()
     val graphicsLayer = rememberGraphicsLayer()
+
+    LaunchedEffect(graphicsLayer) {
+        graphicsLayer.compositingStrategy = CompositingStrategy.Offscreen
+    }
     val uiState by viewModel.uiState.collectAsState()
 
     val localStrokes = remember { mutableStateListOf<EraseStroke>() }
@@ -143,10 +153,12 @@ fun EraserScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(CardColor)
+            .background(HomeBackgroundColor)
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
+        Spacer(modifier = Modifier.height(25.dp))
+
         EraserTopBar(
             isSaving = uiState.isSaving,
             onBackClick = viewModel::onBackClick,
@@ -160,32 +172,19 @@ fun EraserScreen(
                 }
             }
         )
+        Spacer(modifier = Modifier.height(20.dp))
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .background(WhiteColor)
-                .clipToBounds()
-                .drawWithContent {
-                    graphicsLayer.record {
-                        this@drawWithContent.drawContent()
-                    }
-                    drawLayer(graphicsLayer)
-                },
+                .checkerboardBackground()
+                .clipToBounds(),
             contentAlignment = Alignment.Center
         ) {
             val bitmap = uiState.previewBitmap
 
             if (bitmap != null) {
-                Image(
-                    bitmap = bitmap.asImageBitmap(),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clipToBounds()
-                )
-
                 Canvas(
                     modifier = Modifier
                         .fillMaxSize()
@@ -272,21 +271,44 @@ fun EraserScreen(
                         }
                     )
 
-                    allStrokes.forEach { stroke ->
-                        val path = Path()
+                    graphicsLayer.record {
+                        drawImage(
+                            image = bitmap.asImageBitmap(),
+                            dstSize = IntSize(size.width.roundToInt(), size.height.roundToInt())
+                        )
 
-                        stroke.points.forEachIndexed { index, point ->
-                            if (index == 0) {
-                                path.moveTo(point.x, point.y)
-                            } else {
-                                path.lineTo(point.x, point.y)
+                        allStrokes.forEach { stroke ->
+                            val path = Path()
+
+                            stroke.points.forEachIndexed { index, point ->
+                                if (index == 0) {
+                                    path.moveTo(point.x, point.y)
+                                } else {
+                                    path.lineTo(point.x, point.y)
+                                }
                             }
-                        }
 
-                        drawPath(
-                            path = path,
-                            color = WhiteColor,
-                            style = Stroke(width = stroke.brushSize)
+                            drawPath(
+                                path = path,
+                                color = Color.Transparent,
+                                style = Stroke(
+                                    width = stroke.brushSize,
+                                    cap = StrokeCap.Round,
+                                    join = StrokeJoin.Round
+                                ),
+                                blendMode = BlendMode.Clear
+                            )
+                        }
+                    }
+
+                    drawLayer(graphicsLayer)
+
+                    brushPreviewPoint?.let { point ->
+                        drawCircle(
+                            color = PrimaryColor,
+                            radius = uiState.brushSize / 2f,
+                            center = Offset(point.x, point.y),
+                            style = Stroke(width = 2.dp.toPx())
                         )
                     }
                 }
@@ -338,9 +360,9 @@ private fun EraserTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(58.dp)
-            .background(CardColor)
-            .padding(horizontal = 28.dp),
+            .height(30.dp)
+            .background(HomeBackgroundColor)
+            .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -357,7 +379,7 @@ private fun EraserTopBar(
                 painter = painterResource(R.drawable.ic_back),
                 contentDescription = null,
                 tint = WhiteColor,
-                modifier = Modifier.size(12.dp)
+                modifier = Modifier.size(10.dp)
             )
         }
 
@@ -367,6 +389,7 @@ private fun EraserTopBar(
             text = stringResource(R.string.photo_editor),
             fontFamily = SfProDisplayBold,
             color = TextColor,
+            fontSize = 18.sp,
             modifier = Modifier.weight(1f)
         )
 
@@ -632,6 +655,26 @@ private fun EraserResetDialog(
                     }
                 }
             }
+        }
+    }
+}
+
+private fun Modifier.checkerboardBackground(
+    squareSize: androidx.compose.ui.unit.Dp = 8.dp,
+    color1: Color = Color(0xFFE0E0E0),
+    color2: Color = Color.White
+): Modifier = this.drawBehind {
+    val sizePx = squareSize.toPx()
+    val columns = (size.width / sizePx).toInt() + 1
+    val rows = (size.height / sizePx).toInt() + 1
+    for (i in 0 until columns) {
+        for (j in 0 until rows) {
+            val color = if ((i + j) % 2 == 0) color1 else color2
+            drawRect(
+                color = color,
+                topLeft = Offset(i * sizePx, j * sizePx),
+                size = Size(sizePx, sizePx)
+            )
         }
     }
 }

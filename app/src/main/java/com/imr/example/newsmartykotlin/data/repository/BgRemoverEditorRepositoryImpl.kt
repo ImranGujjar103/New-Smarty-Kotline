@@ -12,6 +12,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.scale
+import androidx.core.net.toUri
 
 class BgRemoverEditorRepositoryImpl(
     private val context: Context
@@ -19,15 +22,12 @@ class BgRemoverEditorRepositoryImpl(
 
     override suspend fun exportImage(
         removedImageUri: String,
-        background: BgEditorBackground
+        background: BgEditorBackground,
+        flipX: Float
     ): String = withContext(Dispatchers.IO) {
         val foreground = loadBitmap(removedImageUri)
 
-        val outputBitmap = Bitmap.createBitmap(
-            foreground.width,
-            foreground.height,
-            Bitmap.Config.ARGB_8888
-        )
+        val outputBitmap = createBitmap(foreground.width, foreground.height)
 
         val canvas = Canvas(outputBitmap)
 
@@ -56,12 +56,23 @@ class BgRemoverEditorRepositoryImpl(
 
                 canvas.drawBitmap(scaledBg, 0f, 0f, null)
             }
-            else -> {
 
+            is BgEditorBackground.GalleryImage -> {
+                val bg = loadBitmap(background.imageUri)
+
+                val scaledBg = bg.scale(foreground.width, foreground.height)
+
+                canvas.drawBitmap(scaledBg, 0f, 0f, null)
             }
         }
 
-        canvas.drawBitmap(foreground, 0f, 0f, null)
+        if (flipX == -1f) {
+            val matrix = android.graphics.Matrix()
+            matrix.preScale(-1f, 1f, foreground.width / 2f, foreground.height / 2f)
+            canvas.drawBitmap(foreground, matrix, null)
+        } else {
+            canvas.drawBitmap(foreground, 0f, 0f, null)
+        }
 
         val dir = File(context.filesDir, "bg_remover_exports")
         if (!dir.exists()) dir.mkdirs()
@@ -75,7 +86,13 @@ class BgRemoverEditorRepositoryImpl(
     }
 
     private fun loadBitmap(uriString: String): Bitmap {
-        val uri = Uri.parse(uriString)
+        val uri = uriString.toUri()
+
+        if (uri.scheme == "http" || uri.scheme == "https") {
+            return java.net.URL(uriString).openStream().use {
+                BitmapFactory.decodeStream(it)
+            } ?: error("Unable to load image from URL")
+        }
 
         return context.contentResolver.openInputStream(uri)?.use {
             BitmapFactory.decodeStream(it)

@@ -35,6 +35,8 @@ import com.imr.example.newsmartykotlin.ui.theme.WhiteColor
 
 @Composable
 fun PermissionSettingsDialog(
+    title: String = stringResource(R.string.permission_required),
+    message: String = stringResource(R.string.gallery_access_is_required_to_continue_please_enable_it_from_settings),
     onCancelClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
@@ -64,7 +66,7 @@ fun PermissionSettingsDialog(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = stringResource(R.string.permission_required),
+                    text = title,
                     fontFamily = SfProDisplayBold,
                     fontSize = 16.sp,
                     color = TextColor,
@@ -74,7 +76,7 @@ fun PermissionSettingsDialog(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
-                    text = stringResource(R.string.gallery_access_is_required_to_continue_please_enable_it_from_settings),
+                    text = message,
                     fontSize = 12.sp,
                     fontFamily = SfProDisplayRegular,
                     color = TextColor,
@@ -89,13 +91,13 @@ fun PermissionSettingsDialog(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     DialogSecondaryButton(
-                        text = "Cancel",
+                        text = stringResource(R.string.cancel),
                         onClick = onCancelClick,
                         modifier = Modifier.weight(1f)
                     )
 
                     DialogPrimaryButton(
-                        text = "Settings",
+                        text = stringResource(R.string.settings),
                         onClick = onSettingsClick,
                         modifier = Modifier.weight(1f)
                     )

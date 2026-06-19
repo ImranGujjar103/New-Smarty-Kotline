@@ -4,17 +4,18 @@ import android.graphics.RectF
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,17 +35,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PaintingStyle.Companion.Stroke
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
-import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
+import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
 import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
@@ -52,7 +55,6 @@ import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
 import com.imr.example.newsmartykotlin.ui.theme.TextColor
 import com.imr.example.newsmartykotlin.ui.theme.WhiteColor
 import org.koin.androidx.compose.koinViewModel
-import kotlin.math.roundToInt
 
 @Composable
 fun PassportCropperScreen(
@@ -79,9 +81,27 @@ fun PassportCropperScreen(
         }
     }
 
-    var cropOffset by remember { mutableStateOf(Offset.Zero) }
-    var imageRect by remember { mutableStateOf(RectF()) }
+    var imageScale by remember { mutableStateOf(1f) }
+    var imageOffset by remember { mutableStateOf(Offset.Zero) }
+    var baseImageRect by remember { mutableStateOf(RectF()) }
     var cropRect by remember { mutableStateOf(RectF()) }
+
+    val transformedImageRect = remember(baseImageRect, imageScale, imageOffset) {
+        val width = baseImageRect.width() * imageScale
+        val height = baseImageRect.height() * imageScale
+        val left = baseImageRect.left + imageOffset.x - (width - baseImageRect.width()) / 2f
+        val top = baseImageRect.top + imageOffset.y - (height - baseImageRect.height()) / 2f
+        RectF(left, top, left + width, top + height)
+    }
+
+    LaunchedEffect(transformedImageRect, cropRect) {
+        if (transformedImageRect.width() > 0 && cropRect.width() > 0) {
+            viewModel.onCropAreaChanged(
+                imageBounds = transformedImageRect,
+                cropRect = cropRect
+            )
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -90,6 +110,8 @@ fun PassportCropperScreen(
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
+        Spacer(modifier = Modifier.height(25.dp))
+
         PassportCropperTopBar(
             onBackClick = viewModel::onBackClick,
             onContinueClick = viewModel::onContinueClick
@@ -99,6 +121,12 @@ fun PassportCropperScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .clipToBounds()
+                .pointerInput(Unit) {
+                    detectTransformGestures { _, pan, zoom, _ ->
+                        imageScale *= zoom
+                        imageOffset += pan
+                    }
+                }
         ) {
 
 
@@ -110,44 +138,28 @@ fun PassportCropperScreen(
                     .onGloballyPositioned { coordinates ->
                         val position = coordinates.positionInRoot()
 
-                        imageRect = RectF(
+                        baseImageRect = RectF(
                             position.x,
                             position.y,
                             position.x + coordinates.size.width,
                             position.y + coordinates.size.height
                         )
-
-                        viewModel.onCropAreaChanged(
-                            imageBounds = imageRect,
-                            cropRect = cropRect
-                        )
                     }
+                    .graphicsLayer(
+                        scaleX = imageScale,
+                        scaleY = imageScale,
+                        translationX = imageOffset.x,
+                        translationY = imageOffset.y
+                    )
             )
 
             PassportFixedCropFrame(
                 modifier = Modifier
-                    .align(Alignment.Center)
-                    .offset {
-                        IntOffset(
-                            x = cropOffset.x.roundToInt(),
-                            y = cropOffset.y.roundToInt()
-                        )
-                    }
-                    .pointerInput(Unit) {
-                        detectDragGestures { change, dragAmount ->
-                            change.consume()
-                            cropOffset += dragAmount
-                        }
-                    },
+                    .align(Alignment.Center),
                 inchText = uiState.inchText,
                 passportPixel = uiState.pixelText,
                 onCropRectReady = { rect ->
                     cropRect = rect
-
-                    viewModel.onCropAreaChanged(
-                        imageBounds = imageRect,
-                        cropRect = cropRect
-                    )
                 }
             )
 
@@ -170,29 +182,40 @@ private fun PassportCropperTopBar(
     onBackClick: () -> Unit,
     onContinueClick: () -> Unit
 ) {
-    androidx.compose.foundation.layout.Row(
+    Row(
         modifier = Modifier
-            .height(70.dp)
+            .height(30.dp)
             .background(HomeBackgroundColor)
-            .padding(horizontal = 22.dp),
+            .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Crop",
+            text = stringResource(R.string.crop),
             fontFamily = SfProDisplayBold,
             color = TextColor,
+            fontSize = 20.sp,
             modifier = Modifier.weight(1f)
         )
 
         Button(
             onClick = onContinueClick,
+            shape = RoundedCornerShape(10.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = PrimaryColor,
-                contentColor = WhiteColor
+                disabledContainerColor = PrimaryColor.copy(alpha = 0.6f)
             ),
-            shape = RoundedCornerShape(12.dp)
+            contentPadding = PaddingValues(0.dp),
+            modifier = Modifier
+                .width(60.dp)
+                .height(30.dp)
         ) {
-            Text("Continue")
+            Text(
+                text = stringResource(R.string.next),
+                color = WhiteColor,
+                fontSize = 14.sp,
+                fontFamily = SfProDisplayBold,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.imr.example.newsmartykotlin.presentation.bgremove
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -109,6 +110,7 @@ class BgRemoveViewModel(
                 }
 
             } catch (e: Exception) {
+                Log.d("ErrorTesting", "removeBackground: Exception is ====>>> ${e.message}")
                 _uiState.update {
                     it.copy(
                         isLoading = false,

@@ -28,6 +28,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,12 +65,16 @@ fun GalleryPermissionScreen(
 
     val uiState by viewModel.uiState.collectAsState()
 
+    val isAlreadyGranted = remember(context) {
+        GalleryPermissionHelper.hasGalleryPermission(context)
+    }
+
     val permission = GalleryPermissionHelper.getRequiredPermission()
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        if (isGranted) {
+        if (isGranted || GalleryPermissionHelper.hasGalleryPermission(context)) {
             viewModel.onPermissionGranted()
         } else {
             val shouldShowRationale = activity?.let {
@@ -88,7 +93,7 @@ fun GalleryPermissionScreen(
     }
 
     LaunchedEffect(Unit) {
-        if (GalleryPermissionHelper.hasGalleryPermission(context)) {
+        if (isAlreadyGranted) {
             viewModel.onPermissionGranted()
         }
     }
@@ -163,6 +168,15 @@ fun GalleryPermissionScreen(
         }
     }
 
+    if (isAlreadyGranted || uiState.isPermissionGranted) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(CardColor)
+        )
+        return
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -174,6 +188,8 @@ fun GalleryPermissionScreen(
                 .statusBarsPadding()
                 .navigationBarsPadding()
         ) {
+            Spacer(modifier = Modifier.height(25.dp))
+
             GalleryPermissionTopBar(
                 onBackClick = {
                     navController.popBackStack()

@@ -63,7 +63,7 @@ import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.domain.model.CropAspectRatio
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
 import com.imr.example.newsmartykotlin.ui.theme.AppTypography
-import com.imr.example.newsmartykotlin.ui.theme.CardColor
+import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.RedColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
@@ -111,16 +111,18 @@ fun CropFaceScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(CardColor)
+            .background(HomeBackgroundColor)
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
+        Spacer(modifier = Modifier.height(25.dp))
+
         CropTopBar(
             isLoading = uiState.isCropping,
             onBackClick = viewModel::onBackClick,
             onNextClick = viewModel::onNextClick
         )
-
+        Spacer(modifier = Modifier.height(20.dp))
         if (uiState.errorMessage != null) {
             Text(
                 text = uiState.errorMessage ?: "",
@@ -157,9 +159,9 @@ private fun CropTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(60.dp)
-            .background(CardColor)
-            .padding(horizontal = 22.dp),
+            .height(30.dp)
+            .background(HomeBackgroundColor)
+            .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -180,7 +182,7 @@ private fun CropTopBar(
                 painter = painterResource(R.drawable.ic_back),
                 contentDescription = null,
                 tint = WhiteColor,
-                modifier = Modifier.size(12.dp)
+                modifier = Modifier.size(10.dp)
             )
         }
 
@@ -556,7 +558,6 @@ private fun updateCropRect(
             bottom += dragAmount.y
         }
 
-        else -> Unit
     }
 
     // Prevent inversion
@@ -572,7 +573,6 @@ private fun updateCropRect(
                 right = left + minSize
             }
 
-            else -> Unit
         }
     }
 
@@ -588,7 +588,6 @@ private fun updateCropRect(
                 bottom = top + minSize
             }
 
-            else -> Unit
         }
     }
 

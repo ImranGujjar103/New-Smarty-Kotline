@@ -22,6 +22,9 @@ class SavedViewModel(
     private val isForPassport: Boolean =
         savedStateHandle[AppRoutes.Saved.ARG_IS_FOR_PASSPORT] ?: false
 
+    private val isForBgRemover: Boolean =
+        savedStateHandle[AppRoutes.Saved.ARG_IS_FOR_BG_REMOVER] ?: false
+
     private val countryId: String =
         savedStateHandle[AppRoutes.Saved.ARG_COUNTRY_ID] ?: ""
 
@@ -32,6 +35,7 @@ class SavedViewModel(
         SavedUiState(
             imagePath = imagePath,
             isForPassport = isForPassport,
+            isForBgRemover = isForBgRemover,
             countryId = countryId,
             documentType = documentType
         )
@@ -45,13 +49,21 @@ class SavedViewModel(
     fun onTryMoreClick() {
         viewModelScope.launch {
             _event.emit(
-                if (isForPassport) {
-                    SavedEvent.NavigatePassportTryMore(
-                        countryId = countryId,
-                        documentType = documentType
-                    )
-                } else {
-                    SavedEvent.NavigateTryMore
+                when {
+                    isForPassport -> {
+                        SavedEvent.NavigatePassportTryMore(
+                            countryId = countryId,
+                            documentType = documentType
+                        )
+                    }
+
+                    isForBgRemover -> {
+                        SavedEvent.NavigateBgRemoverTryMore
+                    }
+
+                    else -> {
+                        SavedEvent.NavigateTryMore
+                    }
                 }
             )
         }

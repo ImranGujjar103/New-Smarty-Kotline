@@ -18,6 +18,7 @@ data class BgRemoverEditorUiState(
     val removedImageUri: String = "",
     val selectedTab: BgEditorTab = BgEditorTab.ALL,
     val selectedBackground: BgEditorBackground = BgEditorBackground.Transparent,
+    val flipX: Float = 1f,
     val isSaving: Boolean = false,
     val errorMessage: String? = null
 )
@@ -25,6 +26,7 @@ data class BgRemoverEditorUiState(
 sealed interface BgRemoverEditorAction {
     data object BackClick : BgRemoverEditorAction
     data object SaveClick : BgRemoverEditorAction
+    data object FlipClick : BgRemoverEditorAction
     data class TabClick(val tab: BgEditorTab) : BgRemoverEditorAction
     data class BackgroundClick(val background: BgEditorBackground) : BgRemoverEditorAction
 }

@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.navigation.NavController
@@ -44,6 +45,14 @@ fun SavedScreen(
                 SavedEvent.NavigateTryMore -> {
                     navController.navigate(AppRoutes.Gallery.route) {
                         popUpTo(AppRoutes.Gallery.route) {
+                            inclusive = true
+                        }
+                    }
+                }
+
+                SavedEvent.NavigateBgRemoverTryMore -> {
+                    navController.navigate(AppRoutes.GalleryForBgRemover.createRoute()) {
+                        popUpTo(AppRoutes.GalleryForBgRemover.route) {
                             inclusive = true
                         }
                     }
@@ -77,8 +86,10 @@ fun SavedScreen(
             .background(HomeBackgroundColor)
             .statusBarsPadding()
             .navigationBarsPadding()
-            .padding(horizontal = 22.dp)
+            .padding(horizontal = 20.dp)
     ) {
+        Spacer(modifier = Modifier.height(25.dp))
+
         SavedTopBar(
             onHomeClick = {
                 navController.navigate(AppRoutes.Home.route) {
@@ -90,7 +101,7 @@ fun SavedScreen(
             }
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         SavedImageCard(
             imagePath = uiState.imagePath
@@ -144,20 +155,21 @@ private fun SavedTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(72.dp),
+            .height(30.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = stringResource(R.string.saved),
             fontFamily = SfProDisplayBold,
             color = TextColor,
+            fontSize = 16.sp,
             modifier = Modifier.weight(1f)
         )
 
         Box(
             modifier = Modifier
-                .size(34.dp)
-                .clip(RoundedCornerShape(12.dp))
+                .size(30.dp)
+                .clip(RoundedCornerShape(10.dp))
                 .background(PrimaryColor)
                 .clickable { onHomeClick() },
             contentAlignment = Alignment.Center
@@ -166,7 +178,7 @@ private fun SavedTopBar(
                 painter = painterResource(R.drawable.ic_saved),
                 contentDescription = stringResource(R.string.saved),
                 tint = WhiteColor,
-                modifier = Modifier.size(18.dp)
+                modifier = Modifier.size(12.dp)
             )
         }
     }
@@ -189,7 +201,7 @@ private fun SavedImageCard(
             contentDescription = stringResource(R.string.saved_image),
             modifier = Modifier
                 .fillMaxSize()
-                .padding(10.dp),
+                ,
             contentScale = ContentScale.Fit
         )
     }

@@ -49,6 +49,7 @@ import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
 import com.imr.example.newsmartykotlin.presentation.navigation.SELECTED_BACKGROUND_IMAGE_KEY
 import com.imr.example.newsmartykotlin.ui.theme.AppTypography
 import com.imr.example.newsmartykotlin.ui.theme.CardColor
+import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.RedColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
@@ -109,13 +110,16 @@ fun GalleryScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(CardColor)
+            .background(HomeBackgroundColor)
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
+        Spacer(modifier = Modifier.height(25.dp))
+
         GalleryTopBar(
             onBackClick = viewModel::onBackClick
         )
+        Spacer(modifier = Modifier.height(20.dp))
 
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -289,11 +293,11 @@ private fun GalleryTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(60.dp)
+            .height(30.dp)
             .background(
-                CardColor
+                HomeBackgroundColor
             )
-            .padding(horizontal = 22.dp),
+            .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(

@@ -127,12 +127,15 @@ private fun CreationsGrid(
     onBackClick: () -> Unit,
     onCreationClick: (Creation) -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp)) {
+        Spacer(modifier = Modifier.height(25.dp))
+
         CreationTopBar(
             title = stringResource(R.string.creation),
             onBackClick = onBackClick,
             showDelete = false
         )
+        Spacer(modifier = Modifier.height(7.dp))
 
         if (isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -146,8 +149,7 @@ private fun CreationsGrid(
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 20.dp),
+                    .fillMaxSize(),
                 contentPadding = PaddingValues(vertical = 20.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -179,8 +181,10 @@ private fun CreationDetail(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 22.dp)
+            .padding(horizontal = 20.dp)
     ) {
+        Spacer(modifier = Modifier.height(25.dp))
+
         CreationTopBar(
             title = stringResource(R.string.creation),
             onBackClick = onBackClick,
@@ -256,7 +260,7 @@ private fun CreationTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(50.dp).padding(horizontal = 20.dp),
+            .height(30.dp),
         verticalAlignment = Alignment.Bottom
     ) {
         Box(

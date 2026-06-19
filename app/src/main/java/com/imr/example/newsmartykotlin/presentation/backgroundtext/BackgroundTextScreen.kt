@@ -57,8 +57,11 @@ import com.imr.example.newsmartykotlin.presentation.backgroundtext.components.Te
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
 import com.imr.example.newsmartykotlin.presentation.navigation.SELECTED_BACKGROUND_IMAGE_KEY
 import com.imr.example.newsmartykotlin.ui.theme.CardColor
+import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
+import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayRegular
+import com.imr.example.newsmartykotlin.ui.theme.SubTextColor
 import com.imr.example.newsmartykotlin.ui.theme.TextColor
 import com.imr.example.newsmartykotlin.ui.theme.WhiteColor
 import kotlinx.coroutines.launch
@@ -105,13 +108,15 @@ fun BackgroundTextScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(CardColor)
+            .background(HomeBackgroundColor)
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
+            Spacer(modifier = Modifier.height(25.dp))
+
             BackgroundTextTopBar(
                 isSaving = uiState.isSaving,
                 onBackClick = {
@@ -130,6 +135,7 @@ fun BackgroundTextScreen(
                     }
                 }
             )
+            Spacer(modifier = Modifier.height(20.dp))
 
             Box(
                 modifier = Modifier
@@ -212,6 +218,7 @@ fun BackgroundTextScreen(
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(4.dp))
 
             BackgroundTextBottomBar(
                 onBackgroundClick = {
@@ -304,9 +311,9 @@ private fun BackgroundTextTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(58.dp)
-            .background(CardColor)
-            .padding(horizontal = 28.dp),
+            .height(30.dp)
+            .background(HomeBackgroundColor)
+            .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -323,7 +330,7 @@ private fun BackgroundTextTopBar(
                 painter = painterResource(R.drawable.ic_back),
                 contentDescription = null,
                 tint = WhiteColor,
-                modifier = Modifier.size(12.dp)
+                modifier = Modifier.size(10.dp)
             )
         }
 
@@ -408,16 +415,16 @@ private fun BackgroundTextBottomItem(
             painter = painterResource(icon),
             contentDescription = null,
             tint = TextColor,
-            modifier = Modifier.size(22.dp)
+            modifier = Modifier.size(24.dp)
         )
 
-        Spacer(modifier = Modifier.height(5.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         Text(
             text = title,
-            fontFamily = com.imr.example.newsmartykotlin.ui.theme.SfProDisplayRegular,
-            fontSize = 12.sp,
-            color = com.imr.example.newsmartykotlin.ui.theme.SubTextColor
+            fontFamily = SfProDisplayRegular,
+            fontSize = 10.sp,
+            color = SubTextColor
         )
     }
 }

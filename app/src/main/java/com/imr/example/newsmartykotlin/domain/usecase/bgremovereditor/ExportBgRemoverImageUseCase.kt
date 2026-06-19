@@ -8,11 +8,13 @@ class ExportBgRemoverImageUseCase(
 ) {
     suspend operator fun invoke(
         removedImageUri: String,
-        background: BgEditorBackground
+        background: BgEditorBackground,
+        flipX: Float
     ): String {
         return repository.exportImage(
             removedImageUri = removedImageUri,
-            background = background
+            background = background,
+            flipX = flipX
         )
     }
 }

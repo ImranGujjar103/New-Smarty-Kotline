@@ -28,6 +28,7 @@ import coil3.compose.AsyncImage
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.domain.model.SuitItem
 import com.imr.example.newsmartykotlin.ui.theme.CardColor
+import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
 import com.imr.example.newsmartykotlin.ui.theme.TextColor
@@ -46,8 +47,8 @@ fun SuitScreen(
             .background(
                 Brush.verticalGradient(
                     listOf(
-                        CardColor,
-                        CardColor
+                        HomeBackgroundColor,
+                        HomeBackgroundColor
                     )
                 )
             )
@@ -59,7 +60,7 @@ fun SuitScreen(
                 .fillMaxSize()
                 .padding(horizontal = 20.dp)
         ) {
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(25.dp))
 
             SuitTopBar(onBackClick = onBackClick)
 
@@ -114,7 +115,7 @@ private fun SuitTopBar(
                 painter = painterResource(R.drawable.ic_back),
                 contentDescription = null,
                 tint = WhiteColor,
-                modifier = Modifier.size(12.dp)
+                modifier = Modifier.size(10.dp)
             )
         }
 
@@ -123,7 +124,7 @@ private fun SuitTopBar(
         Text(
             text = stringResource(R.string.suits),
             fontFamily = SfProDisplayBold,
-            fontSize = 22.sp,
+            fontSize = 18.sp,
             color = TextColor
         )
     }

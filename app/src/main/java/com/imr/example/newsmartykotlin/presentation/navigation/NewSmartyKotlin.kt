@@ -3,6 +3,7 @@ package com.imr.example.newsmartykotlin.presentation.navigation
 import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -27,6 +28,7 @@ import com.imr.example.newsmartykotlin.presentation.passport.PassportDetailRoute
 import com.imr.example.newsmartykotlin.presentation.passport.background.PassportBackgroundScreen
 import com.imr.example.newsmartykotlin.presentation.passport.cropper.PassportCropperScreen
 import com.imr.example.newsmartykotlin.presentation.passport.result.PassportResultScreen
+import com.imr.example.newsmartykotlin.presentation.permission.GalleryPermissionHelper
 import com.imr.example.newsmartykotlin.presentation.permission.GalleryPermissionScreen
 import com.imr.example.newsmartykotlin.presentation.photoeditor.EditorAction
 import com.imr.example.newsmartykotlin.presentation.photoeditor.PhotoEditorScreen
@@ -40,6 +42,7 @@ import com.imr.example.newsmartykotlin.presentation.suits.SuitRoute
 fun NewSmartyKotlin(
     navController: NavHostController
 ) {
+    val context = LocalContext.current
     val isAdLoading = AdLoadingState.isShowing.collectAsStateWithLifecycle()
 
     Box {
@@ -170,9 +173,15 @@ fun NewSmartyKotlin(
 
                             navController.popBackStack()
                         } else {
-                            navController.navigate(
-                                AppRoutes.GalleryPermission.createRoute(suitItem.suitUrl)
-                            )
+                            if (GalleryPermissionHelper.hasGalleryPermission(context)) {
+                                navController.navigate(
+                                    AppRoutes.Gallery.createRoute(suitItem.suitUrl)
+                                )
+                            } else {
+                                navController.navigate(
+                                    AppRoutes.GalleryPermission.createRoute(suitItem.suitUrl)
+                                )
+                            }
                         }
                     }
                 )
@@ -403,12 +412,21 @@ fun NewSmartyKotlin(
                         )
                     },
                     onGalleryClick = {
-                        navController.navigate(
-                            AppRoutes.GalleryPermissionForPassport.createRoute(
-                                countryId = countryId,
-                                documentType = documentType.name
+                        if (GalleryPermissionHelper.hasGalleryPermission(context)) {
+                            navController.navigate(
+                                AppRoutes.GalleryForPassport.createRoute(
+                                    countryId = countryId,
+                                    documentType = documentType.name
+                                )
                             )
-                        )
+                        } else {
+                            navController.navigate(
+                                AppRoutes.GalleryPermissionForPassport.createRoute(
+                                    countryId = countryId,
+                                    documentType = documentType.name
+                                )
+                            )
+                        }
                     }
                 )
             }
@@ -551,12 +569,21 @@ fun NewSmartyKotlin(
                         )
                     },
                     onGalleryClick = {
-                        navController.navigate(
-                            AppRoutes.GalleryPermissionForPassport.createRoute(
-                                countryId = countryId,
-                                documentType = documentType.name
+                        if (GalleryPermissionHelper.hasGalleryPermission(context)) {
+                            navController.navigate(
+                                AppRoutes.GalleryForPassport.createRoute(
+                                    countryId = countryId,
+                                    documentType = documentType.name
+                                )
                             )
-                        )
+                        } else {
+                            navController.navigate(
+                                AppRoutes.GalleryPermissionForPassport.createRoute(
+                                    countryId = countryId,
+                                    documentType = documentType.name
+                                )
+                            )
+                        }
                     }
                 )
             }
@@ -580,6 +607,10 @@ fun NewSmartyKotlin(
                     navArgument(AppRoutes.Saved.ARG_DOCUMENT_TYPE) {
                         type = NavType.StringType
                         defaultValue = ""
+                    },
+                    navArgument(AppRoutes.Saved.ARG_IS_FOR_BG_REMOVER) {
+                        type = NavType.BoolType
+                        defaultValue = false
                     }
                 )
             ) {

@@ -696,7 +696,7 @@ class AdViewModel(
                  * It will be shown after Onboarding.
                  */
                 isFirstSplash -> {
-                    dataStorePrefs.isFirstSplash(false)
+
 
                     NavigationState.NavigateToLanguage(
                         showAd = shouldShowAd,

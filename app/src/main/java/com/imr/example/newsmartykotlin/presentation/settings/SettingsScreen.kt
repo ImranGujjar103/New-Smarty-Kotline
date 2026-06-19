@@ -102,7 +102,10 @@ fun SettingsScreen(
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
+        Spacer(modifier = Modifier.height(25.dp))
+
         SettingsTopBar(onBackClick = viewModel::onBackClick)
+        Spacer(modifier = Modifier.height(20.dp))
 
         Column(
             modifier = Modifier
@@ -153,13 +156,13 @@ private fun SettingsTopBar(onBackClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(72.dp)
+            .height(30.dp)
             .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
-                .size(34.dp)
+                .size(30.dp)
                 .clip(RoundedCornerShape(10.dp))
                 .background(PrimaryColor)
                 .clickable { onBackClick() },

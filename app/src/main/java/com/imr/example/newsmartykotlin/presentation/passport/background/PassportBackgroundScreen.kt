@@ -43,7 +43,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -59,6 +58,7 @@ import coil3.compose.rememberAsyncImagePainter
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.presentation.backgroundtext.components.CustomColorPickerDialog
 import com.imr.example.newsmartykotlin.presentation.navigation.RESULT_UPDATED_IMAGE_URI
+import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
 import com.imr.example.newsmartykotlin.ui.theme.TextColor
@@ -146,7 +146,7 @@ fun PassportBackgroundScreen(
                         painter = rememberAsyncImagePainter(uiState.imageUri.toUri()),
                         contentDescription = stringResource(R.string.passport_background_preview),
                         modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
+
                     )
                 }
             }
@@ -201,10 +201,10 @@ private fun PassportBackgroundTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFFE9EEF8))
+            .background(HomeBackgroundColor)
             .padding(WindowInsets.statusBars.asPaddingValues())
-            .padding(horizontal = 28.dp)
-            .padding(top = 32.dp, bottom = 80.dp),
+            .padding(horizontal = 20.dp)
+            .padding(top = 25.dp, bottom = 80.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -219,11 +219,11 @@ private fun PassportBackgroundTopBar(
                 painter = painterResource(R.drawable.ic_back),
                 contentDescription = stringResource(R.string.back),
                 tint = WhiteColor,
-                modifier = Modifier.size(13.dp)
+                modifier = Modifier.size(10.dp)
             )
         }
 
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(14.dp))
 
         Text(
             text = stringResource(R.string.background),
