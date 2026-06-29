@@ -57,7 +57,7 @@ import com.imr.example.newsmartykotlin.presentation.backgroundtext.components.St
 import com.imr.example.newsmartykotlin.presentation.backgroundtext.components.TextEditingBottomSheet
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
 import com.imr.example.newsmartykotlin.presentation.navigation.SELECTED_BACKGROUND_IMAGE_KEY
-import com.imr.example.newsmartykotlin.ui.theme.CardColor
+import com.imr.example.newsmartykotlin.presentation.permission.GalleryPermissionHelper
 import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
@@ -101,7 +101,12 @@ fun BackgroundTextScreen(
         viewModel.event.collect { event ->
             when (event) {
                 is BackgroundTextEvent.Done -> {
-                     navController.navigate(AppRoutes.Saved.createRoute(event.imagePath))
+                     navController.navigate(
+                         AppRoutes.Saved.createRoute(
+                             imagePath = event.imagePath,
+                             isForSuitChanger = true
+                         )
+                     )
                 }
             }
         }
@@ -255,6 +260,7 @@ fun BackgroundTextScreen(
     }
     if (showBackgroundSheet) {
         BackgroundBottomSheet(
+            selectedBackgroundPath = uiState.backgroundPath,
             onDismiss = {
                 showBackgroundSheet = false
             },
@@ -267,7 +273,7 @@ fun BackgroundTextScreen(
                 showBackgroundSheet = false
             },
             onGalleryClick = {
-                if (com.imr.example.newsmartykotlin.presentation.permission.GalleryPermissionHelper.hasGalleryPermission(context)) {
+                if (GalleryPermissionHelper.hasGalleryPermission(context)) {
                     navController.navigate(AppRoutes.GalleryForBackground.route)
                 } else {
                     navController.navigate(AppRoutes.GalleryPermissionForBackground.createRoute())

@@ -116,7 +116,7 @@ fun PassportCropperScreen(
             onBackClick = viewModel::onBackClick,
             onContinueClick = viewModel::onContinueClick
         )
-
+        Spacer(modifier = Modifier.height(20.dp))
         Box(
             modifier = Modifier
                 .fillMaxSize()

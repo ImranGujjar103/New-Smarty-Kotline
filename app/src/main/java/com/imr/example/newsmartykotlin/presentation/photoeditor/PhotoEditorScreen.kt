@@ -211,6 +211,20 @@ fun PhotoEditorScreen(
                 val faceWidthDp = minOf(122.dp, parentWidthDp * 0.35f)
                 val faceHeightDp = minOf(150.dp, parentHeightDp * 0.28f)
 
+                TransformableEditorImage(
+                    imageUri = uiState.faceImageUri.toUri(),
+                    selected = selectedLayer == EditableLayer.FACE,
+                    offsetState = faceOffset,
+                    scaleState = faceScale,
+                    rotationState = faceRotation,
+                    flipXState = faceFlipX,
+                    minScale = 0.4f,
+                    maxScale = 4f,
+                    modifier = Modifier
+                        .width(faceWidthDp)
+                        .height(faceHeightDp)
+                )
+
                 if (uiState.suitUrl.isNotEmpty()) {
                     TransformableEditorImage(
                         imageUri = uiState.suitUrl,
@@ -229,20 +243,6 @@ fun PhotoEditorScreen(
                             .wrapContentSize()
                     )
                 }
-
-                TransformableEditorImage(
-                    imageUri = uiState.faceImageUri.toUri(),
-                    selected = selectedLayer == EditableLayer.FACE,
-                    offsetState = faceOffset,
-                    scaleState = faceScale,
-                    rotationState = faceRotation,
-                    flipXState = faceFlipX,
-                    minScale = 0.4f,
-                    maxScale = 4f,
-                    modifier = Modifier
-                        .width(faceWidthDp)
-                        .height(faceHeightDp)
-                )
             }
 
             FloatingLayerButton(
@@ -312,18 +312,20 @@ private fun TransformableEditorImage(
 
                 rotationZ = rotationState.floatValue
             }
-            .pointerInput(selected) {
-                detectTransformGestures { _, pan, zoom, rotate ->
-                    if (selected) {
-                        offsetState.value += pan
+            .then(
+                if (selected) {
+                    Modifier.pointerInput(Unit) {
+                        detectTransformGestures { _, pan, zoom, rotate ->
+                            offsetState.value += pan
 
-                        scaleState.floatValue =
-                            (scaleState.floatValue * zoom).coerceIn(minScale, maxScale)
+                            scaleState.floatValue =
+                                (scaleState.floatValue * zoom).coerceIn(minScale, maxScale)
 
-                        rotationState.floatValue += rotate
+                            rotationState.floatValue += rotate
+                        }
                     }
-                }
-            },
+                } else Modifier
+            ),
         contentAlignment = Alignment.Center
     ) {
         Image(

@@ -85,7 +85,8 @@ fun PassportCountryScreen(
             placeholder = {
                 Text(text = stringResource(R.string.search_hint_passport),
                     fontSize = 12.sp,
-                    fontFamily = SfProDisplayRegular
+                    fontFamily = SfProDisplayRegular,
+                    color = TextColor
                 )
             },
             modifier = Modifier
@@ -94,6 +95,11 @@ fun PassportCountryScreen(
             shape = RoundedCornerShape(16.dp),
             singleLine = true,
             colors = TextFieldDefaults.colors(
+                focusedTextColor = TextColor,
+                unfocusedTextColor = TextColor,
+                cursorColor = TextColor,
+                errorCursorColor = TextColor,
+                errorIndicatorColor = Color.Transparent,
                 focusedContainerColor = WhiteColor,
                 unfocusedContainerColor = WhiteColor,
                 disabledContainerColor = WhiteColor,
@@ -105,7 +111,7 @@ fun PassportCountryScreen(
                 Icon(
                     painter = painterResource(R.drawable.ic_search),
                     contentDescription = null,
-                    tint = Color.Unspecified
+                    tint = TextColor
                 )
             }
         )

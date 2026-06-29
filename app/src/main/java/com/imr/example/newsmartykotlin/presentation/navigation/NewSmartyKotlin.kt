@@ -1,9 +1,11 @@
 package com.imr.example.newsmartykotlin.presentation.navigation
 
-import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -11,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.imr.example.newsmartykotlin.core.ads.AdLoadingState
+import com.imr.example.newsmartykotlin.core.network.NetworkMonitor
 import com.imr.example.newsmartykotlin.domain.model.DocumentType
 import com.imr.example.newsmartykotlin.presentation.backgroundtext.BackgroundTextScreen
 import com.imr.example.newsmartykotlin.presentation.bgremove.BgRemoveScreen
@@ -37,6 +40,8 @@ import com.imr.example.newsmartykotlin.presentation.saved.SavedScreen
 import com.imr.example.newsmartykotlin.presentation.settings.SettingsScreen
 import com.imr.example.newsmartykotlin.presentation.splash.SplashRoute
 import com.imr.example.newsmartykotlin.presentation.suits.SuitRoute
+import com.imr.example.newsmartykotlin.R
+import org.koin.compose.koinInject
 
 @Composable
 fun NewSmartyKotlin(
@@ -44,6 +49,9 @@ fun NewSmartyKotlin(
 ) {
     val context = LocalContext.current
     val isAdLoading = AdLoadingState.isShowing.collectAsStateWithLifecycle()
+    val networkMonitor = koinInject<NetworkMonitor>()
+    val isOnline by networkMonitor.isConnected.collectAsStateWithLifecycle(initialValue = false)
+    val internetConnectionMsg = stringResource(id = R.string.internet_connection_required)
 
     Box {
         NavHost(
@@ -130,7 +138,15 @@ fun NewSmartyKotlin(
             composable(AppRoutes.Home.route) {
                 HomeRoute(
                     onNavigateToSuits = {
-                        navController.navigate(AppRoutes.Suits.route)
+                        if (isOnline) {
+                            navController.navigate(AppRoutes.Suits.route)
+                        } else {
+                            Toast.makeText(
+                                context,
+                                internetConnectionMsg,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     },
                     onNavigateToBgChanger = {
                         if (GalleryPermissionHelper.hasGalleryPermission(context)) {
@@ -637,6 +653,10 @@ fun NewSmartyKotlin(
                         defaultValue = ""
                     },
                     navArgument(AppRoutes.Saved.ARG_IS_FOR_BG_REMOVER) {
+                        type = NavType.BoolType
+                        defaultValue = false
+                    },
+                    navArgument(AppRoutes.Saved.ARG_IS_FOR_SUIT_CHANGER) {
                         type = NavType.BoolType
                         defaultValue = false
                     }

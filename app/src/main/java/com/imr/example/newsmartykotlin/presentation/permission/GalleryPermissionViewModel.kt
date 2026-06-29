@@ -108,16 +108,18 @@ class GalleryPermissionViewModel(
     }
 
     fun onPermissionGranted() {
+        if (_uiState.value.isPermissionGranted) return
+
+        _uiState.update {
+            it.copy(
+                isPermissionGranted = true,
+                showSettingsDialog = false,
+                showUnlockDialog = false
+            )
+        }
+
         viewModelScope.launch {
             resetPermissionDenyCountUseCase()
-
-            _uiState.update {
-                it.copy(
-                    isPermissionGranted = true,
-                    showSettingsDialog = false,
-                    showUnlockDialog = false
-                )
-            }
 
             if (isForPassport) {
                 _event.emit(

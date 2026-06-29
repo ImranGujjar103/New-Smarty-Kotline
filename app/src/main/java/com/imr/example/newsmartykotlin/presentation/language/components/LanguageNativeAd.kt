@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
+import com.imr.example.newsmartykotlin.R
 
 @Composable
 fun LanguageTopAd(nativeAd: NativeAd?) {
@@ -82,7 +83,7 @@ fun LanguageNativeAd(
                 }
 
                 val cta = Button(context).apply {
-                    text = "Install"
+                    text = context.getString(R.string.install)
                 }
 
                 textColumn.addView(headline)
@@ -101,7 +102,7 @@ fun LanguageNativeAd(
 
                 headline.text = nativeAd.headline
                 body.text = nativeAd.body ?: ""
-                cta.text = nativeAd.callToAction ?: "Install"
+                cta.text = nativeAd.callToAction ?: context.getString(R.string.install)
 
                 nativeAd.icon?.drawable?.let {
                     icon.setImageDrawable(it)

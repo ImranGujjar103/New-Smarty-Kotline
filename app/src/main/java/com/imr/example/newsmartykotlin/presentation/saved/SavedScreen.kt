@@ -3,15 +3,30 @@ package com.imr.example.newsmartykotlin.presentation.saved
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,7 +42,11 @@ import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
-import com.imr.example.newsmartykotlin.ui.theme.*
+import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
+import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
+import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
+import com.imr.example.newsmartykotlin.ui.theme.TextColor
+import com.imr.example.newsmartykotlin.ui.theme.WhiteColor
 import org.koin.androidx.compose.koinViewModel
 import java.io.File
 
@@ -58,10 +77,20 @@ fun SavedScreen(
                     }
                 }
 
+                SavedEvent.NavigateSuitTryMore -> {
+                    navController.navigate(AppRoutes.Suits.route) {
+                        popUpTo(AppRoutes.Suits.route) {
+                            inclusive = true
+                        }
+                    }
+                }
+
                 is SavedEvent.ShareImage -> {
                     shareSavedImage(
                         context = context,
-                        imagePath = event.imagePath
+                        imagePath = event.imagePath,
+                        packageName = event.packageName,
+                        platformName = event.platformName
                     )
                 }
                 is SavedEvent.NavigatePassportTryMore -> {
@@ -135,7 +164,12 @@ fun SavedScreen(
                 .clip(RoundedCornerShape(12.dp))
                 .background(PrimaryColor)
                 .clickable {
-                    viewModel.onTryMoreClick()
+                    navController.navigate(AppRoutes.Home.route) {
+                        popUpTo(AppRoutes.Home.route) {
+                            inclusive = true
+                        }
+                    }
+                  //  viewModel.onTryMoreClick()
                 },
             contentAlignment = Alignment.Center
         ) {
@@ -276,8 +310,20 @@ private fun ShareIconButton(
 
 private fun shareSavedImage(
     context: Context,
-    imagePath: String
+    imagePath: String,
+    packageName: String? = null,
+    platformName: String? = null
 ) {
+    if (packageName != null) {
+        if (!isAppInstalled(context, packageName)) {
+            Toast.makeText(
+                context,
+                context.getString(R.string.app_not_installed, platformName ?: ""),
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+    }
 
     val uri: Uri = if (imagePath.startsWith("content://")) {
         imagePath.toUri()
@@ -294,12 +340,28 @@ private fun shareSavedImage(
         type = "image/*"
         putExtra(Intent.EXTRA_STREAM, uri)
         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        if (packageName != null) {
+            setPackage(packageName)
+        }
     }
 
-    context.startActivity(
-        Intent.createChooser(
-            intent,
-            context.getString(R.string.share_to)
+    if (packageName != null) {
+        context.startActivity(intent)
+    } else {
+        context.startActivity(
+            Intent.createChooser(
+                intent,
+                context.getString(R.string.share_to)
+            )
         )
-    )
+    }
+}
+
+private fun isAppInstalled(context: Context, packageName: String): Boolean {
+    return try {
+        context.packageManager.getPackageInfo(packageName, 0)
+        true
+    } catch (e: Exception) {
+        false
+    }
 }

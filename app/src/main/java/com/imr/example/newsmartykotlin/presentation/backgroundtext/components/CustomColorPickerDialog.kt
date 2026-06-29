@@ -20,9 +20,11 @@ import androidx.compose.ui.graphics.*
 
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.android.gms.common.util.CollectionUtils.listOf
+import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
 import com.imr.example.newsmartykotlin.ui.theme.TextColor
@@ -49,7 +51,7 @@ fun CustomColorPickerDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Choose Color",
+                text = stringResource(R.string.choose_color),
                 fontFamily = SfProDisplayBold,
                 color = TextColor
             )
@@ -121,7 +123,7 @@ fun CustomColorPickerDialog(
                 }
             ) {
                 Text(
-                    text = "Done",
+                    text = stringResource(R.string.done),
                     color = PrimaryColor,
                     fontFamily = SfProDisplayBold
                 )

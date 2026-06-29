@@ -25,6 +25,9 @@ class SavedViewModel(
     private val isForBgRemover: Boolean =
         savedStateHandle[AppRoutes.Saved.ARG_IS_FOR_BG_REMOVER] ?: false
 
+    private val isForSuitChanger: Boolean =
+        savedStateHandle[AppRoutes.Saved.ARG_IS_FOR_SUIT_CHANGER] ?: false
+
     private val countryId: String =
         savedStateHandle[AppRoutes.Saved.ARG_COUNTRY_ID] ?: ""
 
@@ -36,6 +39,7 @@ class SavedViewModel(
             imagePath = imagePath,
             isForPassport = isForPassport,
             isForBgRemover = isForBgRemover,
+            isForSuitChanger = isForSuitChanger,
             countryId = countryId,
             documentType = documentType
         )
@@ -47,6 +51,7 @@ class SavedViewModel(
     val event: SharedFlow<SavedEvent> = _event.asSharedFlow()
 
     fun onTryMoreClick() {
+
         viewModelScope.launch {
             _event.emit(
                 when {
@@ -59,6 +64,10 @@ class SavedViewModel(
 
                     isForBgRemover -> {
                         SavedEvent.NavigateBgRemoverTryMore
+                    }
+
+                    isForSuitChanger -> {
+                        SavedEvent.NavigateSuitTryMore
                     }
 
                     else -> {
@@ -77,25 +86,25 @@ class SavedViewModel(
 
     fun onInstagramClick() {
         viewModelScope.launch {
-            _event.emit(SavedEvent.ShareImage(imagePath))
+            _event.emit(SavedEvent.ShareImage(imagePath, "com.instagram.android", "Instagram"))
         }
     }
 
     fun onFacebookClick() {
         viewModelScope.launch {
-            _event.emit(SavedEvent.ShareImage(imagePath))
+            _event.emit(SavedEvent.ShareImage(imagePath, "com.facebook.katana", "Facebook"))
         }
     }
 
     fun onWhatsAppClick() {
         viewModelScope.launch {
-            _event.emit(SavedEvent.ShareImage(imagePath))
+            _event.emit(SavedEvent.ShareImage(imagePath, "com.whatsapp", "WhatsApp"))
         }
     }
 
     fun onXClick() {
         viewModelScope.launch {
-            _event.emit(SavedEvent.ShareImage(imagePath))
+            _event.emit(SavedEvent.ShareImage(imagePath, "com.twitter.android", "X"))
         }
     }
 }

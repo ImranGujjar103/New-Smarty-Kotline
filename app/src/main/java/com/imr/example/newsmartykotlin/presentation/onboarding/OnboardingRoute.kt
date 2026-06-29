@@ -1,7 +1,6 @@
 package com.imr.example.newsmartykotlin.presentation.onboarding
 
 import android.app.Activity
-import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.*
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
@@ -66,10 +65,6 @@ fun OnboardingRoute(
         } else {
             onboardingViewModel.onPageChanged(uiState.currentPage + 1)
         }
-    }
-
-    BackHandler {
-        handleNextClick()
     }
 
     OnboardingScreen(

@@ -222,6 +222,10 @@ private fun BgRemoverEditorContent(
 
             if (showBackgroundSheet) {
                 BackgroundBottomSheet(
+                    selectedBackgroundPath = when (val bg = uiState.selectedBackground) {
+                        is BgEditorBackground.GalleryImage -> bg.imageUri
+                        else -> ""
+                    },
                     onDismiss = {
                         showBackgroundSheet = false
                     },

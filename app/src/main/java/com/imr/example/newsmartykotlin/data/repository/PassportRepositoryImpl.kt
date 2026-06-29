@@ -78,7 +78,7 @@ class PassportRepositoryImpl : PassportRepository {
         passportCountry("iran", R.string.iran, "40 x 60 mm", "1.6 x 2.4 inch", "472 x 709 px", "White", R.drawable.ic_flag_iran),
         passportCountry("iraq", R.string.iraq, "35 x 45 mm", "1.4 x 1.8 inch", "413 x 531 px", "White", R.drawable.ic_flag_iraq),
         passportCountry("saudi_arabia", R.string.saudi_arabia, "35 x 45 mm", "1.4 x 1.8 inch", "413 x 531 px", "White", R.drawable.ic_flag_saudi_arabia),
-        passportCountry("uae", R.string.uae, "43 x 55 mm", "1.7 x 2.2 inch", "508 x 650 px", "White", R.drawable.ic_flag_uae),
+        passportCountry("united_arab_emirates", R.string.uae, "43 x 55 mm", "1.7 x 2.2 inch", "508 x 650 px", "White", R.drawable.ic_flag_uae),
         passportCountry("qatar", R.string.qatar, "35 x 45 mm", "1.4 x 1.8 inch", "413 x 531 px", "White", R.drawable.ic_flag_qatar),
         passportCountry("kuwait", R.string.kuwait, "35 x 45 mm", "1.4 x 1.8 inch", "413 x 531 px", "White", R.drawable.ic_flag_kuwait),
         passportCountry("oman", R.string.oman, "40 x 60 mm", "1.6 x 2.4 inch", "472 x 709 px", "White", R.drawable.ic_flag_oman),

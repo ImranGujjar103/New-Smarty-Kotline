@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -97,7 +98,7 @@ fun TextEditingBottomSheet(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Add Text",
+                text = stringResource(R.string.add_text),
                 color = TextColor,
                 fontFamily = SfProDisplayBold,
                 fontSize = 14.sp,
@@ -154,25 +155,25 @@ fun TextEditingBottomSheet(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             TextEditingTabItem(
-                title = "Fonts",
+                title = stringResource(R.string.fonts),
                 isSelected = selectedTab == TextEditingTab.Fonts,
                 onClick = { onTabClick(TextEditingTab.Fonts) }
             )
 
             TextEditingTabItem(
-                title = "Shadow",
+                title = stringResource(R.string.shadow),
                 isSelected = selectedTab == TextEditingTab.Shadow,
                 onClick = { onTabClick(TextEditingTab.Shadow) }
             )
 
             TextEditingTabItem(
-                title = "Color",
+                title = stringResource(R.string.color),
                 isSelected = selectedTab == TextEditingTab.Color,
                 onClick = { onTabClick(TextEditingTab.Color) }
             )
 
             TextEditingTabItem(
-                title = "Align",
+                title = stringResource(R.string.align),
                 isSelected = selectedTab == TextEditingTab.Align,
                 onClick = { onTabClick(TextEditingTab.Align) }
             )
@@ -311,13 +312,13 @@ private fun ShadowOptionsRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         ShadowOptionButton(
-            title = "No Shadow",
+            title = stringResource(R.string.no_shadow),
             isSelected = !shadowEnabled,
             onClick = { onShadowClick(false) }
         )
 
         ShadowOptionButton(
-            title = "Shadow",
+            title = stringResource(R.string.shadow),
             isSelected = shadowEnabled,
             onClick = { onShadowClick(true) }
         )
@@ -364,19 +365,19 @@ private fun AlignOptionsRow(
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         AlignOptionButton(
-            title = "Left",
+            title = stringResource(R.string.left),
             isSelected = selectedAlign == TextAlign.Start,
             onClick = { onAlignClick(TextAlign.Start) }
         )
 
         AlignOptionButton(
-            title = "Center",
+            title = stringResource(R.string.center),
             isSelected = selectedAlign == TextAlign.Center,
             onClick = { onAlignClick(TextAlign.Center) }
         )
 
         AlignOptionButton(
-            title = "Right",
+            title = stringResource(R.string.right),
             isSelected = selectedAlign == TextAlign.End,
             onClick = { onAlignClick(TextAlign.End) }
         )

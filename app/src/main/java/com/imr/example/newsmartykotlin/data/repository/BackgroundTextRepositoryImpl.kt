@@ -2,6 +2,7 @@ package com.imr.example.newsmartykotlin.data.repository
 
 import android.content.Context
 import android.graphics.Bitmap
+import com.imr.example.newsmartykotlin.core.utils.ImageSaver
 import com.imr.example.newsmartykotlin.domain.repository.BackgroundTextRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -28,6 +29,17 @@ class BackgroundTextRepositoryImpl(
             }
 
             file.absolutePath
+        }
+    }
+
+    override suspend fun saveBitmapToGallery(bitmap: Bitmap): String {
+        return withContext(Dispatchers.IO) {
+            val uri = ImageSaver.saveBitmapToPictures(
+                context = context,
+                bitmap = bitmap,
+                prefix = "Suit"
+            )
+            uri?.toString() ?: ""
         }
     }
 }

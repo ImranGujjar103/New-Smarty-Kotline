@@ -273,7 +273,7 @@ private fun CreationTopBar(
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_back),
-                contentDescription = "Back",
+                contentDescription = stringResource(R.string.back),
                 tint = WhiteColor,
                 modifier = Modifier.size(10.dp)
             )
@@ -301,7 +301,7 @@ private fun CreationTopBar(
                 // Using ic_close as placeholder if ic_delete not found
                 Icon(
                     painter = painterResource(R.drawable.ic_delete),
-                    contentDescription = "Delete",
+                    contentDescription = stringResource(R.string.delete),
                     tint = WhiteColor,
                     modifier = Modifier.size(12.dp)
                 )
@@ -362,7 +362,7 @@ private fun DeleteConfirmationDialog(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Delete",
+                    text = stringResource(R.string.delete),
                     fontFamily = SfProDisplayBold,
                     fontSize = 20.sp,
                     color = TextColor
@@ -371,7 +371,7 @@ private fun DeleteConfirmationDialog(
                 Spacer(modifier = Modifier.height(8.dp))
                 
                 Text(
-                    text = "Are you sure you want to delete this creation ?",
+                    text = stringResource(R.string.delete_creation_confirmation),
                     fontSize = 14.sp,
                     color = TextColor.copy(alpha = 0.7f),
                     textAlign = TextAlign.Center
@@ -393,7 +393,7 @@ private fun DeleteConfirmationDialog(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Cancel",
+                            text = stringResource(R.string.cancel),
                             fontFamily = SfProDisplayBold,
                             color = TextColor
                         )
@@ -409,7 +409,7 @@ private fun DeleteConfirmationDialog(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Delete",
+                            text = stringResource(R.string.delete),
                             fontFamily = SfProDisplayBold,
                             color = TextColor
                         )
@@ -427,5 +427,5 @@ private fun shareCreation(context: Context, creation: Creation) {
         putExtra(Intent.EXTRA_STREAM, uri)
         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
-    context.startActivity(Intent.createChooser(intent, "Share To"))
+    context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_to)))
 }

@@ -31,6 +31,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
@@ -159,14 +160,14 @@ fun PassportResultScreen(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             PassportResultSmallButton(
-                title = "Try again",
+                title = stringResource(R.string.try_again),
                 icon = R.drawable.ic_refresh,
                 modifier = Modifier.weight(1f),
                 onClick = viewModel::onTryAgainClick
             )
 
             PassportResultSmallButton(
-                title = "Background",
+                title = stringResource(R.string.background),
                 icon = R.drawable.ic_bg_remove,
                 modifier = Modifier.weight(1f),
                 onClick = viewModel::onBackgroundClick
@@ -185,7 +186,7 @@ fun PassportResultScreen(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Save",
+                text = stringResource(R.string.save),
                 color = WhiteColor,
                 fontSize = 16.sp,
                 fontFamily = SfProDisplayBold
@@ -220,7 +221,7 @@ private fun PassportResultTopBar(
         Spacer(modifier = Modifier.width(14.dp))
 
         Text(
-            text = "Select document type",
+            text = stringResource(R.string.select_document_type),
             fontFamily = SfProDisplayBold,
             fontSize = 18.sp,
             color = TextColor
@@ -260,7 +261,7 @@ private fun PassportResultPreview(
                     .align(Alignment.TopCenter)
             ) {
                 Text(
-                    text = pixelText.substringBefore(" x").trim()+" inch",
+                    text = "${pixelText.substringBefore(" x").trim()} ${stringResource(R.string.inch)}",
                     fontSize = 9.sp,
                     color = TextColor,
                     modifier = Modifier.align(Alignment.TopCenter)
@@ -289,7 +290,7 @@ private fun PassportResultPreview(
                 )
 
                 Text(
-                    text = inchText.substringBefore(" x").trim() +" inch",
+                    text = "${inchText.substringBefore(" x").trim()} ${stringResource(R.string.inch)}",
                     fontSize = 8.sp,
                     color = TextColor,
                     modifier = Modifier
@@ -360,12 +361,12 @@ private fun PassportResultInfoCard(
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         PassportResultInfoRow(
-            title = "Printable",
+            title = stringResource(R.string.printable),
             value = dpiText
         )
 
         PassportResultInfoRow(
-            title = "Suitable for online submission",
+            title = stringResource(R.string.suitable_for_online_submission),
             value = fileSizeText
         )
     }

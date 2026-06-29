@@ -35,11 +35,11 @@ enum class CropAspectRatio(
     SIXTEEN_NINE(
         labelResName = "16:9",
         ratio = 16f / 9f,
-        iconResId = R.drawable.ic_crop_sixteen_nine
+        iconResId = R.drawable.ic_crop_nine_sixteen
     ),
     NINE_SIXTEEN(
         labelResName = "9:16",
         ratio = 9f / 16f,
-        iconResId = R.drawable.ic_crop_nine_sixteen
+        iconResId = R.drawable.ic_crop_sixteen_nine
     )
 }

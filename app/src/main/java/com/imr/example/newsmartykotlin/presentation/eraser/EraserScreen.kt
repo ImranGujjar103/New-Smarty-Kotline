@@ -601,7 +601,7 @@ private fun EraserResetDialog(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Reset",
+                    text = stringResource(R.string.reset),
                     fontFamily = SfProDisplayBold,
                     fontSize = 20.sp,
                     color = TextColor
@@ -610,7 +610,7 @@ private fun EraserResetDialog(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "All editing will be lost. Are you sure you want to reset ?",
+                    text = stringResource(R.string.reset_confirmation),
                     fontSize = 14.sp,
                     color = TextColor.copy(alpha = 0.7f),
                     textAlign = TextAlign.Center
@@ -632,7 +632,7 @@ private fun EraserResetDialog(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Cancel",
+                            text = stringResource(R.string.cancel),
                             fontFamily = SfProDisplayBold,
                             color = TextColor
                         )
@@ -648,7 +648,7 @@ private fun EraserResetDialog(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Reset",
+                            text = stringResource(R.string.reset),
                             fontFamily = SfProDisplayBold,
                             color = WhiteColor
                         )

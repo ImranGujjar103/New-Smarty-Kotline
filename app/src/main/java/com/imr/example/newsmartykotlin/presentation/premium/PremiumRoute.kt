@@ -1,5 +1,6 @@
 package com.imr.example.newsmartykotlin.presentation.premium
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -12,6 +13,9 @@ fun PremiumRoute(
     viewModel: PremiumViewModel = koinViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    BackHandler {
+        onCloseClick()
+    }
 
     when (state.layoutType) {
         PremiumLayoutType.TWO_CARD -> {

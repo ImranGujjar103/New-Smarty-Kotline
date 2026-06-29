@@ -33,18 +33,32 @@ import kotlinx.coroutines.launch
 @Composable
 fun BackgroundSheetContent(
     uiState: BackgroundUiState,
+    selectedBackgroundPath: String,
     onRetryClick: () -> Unit,
     onGalleryClick: () -> Unit,
     onBackgroundClick: (BackgroundData) -> Unit,
     onCloseClick: () -> Unit
 ) {
-    var selectedCategoryIndex by remember { mutableIntStateOf(0) }
+    var selectedCategoryIndex by remember(uiState.categories, selectedBackgroundPath) {
+        val index = uiState.categories.indexOfFirst { section ->
+            section.backgrounds.any { it.imageUrl == selectedBackgroundPath }
+        }
+        mutableIntStateOf(if (index != -1) index else 0)
+    }
 
     val backgroundListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(selectedCategoryIndex) {
-        backgroundListState.scrollToItem(0)
+    LaunchedEffect(selectedCategoryIndex, selectedBackgroundPath) {
+        val backgrounds = uiState.categories.getOrNull(selectedCategoryIndex)?.backgrounds.orEmpty()
+        val index = backgrounds.indexOfFirst { it.imageUrl == selectedBackgroundPath }
+
+        if (index != -1) {
+            val scrollIndex = if (selectedCategoryIndex == 0) index + 2 else index
+            backgroundListState.scrollToItem(scrollIndex)
+        } else if (selectedCategoryIndex == 0 && selectedBackgroundPath.isEmpty()) {
+            backgroundListState.scrollToItem(1) // Transparent item
+        }
     }
     Column(
         modifier = Modifier
@@ -68,7 +82,7 @@ fun BackgroundSheetContent(
             IconButton(onClick = onCloseClick) {
                 Icon(
                     painter = painterResource(R.drawable.ic_close_bottom_sheet),
-                    contentDescription = "Close"
+                    contentDescription = stringResource(R.string.close)
                 )
             }
         }
@@ -133,6 +147,7 @@ fun BackgroundSheetContent(
 
                         item {
                             TransparentBackgroundItem(
+                                selected = selectedBackgroundPath.isEmpty(),
                                 onClick = {
                                     onBackgroundClick(BackgroundData("",""))
                                 }
@@ -146,6 +161,7 @@ fun BackgroundSheetContent(
                     ) { _, background ->
                         BackgroundItem(
                             background = background,
+                            selected = background.imageUrl == selectedBackgroundPath,
                             onClick = {
                                 onBackgroundClick(background)
                             }
@@ -187,19 +203,40 @@ fun CategoryChip(
 @Composable
 private fun BackgroundItem(
     background: BackgroundData,
+    selected: Boolean,
     onClick: () -> Unit
 ) {
-    AsyncImage(
-        model = background.imageUrl,
-        contentDescription = background.name,
+    Box(
         modifier = Modifier
             .width(90.dp)
             .height(120.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(Color(0xFFEFEFEF))
             .clickable { onClick() },
-        contentScale = ContentScale.Crop
-    )
+        contentAlignment = Alignment.Center
+    ) {
+        AsyncImage(
+            model = background.imageUrl,
+            contentDescription = background.name,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+        if (selected) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.3f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ic_transparent_tick),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -237,6 +274,7 @@ fun GalleryBackgroundItem(
 
 @Composable
 fun TransparentBackgroundItem(
+    selected: Boolean,
     onClick: () -> Unit
 ) {
     Box(
@@ -254,11 +292,13 @@ fun TransparentBackgroundItem(
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
-        Image(
-            painter = painterResource(R.drawable.ic_transparent_tick),
-            contentDescription = null,
-            modifier = Modifier.size(24.dp)
-        )
+        if (selected) {
+            Image(
+                painter = painterResource(R.drawable.ic_transparent_tick),
+                contentDescription = null,
+                modifier = Modifier.size(24.dp)
+            )
+        }
     }
 }
 
@@ -289,7 +329,7 @@ private fun ErrorContent(
         Text(text = message)
         Spacer(modifier = Modifier.height(12.dp))
         Button(onClick = onRetryClick) {
-            Text(text = "Retry")
+            Text(text = stringResource(R.string.retry))
         }
     }
 }
@@ -302,6 +342,6 @@ private fun EmptyContent() {
             .height(260.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = "No backgrounds found")
+        Text(text = stringResource(R.string.no_backgrounds_found))
     }
 }

@@ -10,6 +10,7 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BackgroundBottomSheet(
+    selectedBackgroundPath: String,
     onDismiss: () -> Unit,
     onGalleryClick: () -> Unit,
     onBackgroundSelected: (String) -> Unit,
@@ -26,6 +27,7 @@ fun BackgroundBottomSheet(
     ) {
         BackgroundSheetContent(
             uiState = uiState,
+            selectedBackgroundPath = selectedBackgroundPath,
             onRetryClick = viewModel::loadBackgrounds,
             onGalleryClick = {
                 onDismiss()

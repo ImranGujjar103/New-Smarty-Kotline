@@ -170,7 +170,7 @@ private fun SettingsTopBar(onBackClick: () -> Unit) {
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_back),
-                contentDescription = "Back",
+                contentDescription = stringResource(R.string.back),
                 tint = WhiteColor,
                 modifier = Modifier.size(12.dp)
             )
@@ -179,7 +179,7 @@ private fun SettingsTopBar(onBackClick: () -> Unit) {
         Spacer(modifier = Modifier.width(16.dp))
 
         Text(
-            text = "Settings",
+            text = stringResource(R.string.settings),
             fontFamily = SfProDisplayBold,
             fontSize = 20.sp,
             color = TextColor

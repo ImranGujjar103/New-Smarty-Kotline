@@ -251,27 +251,30 @@ sealed class AppRoutes(val route: String) {
         }
     }
     data object Saved : AppRoutes(
-        "saved?imagePath={imagePath}&isForPassport={isForPassport}&countryId={countryId}&documentType={documentType}&isForBgRemover={isForBgRemover}"
+        "saved?imagePath={imagePath}&isForPassport={isForPassport}&countryId={countryId}&documentType={documentType}&isForBgRemover={isForBgRemover}&isForSuitChanger={isForSuitChanger}"
     ) {
         const val ARG_IMAGE_PATH = "imagePath"
         const val ARG_IS_FOR_PASSPORT = "isForPassport"
         const val ARG_COUNTRY_ID = "countryId"
         const val ARG_DOCUMENT_TYPE = "documentType"
         const val ARG_IS_FOR_BG_REMOVER = "isForBgRemover"
+        const val ARG_IS_FOR_SUIT_CHANGER = "isForSuitChanger"
 
         fun createRoute(
             imagePath: String,
             isForPassport: Boolean = false,
             countryId: String = "",
             documentType: String = "",
-            isForBgRemover: Boolean = false
+            isForBgRemover: Boolean = false,
+            isForSuitChanger: Boolean = false
         ): String {
             return "saved" +
                     "?imagePath=${Uri.encode(imagePath)}" +
                     "&isForPassport=$isForPassport" +
                     "&countryId=${Uri.encode(countryId)}" +
                     "&documentType=${Uri.encode(documentType)}" +
-                    "&isForBgRemover=$isForBgRemover"
+                    "&isForBgRemover=$isForBgRemover" +
+                    "&isForSuitChanger=$isForSuitChanger"
         }
     }
     data object PassportTryMoreDetail : AppRoutes(

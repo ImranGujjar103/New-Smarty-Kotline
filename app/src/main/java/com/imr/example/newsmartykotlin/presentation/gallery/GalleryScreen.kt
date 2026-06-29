@@ -147,7 +147,7 @@ fun GalleryScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = uiState.errorMessage ?: "Something went wrong",
+                            text = uiState.errorMessage ?: stringResource(R.string.something_went_wrong),
                             style = AppTypography.Body,
                             color = RedColor
                         )
@@ -169,7 +169,7 @@ fun GalleryScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "No images found.",
+                                text = stringResource(R.string.no_images_found),
                                 style = AppTypography.Body,
                                 color = SubTextColor
                             )

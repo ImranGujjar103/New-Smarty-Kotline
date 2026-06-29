@@ -74,15 +74,13 @@ class BgRemoverEditorRepositoryImpl(
             canvas.drawBitmap(foreground, 0f, 0f, null)
         }
 
-        val dir = File(context.filesDir, "bg_remover_exports")
-        if (!dir.exists()) dir.mkdirs()
+        val uri = com.imr.example.newsmartykotlin.core.utils.ImageSaver.saveBitmapToPictures(
+            context = context,
+            bitmap = outputBitmap,
+            prefix = "BG_Changer"
+        )
 
-        val file = File(dir, "bg_remover_${System.currentTimeMillis()}.png")
-        FileOutputStream(file).use { output ->
-            outputBitmap.compress(Bitmap.CompressFormat.PNG, 100, output)
-        }
-
-        file.absolutePath
+        uri?.toString() ?: ""
     }
 
     private fun loadBitmap(uriString: String): Bitmap {

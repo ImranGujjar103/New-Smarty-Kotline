@@ -8,6 +8,6 @@ class SaveBackgroundTextImageUseCase(
     private val repository: BackgroundTextRepository
 ) {
     suspend operator fun invoke(bitmap: Bitmap): String {
-        return repository.saveBitmapToCache(bitmap)
+        return repository.saveBitmapToGallery(bitmap)
     }
 }
