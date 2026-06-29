@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -73,6 +74,7 @@ fun BackgroundTextScreen(
     navController: NavController,
     viewModel: BackgroundTextViewModel = koinViewModel()
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
     val captureLayer = rememberGraphicsLayer()
@@ -265,8 +267,11 @@ fun BackgroundTextScreen(
                 showBackgroundSheet = false
             },
             onGalleryClick = {
-                navController.navigate(AppRoutes.GalleryForBackground.route)
-              //  navController.navigate(AppRoutes.GalleryForBackground.createRoute())
+                if (com.imr.example.newsmartykotlin.presentation.permission.GalleryPermissionHelper.hasGalleryPermission(context)) {
+                    navController.navigate(AppRoutes.GalleryForBackground.route)
+                } else {
+                    navController.navigate(AppRoutes.GalleryPermissionForBackground.createRoute())
+                }
             }
         )
     }

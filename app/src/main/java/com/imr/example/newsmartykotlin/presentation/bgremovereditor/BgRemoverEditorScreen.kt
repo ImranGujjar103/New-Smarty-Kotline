@@ -27,14 +27,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,11 +57,6 @@ import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
 import com.imr.example.newsmartykotlin.ui.theme.TextColor
 import org.koin.androidx.compose.koinViewModel
-
-private val FloatStateSaver = Saver<MutableFloatState, Float>(
-    save = { it.floatValue },
-    restore = { mutableFloatStateOf(it) }
-)
 
 @Composable
 fun BgRemoverEditorScreen(
@@ -139,7 +130,11 @@ fun BgRemoverEditorScreen(
         uiState = uiState,
         onAction = viewModel::onAction,
         onGalleryClick = {
-            navController.navigate(AppRoutes.GalleryForBackground.route)
+            if (com.imr.example.newsmartykotlin.presentation.permission.GalleryPermissionHelper.hasGalleryPermission(context)) {
+                navController.navigate(AppRoutes.GalleryForBackground.route)
+            } else {
+                navController.navigate(AppRoutes.GalleryPermissionForBackground.createRoute())
+            }
         },
         onEraserClick = {
             navController.navigate(AppRoutes.Eraser.createRoute(uiState.removedImageUri))

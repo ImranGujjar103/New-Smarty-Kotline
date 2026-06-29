@@ -37,6 +37,12 @@ class GalleryPermissionViewModel(
     private val isForPassport: Boolean =
         savedStateHandle[AppRoutes.GalleryPermissionForPassport.ARG_IS_FOR_PASSPORT] ?: false
 
+    private val isForBgRemover: Boolean =
+        savedStateHandle[AppRoutes.GalleryPermissionForBgRemover.ARG_IS_BG_REMOVER] ?: false
+
+    private val isForBackground: Boolean =
+        savedStateHandle[AppRoutes.GalleryPermissionForBackground.ARG_IS_FOR_BACKGROUND] ?: false
+
     private val countryId: String =
         savedStateHandle[AppRoutes.GalleryPermissionForPassport.ARG_COUNTRY_ID] ?: ""
 
@@ -59,6 +65,8 @@ class GalleryPermissionViewModel(
 
         Log.d(tag, "Suit Id = $suitId")
         Log.d(tag, "isForPassport = $isForPassport")
+        Log.d(tag, "isForBgRemover = $isForBgRemover")
+        Log.d(tag, "isForBackground = $isForBackground")
         Log.d(tag, "countryId = $countryId")
         Log.d(tag, "documentType = $documentType")
     }
@@ -118,6 +126,10 @@ class GalleryPermissionViewModel(
                         documentType = documentType
                     )
                 )
+            } else if (isForBgRemover) {
+                _event.emit(GalleryPermissionEvent.NavigateBgRemoverGallery)
+            } else if (isForBackground) {
+                _event.emit(GalleryPermissionEvent.NavigateBackgroundGallery)
             } else {
                 _event.emit(GalleryPermissionEvent.NavigateGallery)
             }

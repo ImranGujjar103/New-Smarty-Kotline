@@ -46,7 +46,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
-import com.imr.example.newsmartykotlin.ui.theme.CardColor
+import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayMedium
@@ -152,6 +152,26 @@ fun GalleryPermissionScreen(
                     }
                 }
 
+                GalleryPermissionEvent.NavigateBgRemoverGallery -> {
+                    navController.navigate(
+                        AppRoutes.GalleryForBgRemover.createRoute()
+                    ) {
+                        popUpTo(AppRoutes.GalleryPermissionForBgRemover.route) {
+                            inclusive = true
+                        }
+                    }
+                }
+
+                GalleryPermissionEvent.NavigateBackgroundGallery -> {
+                    navController.navigate(
+                        AppRoutes.GalleryForBackground.route
+                    ) {
+                        popUpTo(AppRoutes.GalleryPermissionForBackground.route) {
+                            inclusive = true
+                        }
+                    }
+                }
+
                 is GalleryPermissionEvent.NavigatePassportGallery -> {
                     navController.navigate(
                         AppRoutes.GalleryForPassport.createRoute(
@@ -172,7 +192,7 @@ fun GalleryPermissionScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(CardColor)
+                .background(HomeBackgroundColor)
         )
         return
     }
@@ -180,7 +200,7 @@ fun GalleryPermissionScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(CardColor)
+            .background(HomeBackgroundColor)
     ) {
         Column(
             modifier = Modifier
@@ -195,7 +215,7 @@ fun GalleryPermissionScreen(
                     navController.popBackStack()
                 }
             )
-
+            Spacer(modifier = Modifier.height(20.dp))
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -273,23 +293,22 @@ private fun GalleryPermissionTopBar(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(60.dp)
+            .height(30.dp)
             .background(
-                CardColor
+                HomeBackgroundColor
             )
-            .padding(horizontal = 24.dp),
+            .padding(horizontal = 20.dp),
         contentAlignment = Alignment.BottomStart
     ) {
         androidx.compose.foundation.layout.Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 14.dp),
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .size(28.dp)
-                    .clip(RoundedCornerShape(9.dp))
+                    .size(30.dp)
+                    .clip(RoundedCornerShape(10.dp))
                     .background(PrimaryColor)
                     .clickable(true, onClick = onBackClick)
                 ,
@@ -302,7 +321,7 @@ private fun GalleryPermissionTopBar(
                 )
             }
 
-            Spacer(modifier = Modifier.size(12.dp))
+            Spacer(modifier = Modifier.size(16.dp))
 
             Text(
                 text = stringResource(R.string.select_image),

@@ -133,7 +133,11 @@ fun NewSmartyKotlin(
                         navController.navigate(AppRoutes.Suits.route)
                     },
                     onNavigateToBgChanger = {
-                        navController.navigate(AppRoutes.GalleryForBgRemover.createRoute())
+                        if (GalleryPermissionHelper.hasGalleryPermission(context)) {
+                            navController.navigate(AppRoutes.GalleryForBgRemover.createRoute())
+                        } else {
+                            navController.navigate(AppRoutes.GalleryPermissionForBgRemover.createRoute())
+                        }
                     },
                     onNavigateToPassportPic = {
                         navController.navigate(AppRoutes.PassportCountry.route)
@@ -192,6 +196,30 @@ fun NewSmartyKotlin(
                 arguments = listOf(
                     navArgument(AppRoutes.GalleryPermission.ARG_SUIT_URL) {
                         type = NavType.StringType
+                    }
+                )
+            ) {
+                GalleryPermissionScreen(navController = navController)
+            }
+
+            composable(
+                route = AppRoutes.GalleryPermissionForBgRemover.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.GalleryPermissionForBgRemover.ARG_IS_BG_REMOVER) {
+                        type = NavType.BoolType
+                        defaultValue = false
+                    }
+                )
+            ) {
+                GalleryPermissionScreen(navController = navController)
+            }
+
+            composable(
+                route = AppRoutes.GalleryPermissionForBackground.route,
+                arguments = listOf(
+                    navArgument(AppRoutes.GalleryPermissionForBackground.ARG_IS_FOR_BACKGROUND) {
+                        type = NavType.BoolType
+                        defaultValue = false
                     }
                 )
             ) {

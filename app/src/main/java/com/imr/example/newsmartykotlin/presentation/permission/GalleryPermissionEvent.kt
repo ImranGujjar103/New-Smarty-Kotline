@@ -8,6 +8,10 @@ sealed interface GalleryPermissionEvent {
 
     data object NavigateGallery : GalleryPermissionEvent
 
+    data object NavigateBgRemoverGallery : GalleryPermissionEvent
+
+    data object NavigateBackgroundGallery : GalleryPermissionEvent
+
     data class NavigatePassportGallery(
         val countryId: String,
         val documentType: String

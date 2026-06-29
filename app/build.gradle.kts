@@ -30,8 +30,7 @@ android {
         debug {
             resValue("string", "admob_app_id", "ca-app-pub-3940256099942544~3347511713")
 
-            isMinifyEnabled = true
-            isShrinkResources = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

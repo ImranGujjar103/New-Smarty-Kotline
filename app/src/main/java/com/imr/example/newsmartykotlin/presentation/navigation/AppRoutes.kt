@@ -75,6 +75,15 @@ sealed class AppRoutes(val route: String) {
             "gallery_for_bg_remover?isBgRemover=true"
     }
 
+    data object GalleryPermissionForBgRemover : AppRoutes(
+        "gallery_permission_for_bg_remover?isBgRemover={isBgRemover}"
+    ) {
+        const val ARG_IS_BG_REMOVER = "isBgRemover"
+
+        fun createRoute(): String =
+            "gallery_permission_for_bg_remover?isBgRemover=true"
+    }
+
     data object CropForBgRemover : AppRoutes(
         "crop_for_bg_remover/{imageUri}?isBgRemover={isBgRemover}"
     ) {
@@ -119,6 +128,15 @@ sealed class AppRoutes(val route: String) {
     }
 
     data object GalleryForBackground : AppRoutes("gallery_for_background")
+
+    data object GalleryPermissionForBackground : AppRoutes(
+        "gallery_permission_for_background?isForBackground={isForBackground}"
+    ) {
+        const val ARG_IS_FOR_BACKGROUND = "isForBackground"
+
+        fun createRoute(): String =
+            "gallery_permission_for_background?isForBackground=true"
+    }
 
     data object MyCreation : AppRoutes("my_creation")
     data object Settings : AppRoutes("settings")
