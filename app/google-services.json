@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "692278016557",
-    "project_id": "testing-6e22e",
-    "storage_bucket": "testing-6e22e.firebasestorage.app"
+    "project_number": "662850030203",
+    "project_id": "smarty-men-f583",
+    "storage_bucket": "smarty-men-f583.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:692278016557:android:1e3446efbbf2eb83dcd6a4",
+        "mobilesdk_app_id": "1:662850030203:android:dc490a5dfd3ef987d2f0de",
         "android_client_info": {
-          "package_name": "com.imr.example.vpnapp"
+          "package_name": "com.htech.suit.changer"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyA89PcIf_aJTz2rivDWNSYg8w31X2V5i18"
+          "current_key": "AIzaSyDAsd2YqigClDz9A7Egf56kqrKP06BHT70"
         }
       ],
       "services": {
