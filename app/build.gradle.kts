@@ -15,7 +15,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.imr.example.vpnapp"
+        applicationId = "com.htech.suit.changer"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
