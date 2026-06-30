@@ -10,9 +10,7 @@ plugins {
 
 android {
     namespace = "com.imr.example.newsmartykotlin"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.htech.suit.changer"
@@ -88,6 +86,7 @@ dependencies {
 //    implementation("androidx.concurrent:concurrent-futures:1.3.0")
     implementation(libs.androidx.concurrent.futures)
     /*datastore*/
+
     implementation(libs.androidx.datastore.preferences)
 
     /*koin*/
@@ -96,7 +95,8 @@ dependencies {
     implementation(libs.koin.androidx.compose.navigation)
 
     /*admob*/
-    implementation(libs.play.services.ads)
+    implementation(libs.ads.mobile.sdk)
+    implementation(libs.user.messaging.platform)
     /*gson*/
     implementation(libs.gson)
     /*lifecycle*/

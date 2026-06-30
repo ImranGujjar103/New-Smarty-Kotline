@@ -32,6 +32,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,10 +46,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.core.extensions.clickableNoRipple
+import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
+import com.imr.example.newsmartykotlin.presentation.language.components.LanguageBottomNativeAd
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
+import com.imr.example.newsmartykotlin.presentation.viewmodel.AdViewModel
 import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
@@ -59,10 +66,35 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SettingsScreen(
     navController: NavController,
-    viewModel: SettingsViewModel = koinViewModel()
+    viewModel: SettingsViewModel = koinViewModel(),
+    adViewModel: AdViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    val isPurchased by adViewModel.dataStorePrefs.getIsPurchased().collectAsStateWithLifecycle(initialValue = false)
+    val isConnected by adViewModel.isConnected.collectAsStateWithLifecycle(initialValue = true)
+    val config by adViewModel.adRepository.appConfig.collectAsStateWithLifecycle()
+
+    val showAd = config.settingsNative.toShow && !isPurchased && isConnected
+
+    var nativeState by remember { mutableStateOf<LanguageNativeState>(LanguageNativeState.Idle) }
+
+    LaunchedEffect(showAd) {
+        if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
+            nativeState = LanguageNativeState.Loading
+            adViewModel.loadNativeAd(
+                adId = config.settingsNative.adId,
+                tag = "SettingsBottomNative"
+            ) { ad ->
+                nativeState = if (ad != null) {
+                    LanguageNativeState.Loaded(ad)
+                } else {
+                    LanguageNativeState.Failed
+                }
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -109,13 +141,14 @@ fun SettingsScreen(
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .weight(1f)
+                .fillMaxWidth()
                 .padding(horizontal = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             Spacer(modifier = Modifier.height(10.dp))
 
-            if (uiState.isPremium) {
+            if (!uiState.isPremium) {
                 PremiumSettingsCard(onGetProClick = viewModel::onPremiumClick)
                 Spacer(modifier = Modifier.height(30.dp))
             }
@@ -147,6 +180,23 @@ fun SettingsScreen(
                 subtitle = stringResource(R.string.share_the_app),
                 onClick = viewModel::onShareClick
             )
+
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+
+        if (showAd) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+            ) {
+                LanguageBottomNativeAd(
+                    state = nativeState,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 10.dp)
+                )
+            }
         }
     }
 }

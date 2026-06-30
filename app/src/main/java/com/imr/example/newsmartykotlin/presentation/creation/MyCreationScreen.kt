@@ -34,6 +34,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,11 +50,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.domain.model.Creation
+import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
+import com.imr.example.newsmartykotlin.presentation.language.components.LanguageBottomNativeAd
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
+import com.imr.example.newsmartykotlin.presentation.viewmodel.AdViewModel
 import com.imr.example.newsmartykotlin.ui.theme.CardColor
 import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
@@ -63,10 +70,28 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun MyCreationScreen(
     navController: NavController,
-    viewModel: MyCreationViewModel = koinViewModel()
+    viewModel: MyCreationViewModel = koinViewModel(),
+    adViewModel: AdViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    val isPurchased by adViewModel.dataStorePrefs.getIsPurchased().collectAsStateWithLifecycle(initialValue = false)
+    val isConnected by adViewModel.isConnected.collectAsStateWithLifecycle(initialValue = true)
+    val config by adViewModel.adRepository.appConfig.collectAsStateWithLifecycle()
+
+    val showAd = config.myCreationNative.toShow && !isPurchased && isConnected
+
+    val nativeState by adViewModel.getNativeAdState("MyCreationBottomNative").collectAsStateWithLifecycle()
+
+    LaunchedEffect(showAd) {
+        if (showAd) {
+            adViewModel.loadNativeAd(
+                adId = config.myCreationNative.adId,
+                tag = "MyCreationBottomNative"
+            ) { _ -> }
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -90,25 +115,44 @@ fun MyCreationScreen(
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
-        if (uiState.selectedCreation == null) {
-            CreationsGrid(
-                creations = uiState.creations,
-                isLoading = uiState.isLoading,
-                onBackClick = viewModel::onBackClick,
-                onCreationClick = viewModel::onCreationClick
-            )
-        } else {
-            CreationDetail(
-                creation = uiState.selectedCreation!!,
-                onBackClick = viewModel::onBackClick,
-                onDeleteClick = viewModel::onDeleteClick,
-                onShareClick = viewModel::onShareClick,
-                onTryMoreClick = {
-                    navController.navigate(AppRoutes.Home.route) {
-                        popUpTo(AppRoutes.Home.route) { inclusive = true }
+        Column(modifier = Modifier.fillMaxSize()) {
+            if (uiState.selectedCreation == null) {
+                CreationsGrid(
+                    modifier = Modifier.weight(1f),
+                    creations = uiState.creations,
+                    isLoading = uiState.isLoading,
+                    onBackClick = viewModel::onBackClick,
+                    onCreationClick = viewModel::onCreationClick
+                )
+            } else {
+                CreationDetail(
+                    modifier = Modifier.weight(1f),
+                    creation = uiState.selectedCreation!!,
+                    onBackClick = viewModel::onBackClick,
+                    onDeleteClick = viewModel::onDeleteClick,
+                    onShareClick = viewModel::onShareClick,
+                    onTryMoreClick = {
+                        navController.navigate(AppRoutes.Home.route) {
+                            popUpTo(AppRoutes.Home.route) { inclusive = true }
+                        }
                     }
+                )
+            }
+
+            if (showAd) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White)
+                ) {
+                    LanguageBottomNativeAd(
+                        state = nativeState,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp, vertical = 10.dp)
+                    )
                 }
-            )
+            }
         }
 
         if (uiState.showDeleteDialog) {
@@ -122,12 +166,13 @@ fun MyCreationScreen(
 
 @Composable
 private fun CreationsGrid(
+    modifier: Modifier = Modifier,
     creations: List<Creation>,
     isLoading: Boolean,
     onBackClick: () -> Unit,
     onCreationClick: (Creation) -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp)) {
+    Column(modifier = modifier.fillMaxSize().padding(horizontal = 20.dp)) {
         Spacer(modifier = Modifier.height(25.dp))
 
         CreationTopBar(
@@ -172,6 +217,7 @@ private fun CreationsGrid(
 
 @Composable
 private fun CreationDetail(
+    modifier: Modifier = Modifier,
     creation: Creation,
     onBackClick: () -> Unit,
     onDeleteClick: () -> Unit,
@@ -179,7 +225,7 @@ private fun CreationDetail(
     onTryMoreClick: () -> Unit
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 20.dp)
     ) {

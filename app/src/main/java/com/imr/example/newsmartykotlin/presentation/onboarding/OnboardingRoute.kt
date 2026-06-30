@@ -23,7 +23,7 @@ fun OnboardingRoute(
     val context = LocalContext.current
     val activity = context as Activity
     val uiState by onboardingViewModel.uiState.collectAsStateWithLifecycle()
-    var nativeState by remember { mutableStateOf<LanguageNativeState>(LanguageNativeState.Idle) }
+    val nativeState by adViewModel.getNativeAdState("onboardingNative1").collectAsStateWithLifecycle()
     val config = adViewModel.adRepository.appConfig.collectAsState().value
 
     LaunchedEffect(Unit) {
@@ -36,17 +36,10 @@ fun OnboardingRoute(
 
 
         if (config.onboardingNative1.toShow && context.isInternetAvailable()) {
-            nativeState = LanguageNativeState.Loading
             adViewModel.loadNativeAd(
                 adId = config.onboardingNative1.adId,
                 tag = "onboardingNative1"
-            ) { ad ->
-                nativeState = if (ad != null) {
-                    LanguageNativeState.Loaded(ad)
-                } else {
-                    LanguageNativeState.Failed
-                }
-            }
+            ) { _ -> }
         }
     }
 

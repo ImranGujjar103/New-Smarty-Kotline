@@ -45,13 +45,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.presentation.backgroundtext.backgroundsheet.BackgroundBottomSheet
+import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
+import com.imr.example.newsmartykotlin.presentation.language.components.LanguageBottomNativeAd
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
 import com.imr.example.newsmartykotlin.presentation.navigation.ERASED_IMAGE_RESULT_KEY
 import com.imr.example.newsmartykotlin.presentation.navigation.SELECTED_BACKGROUND_IMAGE_KEY
+import com.imr.example.newsmartykotlin.presentation.viewmodel.AdViewModel
 import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
@@ -61,9 +65,27 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun BgRemoverEditorScreen(
     navController: NavController,
-    viewModel: BgRemoverEditorViewModel = koinViewModel()
+    viewModel: BgRemoverEditorViewModel = koinViewModel(),
+    adViewModel: AdViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    val isPurchased by adViewModel.dataStorePrefs.getIsPurchased().collectAsStateWithLifecycle(initialValue = false)
+    val isConnected by adViewModel.isConnected.collectAsStateWithLifecycle(initialValue = true)
+    val config by adViewModel.adRepository.appConfig.collectAsStateWithLifecycle()
+
+    val showAd = config.bgRemoverEditorNative.toShow && !isPurchased && isConnected
+
+    val nativeState by adViewModel.getNativeAdState("BgRemoverEditorBottomNative").collectAsStateWithLifecycle()
+
+    LaunchedEffect(showAd) {
+        if (showAd) {
+            adViewModel.loadNativeAd(
+                adId = config.bgRemoverEditorNative.adId,
+                tag = "BgRemoverEditorBottomNative"
+            ) { _ -> }
+        }
+    }
 
     val selectedBackgroundImage =
         navController.currentBackStackEntry
@@ -138,7 +160,9 @@ fun BgRemoverEditorScreen(
         },
         onEraserClick = {
             navController.navigate(AppRoutes.Eraser.createRoute(uiState.removedImageUri))
-        }
+        },
+        nativeState = nativeState,
+        showAd = showAd
     )
 }
 
@@ -147,7 +171,9 @@ private fun BgRemoverEditorContent(
     uiState: BgRemoverEditorUiState,
     onAction: (BgRemoverEditorAction) -> Unit,
     onGalleryClick: () -> Unit,
-    onEraserClick: () -> Unit
+    onEraserClick: () -> Unit,
+    nativeState: LanguageNativeState,
+    showAd: Boolean
 ) {
     var showBackgroundSheet by remember { mutableStateOf(true) }
 
@@ -238,6 +264,21 @@ private fun BgRemoverEditorContent(
                         onGalleryClick()
                     }
                 )
+            }
+
+            if (showAd) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White)
+                ) {
+                    LanguageBottomNativeAd(
+                        state = nativeState,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp, vertical = 10.dp)
+                    )
+                }
             }
         }
 
@@ -408,4 +449,3 @@ private fun EditorPreview(
         )
     }
 }
-

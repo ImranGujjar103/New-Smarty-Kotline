@@ -49,7 +49,9 @@ val adModule = module {
         AdViewModel(
             adRepository = get(),
             dataStorePrefs = get(),
-            context = androidContext()
+            context = androidContext(),
+            networkMonitor = get(),
+            adsConsentManager = get()
         )
     }
 }

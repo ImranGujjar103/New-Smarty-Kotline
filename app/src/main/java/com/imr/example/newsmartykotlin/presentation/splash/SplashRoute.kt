@@ -1,7 +1,6 @@
 package com.imr.example.newsmartykotlin.presentation.splash
 
 import android.app.Activity
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
@@ -32,7 +31,6 @@ fun SplashRoute(
     onNavigateToHome: () -> Unit,
     viewModel: AdViewModel = koinViewModel(),
     dataStorePrefs: DataStorePrefs = koinInject(),
-    adsConsentManager: AdsConsentManager = koinInject(),
     adLoadingController: AdLoadingController = koinInject()
 ) {
     val context = LocalContext.current
@@ -54,7 +52,6 @@ fun SplashRoute(
             }
         }
 
-        delay(1000)
         viewModel.initialize(activity)
     }
 
@@ -80,33 +77,7 @@ fun SplashRoute(
     BackHandler(enabled = true) {}
 
     LaunchedEffect(consentState) {
-        if (consentState is ConsentState.RequiresConsent) {
-            val isPurchased = dataStorePrefs.getIsPurchased().first()
-
-            if (isPurchased) {
-                viewModel.onConsentCompleted(activity)
-                return@LaunchedEffect
-            }
-
-            try {
-                if (!adsConsentManager.canRequestAds) {
-                    adsConsentManager.showGDPRConsent(
-                        activity = activity,
-                        isTest = BuildConfig.DEBUG
-                    ) { error ->
-                        error?.let {
-                            Log.e("SplashRoute", "Consent error: ${it.errorCode} - ${it.message}")
-                        }
-                        viewModel.onConsentCompleted(activity)
-                    }
-                } else {
-                    viewModel.onConsentCompleted(activity)
-                }
-            } catch (e: Exception) {
-                Log.e("SplashRoute", "Consent exception: ${e.message}", e)
-                viewModel.onConsentCompleted(activity)
-            }
-        }
+        // Handled by AdViewModel
     }
 
     LaunchedEffect(adState) {

@@ -385,7 +385,7 @@ class DataStorePrefs(private val context: Context) {
     fun isFirstSplash(): Flow<Boolean> = getBoolean(IS_FIRST_SPLASH, true)
 
     suspend fun setIsPurchased(value: Boolean) = setBoolean(PREMIUM_PURCHASED, value)
-    fun getIsPurchased(): Flow<Boolean> = getBoolean(PREMIUM_PURCHASED, true)
+    fun getIsPurchased(): Flow<Boolean> = getBoolean(PREMIUM_PURCHASED, false)
 
     // Monthly Premium Preferences
     suspend fun setIsMonthlyTrial(value: Boolean) = setBoolean(IS_MONTHLY_TRIAL, value)

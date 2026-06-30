@@ -53,11 +53,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.core.view.drawToBitmap
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.presentation.backgroundtext.components.CustomColorPickerDialog
+import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
+import com.imr.example.newsmartykotlin.presentation.language.components.LanguageBottomNativeAd
 import com.imr.example.newsmartykotlin.presentation.navigation.RESULT_UPDATED_IMAGE_URI
+import com.imr.example.newsmartykotlin.presentation.viewmodel.AdViewModel
 import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
@@ -71,13 +75,38 @@ import kotlin.math.roundToInt
 @Composable
 fun PassportBackgroundScreen(
     navController: NavController,
-    viewModel: PassportBackgroundViewModel = koinViewModel()
+    viewModel: PassportBackgroundViewModel = koinViewModel(),
+    adViewModel: AdViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     val context = LocalContext.current
     val view = LocalView.current
     var captureBounds by remember { mutableStateOf<RectF?>(null) }
+
+    val isPurchased by adViewModel.dataStorePrefs.getIsPurchased().collectAsStateWithLifecycle(initialValue = false)
+    val isConnected by adViewModel.isConnected.collectAsStateWithLifecycle(initialValue = true)
+    val config by adViewModel.adRepository.appConfig.collectAsStateWithLifecycle()
+
+    val showAd = config.passportBackgroundNative.toShow && !isPurchased && isConnected
+
+    var nativeState by remember { mutableStateOf<LanguageNativeState>(LanguageNativeState.Idle) }
+
+    LaunchedEffect(showAd) {
+        if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
+            nativeState = LanguageNativeState.Loading
+            adViewModel.loadNativeAd(
+                adId = config.passportBackgroundNative.adId,
+                tag = "PassportBackgroundBottomNative"
+            ) { ad ->
+                nativeState = if (ad != null) {
+                    LanguageNativeState.Loaded(ad)
+                } else {
+                    LanguageNativeState.Failed
+                }
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -156,6 +185,8 @@ fun PassportBackgroundScreen(
             modifier = Modifier.align(Alignment.BottomCenter),
             selectedColor = uiState.selectedColor,
             isExpanded = uiState.isBottomSheetExpanded,
+            nativeState = nativeState,
+            showAd = showAd,
             onBackClick = viewModel::onBackClick,
             onToggleClick = viewModel::onBottomSheetToggle,
             onColorSelected = viewModel::onColorSelected
@@ -256,6 +287,8 @@ private fun PassportBackgroundBottomSheet(
     modifier: Modifier = Modifier,
     selectedColor: Color,
     isExpanded: Boolean,
+    nativeState: LanguageNativeState,
+    showAd: Boolean,
     onBackClick: () -> Unit,
     onToggleClick: () -> Unit,
     onColorSelected: (Color) -> Unit
@@ -344,6 +377,20 @@ private fun PassportBackgroundBottomSheet(
                     onColorSelected(color)
                 }
             )
+        }
+
+        if (showAd) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp)
+                    .background(Color.White)
+            ) {
+                LanguageBottomNativeAd(
+                    state = nativeState,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
+                )
+            }
         }
     }
 }

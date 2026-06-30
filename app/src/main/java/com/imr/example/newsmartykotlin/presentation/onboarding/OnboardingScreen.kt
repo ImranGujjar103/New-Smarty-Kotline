@@ -104,12 +104,17 @@ fun OnboardingScreen(
                 onNextClick = onNextClick
             )
         }
-        Spacer(modifier = Modifier.height(20.dp))
 
-        LanguageBottomNativeAd(
-            state = nativeState,
-            modifier = Modifier.fillMaxWidth()
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White)
+        ) {
+            LanguageBottomNativeAd(
+                state = nativeState,
+                modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp)
+            )
+        }
     }
 }
 @Composable
@@ -196,7 +201,7 @@ private fun OnboardingPageContent(
             Spacer(modifier = Modifier.height(34.dp))
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 PageIndicator(

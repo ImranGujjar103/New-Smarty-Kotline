@@ -9,24 +9,30 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.core.utils.CacheImageFileManager
 import com.imr.example.newsmartykotlin.domain.model.DocumentType
+import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
 import com.imr.example.newsmartykotlin.presentation.permission.AppSettingsHelper
 import com.imr.example.newsmartykotlin.presentation.permission.CameraPermissionDialog
 import com.imr.example.newsmartykotlin.presentation.permission.CameraPermissionHelper
 import com.imr.example.newsmartykotlin.presentation.permission.PermissionSettingsDialog
+import com.imr.example.newsmartykotlin.presentation.viewmodel.AdViewModel
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun PassportDetailRoute(
@@ -36,12 +42,37 @@ fun PassportDetailRoute(
     onCameraImageCaptured: (String) -> Unit,
     onGalleryClick: () -> Unit,
     viewModel: PassportDetailViewModel = koinViewModel(),
+    adViewModel: AdViewModel = koinViewModel(),
     cacheImageFileManager: CacheImageFileManager = koinInject()
 ) {
     val context = LocalContext.current
     val activity = context.findActivity()
     val lifecycleOwner = LocalLifecycleOwner.current
     val uiState by viewModel.uiState.collectAsState()
+
+    val isPurchased by adViewModel.dataStorePrefs.getIsPurchased().collectAsStateWithLifecycle(initialValue = false)
+    val isConnected by adViewModel.isConnected.collectAsStateWithLifecycle(initialValue = true)
+    val config by adViewModel.adRepository.appConfig.collectAsStateWithLifecycle()
+
+    val showAd = config.passportDetailNative.toShow && !isPurchased && isConnected
+
+    var nativeState by remember { mutableStateOf<LanguageNativeState>(LanguageNativeState.Idle) }
+
+    LaunchedEffect(showAd) {
+        if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
+            nativeState = LanguageNativeState.Loading
+            adViewModel.loadNativeAd(
+                adId = config.passportDetailNative.adId,
+                tag = "PassportDetailBottomNative"
+            ) { ad ->
+                nativeState = if (ad != null) {
+                    LanguageNativeState.Loaded(ad)
+                } else {
+                    LanguageNativeState.Failed
+                }
+            }
+        }
+    }
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -105,6 +136,8 @@ fun PassportDetailRoute(
             country = it,
             selectedType = selectedType,
             finalImageUri = uiState.finalImageUri,
+            nativeState = nativeState,
+            showAd = showAd,
             onBackClick = onBackClick,
             onCameraClick = {
                 if (CameraPermissionHelper.hasCameraPermission(context)) {

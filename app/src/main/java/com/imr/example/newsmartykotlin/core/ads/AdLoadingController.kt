@@ -3,6 +3,7 @@ package com.imr.example.newsmartykotlin.core.ads
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 class AdLoadingController {
 
@@ -14,7 +15,7 @@ class AdLoadingController {
         AdLoadingState.show()
 
         scope.launch {
-            delay(delayMillis)
+            delay(delayMillis.milliseconds)
             AdLoadingState.hide()
             callback()
         }

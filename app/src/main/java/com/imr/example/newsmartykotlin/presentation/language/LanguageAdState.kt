@@ -1,7 +1,8 @@
 package com.imr.example.newsmartykotlin.presentation.language
 
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.libraries.ads.mobile.sdk.banner.AdView
+import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAd
+
 
 sealed interface LanguageBannerState {
     data object Idle : LanguageBannerState

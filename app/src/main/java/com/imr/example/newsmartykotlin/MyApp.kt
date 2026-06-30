@@ -9,6 +9,8 @@ import androidx.annotation.RequiresApi
 import com.google.firebase.FirebaseApp
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.android.libraries.ads.mobile.sdk.MobileAds
+import com.google.android.libraries.ads.mobile.sdk.initialization.InitializationConfig
 import com.imr.example.newsmartykotlin.core.ads.AppOpenManager
 import com.imr.example.newsmartykotlin.core.utils.DataStorePrefs
 import com.imr.example.newsmartykotlin.data.model.AppConfig
@@ -43,6 +45,14 @@ class MyApp : Application() {
         super.onCreate()
         CONTEXT = this
         mInstance = this
+
+        MobileAds.initialize(
+            this,
+            InitializationConfig.Builder(getString(R.string.admob_app_id))
+                .setNativeValidatorDisabled()
+                .build()
+        )
+
         appOpenManager=AppOpenManager(this)
 
         FirebaseApp.initializeApp(this@MyApp)

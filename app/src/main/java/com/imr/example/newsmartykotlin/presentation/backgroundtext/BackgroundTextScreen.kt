@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -46,6 +47,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import com.imr.example.newsmartykotlin.R
@@ -55,9 +57,12 @@ import com.imr.example.newsmartykotlin.presentation.backgroundtext.components.Ad
 import com.imr.example.newsmartykotlin.presentation.backgroundtext.components.EditableSticker
 import com.imr.example.newsmartykotlin.presentation.backgroundtext.components.StickerBottomSheet
 import com.imr.example.newsmartykotlin.presentation.backgroundtext.components.TextEditingBottomSheet
+import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
+import com.imr.example.newsmartykotlin.presentation.language.components.LanguageBottomNativeAd
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
 import com.imr.example.newsmartykotlin.presentation.navigation.SELECTED_BACKGROUND_IMAGE_KEY
 import com.imr.example.newsmartykotlin.presentation.permission.GalleryPermissionHelper
+import com.imr.example.newsmartykotlin.presentation.viewmodel.AdViewModel
 import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
@@ -72,10 +77,29 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun BackgroundTextScreen(
     navController: NavController,
-    viewModel: BackgroundTextViewModel = koinViewModel()
+    viewModel: BackgroundTextViewModel = koinViewModel(),
+    adViewModel: AdViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
+
+    val isPurchased by adViewModel.dataStorePrefs.getIsPurchased().collectAsStateWithLifecycle(initialValue = false)
+    val isConnected by adViewModel.isConnected.collectAsStateWithLifecycle(initialValue = true)
+    val config by adViewModel.adRepository.appConfig.collectAsStateWithLifecycle()
+
+    val showAd = config.backgroundTextNative.toShow && !isPurchased && isConnected
+
+    val nativeState by adViewModel.getNativeAdState("BackgroundTextBottomNative").collectAsStateWithLifecycle()
+
+    LaunchedEffect(showAd) {
+        if (showAd) {
+            adViewModel.loadNativeAd(
+                adId = config.backgroundTextNative.adId,
+                tag = "BackgroundTextBottomNative"
+            ) { _ -> }
+        }
+    }
+
     val scope = rememberCoroutineScope()
     val captureLayer = rememberGraphicsLayer()
     var showBackgroundSheet by remember { mutableStateOf(false) }
@@ -122,123 +146,140 @@ fun BackgroundTextScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Spacer(modifier = Modifier.height(25.dp))
+            Column(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                Spacer(modifier = Modifier.height(25.dp))
 
-            BackgroundTextTopBar(
-                isSaving = uiState.isSaving,
-                onBackClick = {
-                    viewModel.unselectAll()
-                    navController.popBackStack()
-                },
-                onDoneClick = {
-                    viewModel.unselectAll()
+                BackgroundTextTopBar(
+                    isSaving = uiState.isSaving,
+                    onBackClick = {
+                        viewModel.unselectAll()
+                        navController.popBackStack()
+                    },
+                    onDoneClick = {
+                        viewModel.unselectAll()
 
-                    scope.launch {
-                        val bitmap = captureLayer
-                            .toImageBitmap()
-                            .asAndroidBitmap()
+                        scope.launch {
+                            val bitmap = captureLayer
+                                .toImageBitmap()
+                                .asAndroidBitmap()
 
-                        viewModel.onDoneClick(bitmap)
+                            viewModel.onDoneClick(bitmap)
+                        }
                     }
-                }
-            )
-            Spacer(modifier = Modifier.height(20.dp))
+                )
+                Spacer(modifier = Modifier.height(20.dp))
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .background(WhiteColor),
-                contentAlignment = Alignment.Center
-            ) {
                 Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .background(WhiteColor)
-                        .pointerInput(uiState.stickers.size) {
-                            detectTapGestures(
-                                onTap = {
-                                    viewModel.unselectAll()
-                                }
-                            )
-                        }
-                        .drawWithContent {
-                            captureLayer.record {
-                                this@drawWithContent.drawContent()
-                            }
-                            drawLayer(captureLayer)
-                        },
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .background(WhiteColor),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (uiState.backgroundPath.isNotEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(WhiteColor)
+                            .pointerInput(uiState.stickers.size) {
+                                detectTapGestures(
+                                    onTap = {
+                                        viewModel.unselectAll()
+                                    }
+                                )
+                            }
+                            .drawWithContent {
+                                captureLayer.record {
+                                    this@drawWithContent.drawContent()
+                                }
+                                drawLayer(captureLayer)
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (uiState.backgroundPath.isNotEmpty()) {
+                            Image(
+                                painter = rememberAsyncImagePainter(uiState.backgroundPath),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(horizontal = 28.dp, vertical = 28.dp),
+                                contentScale = ContentScale.Fit
+                            )
+                        }
+
                         Image(
-                            painter = rememberAsyncImagePainter(uiState.backgroundPath),
+                            painter = rememberAsyncImagePainter(uiState.imagePath),
                             contentDescription = null,
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(horizontal = 28.dp, vertical = 28.dp),
                             contentScale = ContentScale.Fit
                         )
-                    }
 
-                    Image(
-                        painter = rememberAsyncImagePainter(uiState.imagePath),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 28.dp, vertical = 28.dp),
-                        contentScale = ContentScale.Fit
-                    )
-
-                    uiState.stickers.forEach { sticker ->
-                        key(sticker.id) {
-                            EditableSticker(
-                                sticker = sticker,
-                                onSelect = {
-                                    viewModel.selectSticker(sticker.id)
-                                },
-                                onDeleteClick = {
-                                    viewModel.deleteSticker(sticker.id)
-                                },
-                                onTransform = { pan, zoom, rotation ->
-                                    viewModel.updateStickerTransform(
-                                        id = sticker.id,
-                                        pan = pan,
-                                        zoom = zoom,
-                                        rotation = rotation
-                                    )
-                                },
-                                onResizeDrag = { delta ->
-                                    viewModel.updateStickerScaleByDelta(
-                                        id = sticker.id,
-                                        delta = delta
-                                    )
-                                },
-                                onRotateDrag = { delta ->
-                                    viewModel.updateStickerRotationByDelta(
-                                        id = sticker.id,
-                                        delta = delta
-                                    )
-                                }
-                            )
+                        uiState.stickers.forEach { sticker ->
+                            key(sticker.id) {
+                                EditableSticker(
+                                    sticker = sticker,
+                                    onSelect = {
+                                        viewModel.selectSticker(sticker.id)
+                                    },
+                                    onDeleteClick = {
+                                        viewModel.deleteSticker(sticker.id)
+                                    },
+                                    onTransform = { pan, zoom, rotation ->
+                                        viewModel.updateStickerTransform(
+                                            id = sticker.id,
+                                            pan = pan,
+                                            zoom = zoom,
+                                            rotation = rotation
+                                        )
+                                    },
+                                    onResizeDrag = { delta ->
+                                        viewModel.updateStickerScaleByDelta(
+                                            id = sticker.id,
+                                            delta = delta
+                                        )
+                                    },
+                                    onRotateDrag = { delta ->
+                                        viewModel.updateStickerRotationByDelta(
+                                            id = sticker.id,
+                                            delta = delta
+                                        )
+                                    }
+                                )
+                            }
                         }
                     }
                 }
-            }
-            Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
-            BackgroundTextBottomBar(
-                onBackgroundClick = {
-                    viewModel.unselectAll()
-                    showBackgroundSheet = true
-                },
-                onTextClick = {
-                    viewModel.showAddTextDialog()
-                },
-                onStickerClick = {
-                    viewModel.showStickerSheet()
+                BackgroundTextBottomBar(
+                    onBackgroundClick = {
+                        viewModel.unselectAll()
+                        showBackgroundSheet = true
+                    },
+                    onTextClick = {
+                        viewModel.showAddTextDialog()
+                    },
+                    onStickerClick = {
+                        viewModel.showStickerSheet()
+                    }
+                )
+            }
+
+            if (showAd) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White)
+                ) {
+                    LanguageBottomNativeAd(
+                        state = nativeState,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp, vertical = 10.dp)
+                    )
                 }
-            )
+            }
         }
 
         uiState.selectedTextSticker?.let { selectedTextSticker ->

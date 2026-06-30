@@ -48,6 +48,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
@@ -60,13 +61,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.core.utils.BitmapUtils
+import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
+import com.imr.example.newsmartykotlin.presentation.language.components.LanguageBottomNativeAd
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
 import com.imr.example.newsmartykotlin.presentation.navigation.ERASED_IMAGE_RESULT_KEY
 import com.imr.example.newsmartykotlin.presentation.navigation.SELECTED_SUIT_URL_KEY
+import com.imr.example.newsmartykotlin.presentation.viewmodel.AdViewModel
 import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
@@ -96,13 +101,32 @@ private val FloatStateSaver = Saver<MutableFloatState, Float>(
 fun PhotoEditorScreen(
     navController: NavController,
     onActionClick: (EditorAction) -> Unit,
-    viewModel: PhotoEditorViewModel = koinViewModel()
+    viewModel: PhotoEditorViewModel = koinViewModel(),
+    adViewModel: AdViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val captureLayer = rememberGraphicsLayer()
 
     val uiState by viewModel.uiState.collectAsState()
+
+    val isPurchased by adViewModel.dataStorePrefs.getIsPurchased().collectAsStateWithLifecycle(initialValue = false)
+    val isConnected by adViewModel.isConnected.collectAsStateWithLifecycle(initialValue = true)
+    val config by adViewModel.adRepository.appConfig.collectAsStateWithLifecycle()
+
+    val showAd = config.photoEditorNative.toShow && !isPurchased && isConnected
+
+    val nativeState by adViewModel.getNativeAdState("PhotoEditorBottomNative").collectAsStateWithLifecycle()
+
+    LaunchedEffect(showAd) {
+        if (showAd) {
+            adViewModel.loadNativeAd(
+                adId = config.photoEditorNative.adId,
+                tag = "PhotoEditorBottomNative"
+            ) { _ -> }
+        }
+    }
+
     val selectedSuitUrlFlow = remember {
         navController.currentBackStackEntry
             ?.savedStateHandle
@@ -162,127 +186,146 @@ fun PhotoEditorScreen(
             .navigationBarsPadding()
     )
     {
-        Spacer(modifier = Modifier.height(25.dp))
-
-        PhotoEditorTopBar(
-            onBackClick = { navController.popBackStack() },
-            onNextClick = {
-                scope.launch {
-                    val bitmap = captureLayer
-                        .toImageBitmap()
-                        .asAndroidBitmap()
-
-                    val imagePath = BitmapUtils.saveBitmapToCache(
-                        context = context,
-                        bitmap = bitmap
-                    )
-                    navController.navigate(
-                        AppRoutes.BackgroundText.createRoute(imagePath)
-                    )
-                }
-            }
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .background(WhiteColor)
-                .clipToBounds(),
-            contentAlignment = Alignment.Center
+        Column(
+            modifier = Modifier.weight(1f).fillMaxWidth()
         ) {
-            BoxWithConstraints(
+            Spacer(modifier = Modifier.height(25.dp))
+
+            PhotoEditorTopBar(
+                onBackClick = { navController.popBackStack() },
+                onNextClick = {
+                    scope.launch {
+                        val bitmap = captureLayer
+                            .toImageBitmap()
+                            .asAndroidBitmap()
+
+                        val imagePath = BitmapUtils.saveBitmapToCache(
+                            context = context,
+                            bitmap = bitmap
+                        )
+                        navController.navigate(
+                            AppRoutes.BackgroundText.createRoute(imagePath)
+                        )
+                    }
+                }
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 24.dp)
-                    .clipToBounds()
-                    .drawWithContent {
-                        captureLayer.record {
-                            this@drawWithContent.drawContent()
-                        }
-                        drawLayer(captureLayer)
-                    },
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .background(WhiteColor)
+                    .clipToBounds(),
                 contentAlignment = Alignment.Center
             ) {
-                val parentWidthDp = maxWidth
-                val parentHeightDp = maxHeight
-
-                val faceWidthDp = minOf(122.dp, parentWidthDp * 0.35f)
-                val faceHeightDp = minOf(150.dp, parentHeightDp * 0.28f)
-
-                TransformableEditorImage(
-                    imageUri = uiState.faceImageUri.toUri(),
-                    selected = selectedLayer == EditableLayer.FACE,
-                    offsetState = faceOffset,
-                    scaleState = faceScale,
-                    rotationState = faceRotation,
-                    flipXState = faceFlipX,
-                    minScale = 0.4f,
-                    maxScale = 4f,
+                BoxWithConstraints(
                     modifier = Modifier
-                        .width(faceWidthDp)
-                        .height(faceHeightDp)
-                )
+                        .fillMaxSize()
+                        .padding(horizontal = 24.dp)
+                        .clipToBounds()
+                        .drawWithContent {
+                            captureLayer.record {
+                                this@drawWithContent.drawContent()
+                            }
+                            drawLayer(captureLayer)
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    val parentWidthDp = maxWidth
+                    val parentHeightDp = maxHeight
 
-                if (uiState.suitUrl.isNotEmpty()) {
+                    val faceWidthDp = minOf(122.dp, parentWidthDp * 0.35f)
+                    val faceHeightDp = minOf(150.dp, parentHeightDp * 0.28f)
+
                     TransformableEditorImage(
-                        imageUri = uiState.suitUrl,
-                        selected = selectedLayer == EditableLayer.SUIT,
-                        offsetState = suitOffset,
-                        scaleState = suitScale,
-                        rotationState = suitRotation,
-                        flipXState = suitFlipX,
-                        minScale = 0.6f,
-                        maxScale = 3f,
+                        imageUri = uiState.faceImageUri.toUri(),
+                        selected = selectedLayer == EditableLayer.FACE,
+                        offsetState = faceOffset,
+                        scaleState = faceScale,
+                        rotationState = faceRotation,
+                        flipXState = faceFlipX,
+                        minScale = 0.4f,
+                        maxScale = 4f,
                         modifier = Modifier
-                            .requiredSizeIn(
-                                maxWidth = parentWidthDp,
-                                maxHeight = parentHeightDp
-                            )
-                            .wrapContentSize()
+                            .width(faceWidthDp)
+                            .height(faceHeightDp)
                     )
+
+                    if (uiState.suitUrl.isNotEmpty()) {
+                        TransformableEditorImage(
+                            imageUri = uiState.suitUrl,
+                            selected = selectedLayer == EditableLayer.SUIT,
+                            offsetState = suitOffset,
+                            scaleState = suitScale,
+                            rotationState = suitRotation,
+                            flipXState = suitFlipX,
+                            minScale = 0.6f,
+                            maxScale = 3f,
+                            modifier = Modifier
+                                .requiredSizeIn(
+                                    maxWidth = parentWidthDp,
+                                    maxHeight = parentHeightDp
+                                )
+                                .wrapContentSize()
+                        )
+                    }
                 }
+
+                FloatingLayerButton(
+                    selectedLayer = selectedLayer,
+                    onClick = {
+                        selectedLayer = if (selectedLayer == EditableLayer.FACE) {
+                            EditableLayer.SUIT
+                        } else {
+                            EditableLayer.FACE
+                        }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(end = 24.dp, bottom = 28.dp)
+                )
             }
 
-            FloatingLayerButton(
-                selectedLayer = selectedLayer,
-                onClick = {
-                    selectedLayer = if (selectedLayer == EditableLayer.FACE) {
-                        EditableLayer.SUIT
-                    } else {
-                        EditableLayer.FACE
+            Spacer(modifier = Modifier.height(4.dp))
+
+            EditorBottomBar { action ->
+                when (action) {
+                    EditorAction.ERASER -> {
+                        navController.navigate(
+                            AppRoutes.Eraser.createRoute(
+                                faceImageUri = uiState.faceImageUri
+                            )
+                        )
                     }
-                },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(end = 24.dp, bottom = 28.dp)
-            )
+
+                    EditorAction.FACE_FLIP -> {
+                        faceFlipX.floatValue *= -1f
+                    }
+
+                    EditorAction.SUIT_FLIP -> {
+                        suitFlipX.floatValue *= -1f
+                    }
+
+                    else -> {
+                        onActionClick(action)
+                    }
+                }
+            }
         }
 
-        Spacer(modifier = Modifier.height(4.dp))
-
-        EditorBottomBar { action ->
-            when (action) {
-                EditorAction.ERASER -> {
-                    navController.navigate(
-                        AppRoutes.Eraser.createRoute(
-                            faceImageUri = uiState.faceImageUri
-                        )
-                    )
-                }
-
-                EditorAction.FACE_FLIP -> {
-                    faceFlipX.floatValue *= -1f
-                }
-
-                EditorAction.SUIT_FLIP -> {
-                    suitFlipX.floatValue *= -1f
-                }
-
-                else -> {
-                    onActionClick(action)
-                }
+        if (showAd) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+            ) {
+                LanguageBottomNativeAd(
+                    state = nativeState,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 10.dp)
+                )
             }
         }
     }

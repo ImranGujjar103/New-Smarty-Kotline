@@ -45,10 +45,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import com.imr.example.newsmartykotlin.R
+import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
+import com.imr.example.newsmartykotlin.presentation.language.components.LanguageBottomNativeAd
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
+import com.imr.example.newsmartykotlin.presentation.viewmodel.AdViewModel
 import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
@@ -59,9 +63,34 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun PassportCropperScreen(
     navController: NavController,
-    viewModel: PassportCropperViewModel = koinViewModel()
+    viewModel: PassportCropperViewModel = koinViewModel(),
+    adViewModel: AdViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    val isPurchased by adViewModel.dataStorePrefs.getIsPurchased().collectAsStateWithLifecycle(initialValue = false)
+    val isConnected by adViewModel.isConnected.collectAsStateWithLifecycle(initialValue = true)
+    val config by adViewModel.adRepository.appConfig.collectAsStateWithLifecycle()
+
+    val showAd = config.passportCropperNative.toShow && !isPurchased && isConnected
+
+    var nativeState by remember { mutableStateOf<LanguageNativeState>(LanguageNativeState.Idle) }
+
+    LaunchedEffect(showAd) {
+        if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
+            nativeState = LanguageNativeState.Loading
+            adViewModel.loadNativeAd(
+                adId = config.passportCropperNative.adId,
+                tag = "PassportCropperBottomNative"
+            ) { ad ->
+                nativeState = if (ad != null) {
+                    LanguageNativeState.Loaded(ad)
+                } else {
+                    LanguageNativeState.Failed
+                }
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -110,68 +139,87 @@ fun PassportCropperScreen(
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
-        Spacer(modifier = Modifier.height(25.dp))
-
-        PassportCropperTopBar(
-            onBackClick = viewModel::onBackClick,
-            onContinueClick = viewModel::onContinueClick
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .clipToBounds()
-                .pointerInput(Unit) {
-                    detectTransformGestures { _, pan, zoom, _ ->
-                        imageScale *= zoom
-                        imageOffset += pan
-                    }
-                }
+        Column(
+            modifier = Modifier.weight(1f).fillMaxWidth()
         ) {
+            Spacer(modifier = Modifier.height(25.dp))
 
-
-            Image(
-                painter = rememberAsyncImagePainter(uiState.imageUri.toUri()),
-                contentDescription = null,
+            PassportCropperTopBar(
+                onBackClick = viewModel::onBackClick,
+                onContinueClick = viewModel::onContinueClick
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .onGloballyPositioned { coordinates ->
-                        val position = coordinates.positionInRoot()
-
-                        baseImageRect = RectF(
-                            position.x,
-                            position.y,
-                            position.x + coordinates.size.width,
-                            position.y + coordinates.size.height
-                        )
+                    .clipToBounds()
+                    .pointerInput(Unit) {
+                        detectTransformGestures { _, pan, zoom, _ ->
+                            imageScale *= zoom
+                            imageOffset += pan
+                        }
                     }
+            ) {
+
+
+                Image(
+                    painter = rememberAsyncImagePainter(uiState.imageUri.toUri()),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .onGloballyPositioned { coordinates ->
+                            val position = coordinates.positionInRoot()
+
+                            baseImageRect = RectF(
+                                position.x,
+                                position.y,
+                                position.x + coordinates.size.width,
+                                position.y + coordinates.size.height
+                            )
+                        }
                     .graphicsLayer(
                         scaleX = imageScale,
                         scaleY = imageScale,
                         translationX = imageOffset.x,
                         translationY = imageOffset.y
                     )
-            )
+                )
 
-            PassportFixedCropFrame(
-                modifier = Modifier
-                    .align(Alignment.Center),
-                inchText = uiState.inchText,
-                passportPixel = uiState.pixelText,
-                onCropRectReady = { rect ->
-                    cropRect = rect
-                }
-            )
-
-            if (uiState.isCropping) {
-                Box(
+                PassportFixedCropFrame(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.25f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = PrimaryColor)
+                        .align(Alignment.Center),
+                    inchText = uiState.inchText,
+                    passportPixel = uiState.pixelText,
+                    onCropRectReady = { rect ->
+                        cropRect = rect
+                    }
+                )
+
+                if (uiState.isCropping) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = 0.25f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = PrimaryColor)
+                    }
                 }
+            }
+        }
+
+        if (showAd) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+            ) {
+                LanguageBottomNativeAd(
+                    state = nativeState,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 10.dp)
+                )
             }
         }
     }

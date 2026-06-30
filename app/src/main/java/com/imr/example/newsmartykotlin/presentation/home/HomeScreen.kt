@@ -4,25 +4,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -35,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -44,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.domain.model.HomeFeature
+import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
+import com.imr.example.newsmartykotlin.presentation.language.components.LanguageBottomNativeAd
 import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
@@ -54,6 +41,8 @@ import com.imr.example.newsmartykotlin.ui.theme.WhiteColor
 @Composable
 fun HomeScreen(
     state: HomeUiState,
+    nativeState: LanguageNativeState,
+    showAd: Boolean,
     onCrownClick: () -> Unit,
     onSettingClick: () -> Unit,
     onChangeClick: () -> Unit,
@@ -63,6 +52,8 @@ fun HomeScreen(
 
     HomeContent(
         state = state,
+        nativeState = nativeState,
+        showAd = showAd,
         onCrownClick = onCrownClick,
         onSettingClick = onSettingClick,
         onChangeClick = onChangeClick,
@@ -73,6 +64,8 @@ fun HomeScreen(
 @Composable
 private fun HomeContent(
     state: HomeUiState,
+    nativeState: LanguageNativeState,
+    showAd: Boolean,
     onCrownClick: () -> Unit,
     onSettingClick: () -> Unit,
     onChangeClick: () -> Unit,
@@ -85,7 +78,7 @@ private fun HomeContent(
         state.features.find { it.id == "my_creation" }
     }
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(
@@ -99,10 +92,13 @@ private fun HomeContent(
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
+        val scrollState = rememberScrollState()
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .weight(1f)
+                .fillMaxWidth()
                 .padding(horizontal = 20.dp)
+                .verticalScroll(scrollState)
         ) {
             Spacer(modifier = Modifier.height(25.dp))
 
@@ -117,19 +113,36 @@ private fun HomeContent(
                 onChangeClick = onChangeClick
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             FeatureGrid(
                 features = gridFeatures,
                 onFeatureClick = onFeatureClick
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             myCreationFeature?.let { feature ->
                 MyCreationCard(
                     feature = feature,
                     onClick = { onFeatureClick(feature) }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        if (showAd) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+            ) {
+                LanguageBottomNativeAd(
+                    state = nativeState,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 10.dp)
                 )
             }
         }
@@ -211,8 +224,8 @@ private fun SuitChangerCard(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp),
-        shape = RoundedCornerShape(28.dp),
+            .height(150.dp),
+        shape = RoundedCornerShape(24.dp),
         color = WhiteColor,
         shadowElevation = 0.dp
     ) {
@@ -238,17 +251,18 @@ private fun SuitChangerCard(
                 Text(
                     text = stringResource(R.string.suit_changer),
                     fontFamily = SfProDisplayBold,
-                    fontSize = 22.sp,
+                    fontSize = 20.sp,
+                    lineHeight = 14.sp,
                     color = TextColor
                 )
 
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
                     text = stringResource(R.string.suit_changer_subtitle),
                     fontFamily = SfProDisplayRegular,
                     fontSize = 14.sp,
-                    lineHeight = 18.sp,
+                    lineHeight = 13.sp,
                     color = TextColor.copy(alpha = 0.7f)
                 )
 
@@ -257,9 +271,9 @@ private fun SuitChangerCard(
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(46.dp),
+                        .height(40.dp),
                     onClick = onChangeClick,
-                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    contentPadding = PaddingValues(horizontal = 14.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = PrimaryColor,
                         contentColor = WhiteColor
@@ -274,7 +288,7 @@ private fun SuitChangerCard(
                         Text(
                             text = stringResource(R.string.lets_change),
                             fontFamily = SfProDisplayBold,
-                            fontSize = 15.sp,
+                            fontSize = 14.sp,
                             color = WhiteColor
                         )
 
@@ -353,23 +367,29 @@ private fun FeatureGrid(
     features: List<HomeFeature>,
     onFeatureClick: (HomeFeature) -> Unit
 ) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+    Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(20.dp),
-        verticalArrangement = Arrangement.spacedBy(18.dp),
-        userScrollEnabled = false
+        verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
-        items(
-            items = features,
-            key = { it.id }
-        ) { feature ->
-            FeatureItem(
-                feature = feature,
-                onClick = {
-                    onFeatureClick(feature)
+        features.chunked(2).forEach { rowFeatures ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                rowFeatures.forEach { feature ->
+                    Box(modifier = Modifier.weight(1f)) {
+                        FeatureItem(
+                            feature = feature,
+                            onClick = {
+                                onFeatureClick(feature)
+                            }
+                        )
+                    }
                 }
-            )
+                if (rowFeatures.size < 2) {
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
         }
     }
 }
@@ -412,4 +432,3 @@ private fun FeatureItem(
         )
     }
 }
-

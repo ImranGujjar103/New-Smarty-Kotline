@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -40,6 +41,8 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.domain.model.SuitItem
+import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
+import com.imr.example.newsmartykotlin.presentation.language.components.LanguageBottomNativeAd
 import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
@@ -49,11 +52,13 @@ import com.imr.example.newsmartykotlin.ui.theme.WhiteColor
 @Composable
 fun SuitScreen(
     state: SuitUiState,
+    nativeState: LanguageNativeState,
+    showAd: Boolean,
     onBackClick: () -> Unit,
     onCategoryClick: (Int) -> Unit,
     onSuitClick: (SuitItem) -> Unit
 ) {
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(
@@ -69,7 +74,8 @@ fun SuitScreen(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .weight(1f)
+                .fillMaxWidth()
                 .padding(horizontal = 20.dp)
         ) {
             Spacer(modifier = Modifier.height(25.dp))
@@ -95,7 +101,23 @@ fun SuitScreen(
             } else {
                 SuitGrid(
                     items = state.selectedItems,
-                    onSuitClick = onSuitClick
+                    onSuitClick = onSuitClick,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+        }
+
+        if (showAd) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+            ) {
+                LanguageBottomNativeAd(
+                    state = nativeState,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 10.dp)
                 )
             }
         }
@@ -183,11 +205,12 @@ private fun CategoryTabs(
 @Composable
 private fun SuitGrid(
     items: List<SuitItem>,
-    onSuitClick: (SuitItem) -> Unit
+    onSuitClick: (SuitItem) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         contentPadding = PaddingValues(bottom = 24.dp)

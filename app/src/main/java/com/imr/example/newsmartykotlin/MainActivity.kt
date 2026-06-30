@@ -4,7 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.imr.example.newsmartykotlin.core.ads.AdLoadingState
+import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
 import com.imr.example.newsmartykotlin.presentation.navigation.NewSmartyKotlin
 import com.imr.example.newsmartykotlin.ui.theme.NewSmartyKotlinTheme
 
@@ -15,6 +21,21 @@ class MainActivity : ComponentActivity() {
         setContent {
             NewSmartyKotlinTheme {
                 val navController = rememberNavController()
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route
+
+                val isInterstitialShowing by AdLoadingState.isInterstitialShowing.collectAsState()
+
+                LaunchedEffect(currentRoute, isInterstitialShowing) {
+                    val shouldRestrict = when {
+                        isInterstitialShowing -> true
+                        currentRoute == AppRoutes.Splash.route -> true
+                        currentRoute == AppRoutes.Premium.route -> true
+                        else -> false
+                    }
+                    MyApp.appOpenManager?.setIsRestricted(shouldRestrict)
+                }
+
                 NewSmartyKotlin(
                     navController = navController
                 )

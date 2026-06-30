@@ -68,11 +68,15 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.domain.model.ErasePoint
 import com.imr.example.newsmartykotlin.domain.model.EraseStroke
+import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
+import com.imr.example.newsmartykotlin.presentation.language.components.LanguageBottomNativeAd
 import com.imr.example.newsmartykotlin.presentation.navigation.ERASED_IMAGE_RESULT_KEY
+import com.imr.example.newsmartykotlin.presentation.viewmodel.AdViewModel
 import com.imr.example.newsmartykotlin.ui.theme.CardColor
 import com.imr.example.newsmartykotlin.ui.theme.DisabledTextColor
 import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
@@ -88,7 +92,8 @@ import kotlin.math.roundToInt
 @Composable
 fun EraserScreen(
     navController: NavController,
-    viewModel: EraserViewModel = koinViewModel()
+    viewModel: EraserViewModel = koinViewModel(),
+    adViewModel: AdViewModel = koinViewModel()
 ) {
     val scope = rememberCoroutineScope()
     val graphicsLayer = rememberGraphicsLayer()
@@ -97,6 +102,23 @@ fun EraserScreen(
         graphicsLayer.compositingStrategy = CompositingStrategy.Offscreen
     }
     val uiState by viewModel.uiState.collectAsState()
+
+    val isPurchased by adViewModel.dataStorePrefs.getIsPurchased().collectAsStateWithLifecycle(initialValue = false)
+    val isConnected by adViewModel.isConnected.collectAsStateWithLifecycle(initialValue = true)
+    val config by adViewModel.adRepository.appConfig.collectAsStateWithLifecycle()
+
+    val showAd = config.eraserNative.toShow && !isPurchased && isConnected
+
+    val nativeState by adViewModel.getNativeAdState("EraserBottomNative").collectAsStateWithLifecycle()
+
+    LaunchedEffect(showAd) {
+        if (showAd) {
+            adViewModel.loadNativeAd(
+                adId = config.eraserNative.adId,
+                tag = "EraserBottomNative"
+            ) { _ -> }
+        }
+    }
 
     val localStrokes = remember { mutableStateListOf<EraseStroke>() }
 
@@ -157,184 +179,203 @@ fun EraserScreen(
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
-        Spacer(modifier = Modifier.height(25.dp))
-
-        EraserTopBar(
-            isSaving = uiState.isSaving,
-            onBackClick = viewModel::onBackClick,
-            onDoneClick = {
-                scope.launch {
-                    val bitmap = graphicsLayer
-                        .toImageBitmap()
-                        .asAndroidBitmap()
-
-                    viewModel.onDoneClick(bitmap)
-                }
-            }
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .checkerboardBackground()
-                .clipToBounds(),
-            contentAlignment = Alignment.Center
+        Column(
+            modifier = Modifier.weight(1f).fillMaxWidth()
         ) {
-            val bitmap = uiState.previewBitmap
+            Spacer(modifier = Modifier.height(25.dp))
 
-            if (bitmap != null) {
-                Canvas(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .onSizeChanged { size ->
-                            canvasSize = Size(
-                                width = size.width.toFloat(),
-                                height = size.height.toFloat()
-                            )
+            EraserTopBar(
+                isSaving = uiState.isSaving,
+                onBackClick = viewModel::onBackClick,
+                onDoneClick = {
+                    scope.launch {
+                        val bitmap = graphicsLayer
+                            .toImageBitmap()
+                            .asAndroidBitmap()
 
-                            if (fingerPoint == null) {
-                                val initialFinger = ErasePoint(
-                                    x = size.width / 2f,
-                                    y = size.height / 2f
+                        viewModel.onDoneClick(bitmap)
+                    }
+                }
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .checkerboardBackground()
+                    .clipToBounds(),
+                contentAlignment = Alignment.Center
+            ) {
+                val bitmap = uiState.previewBitmap
+
+                if (bitmap != null) {
+                    Canvas(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .onSizeChanged { size ->
+                                canvasSize = Size(
+                                    width = size.width.toFloat(),
+                                    height = size.height.toFloat()
                                 )
 
-                                fingerPoint = initialFinger
+                                if (fingerPoint == null) {
+                                    val initialFinger = ErasePoint(
+                                        x = size.width / 2f,
+                                        y = size.height / 2f
+                                    )
 
-                                brushPreviewPoint = ErasePoint(
-                                    x = initialFinger.x,
-                                    y = initialFinger.y - uiState.brushOffset
-                                )
+                                    fingerPoint = initialFinger
+
+                                    brushPreviewPoint = ErasePoint(
+                                        x = initialFinger.x,
+                                        y = initialFinger.y - uiState.brushOffset
+                                    )
+                                }
                             }
-                        }
-                        .pointerInput(
-                            uiState.brushSize,
-                            uiState.brushOffset
-                        ) {
-                            detectDragGestures(
-                                onDragStart = { offset ->
-                                    val currentFinger = ErasePoint(
-                                        x = offset.x,
-                                        y = offset.y
-                                    )
-
-                                    val currentBrush = ErasePoint(
-                                        x = offset.x,
-                                        y = offset.y - uiState.brushOffset
-                                    )
-
-                                    fingerPoint = currentFinger
-                                    brushPreviewPoint = currentBrush
-                                    currentPoints = listOf(currentBrush)
-                                },
-                                onDrag = { change, _ ->
-                                    val currentFinger = ErasePoint(
-                                        x = change.position.x,
-                                        y = change.position.y
-                                    )
-
-                                    val currentBrush = ErasePoint(
-                                        x = change.position.x,
-                                        y = change.position.y - uiState.brushOffset
-                                    )
-
-                                    fingerPoint = currentFinger
-                                    brushPreviewPoint = currentBrush
-
-                                    currentPoints = currentPoints + currentBrush
-                                },
-                                onDragEnd = {
-                                    if (currentPoints.isNotEmpty()) {
-                                        val stroke = EraseStroke(
-                                            points = currentPoints,
-                                            brushSize = uiState.brushSize
+                            .pointerInput(
+                                uiState.brushSize,
+                                uiState.brushOffset
+                            ) {
+                                detectDragGestures(
+                                    onDragStart = { offset ->
+                                        val currentFinger = ErasePoint(
+                                            x = offset.x,
+                                            y = offset.y
                                         )
 
-                                        localStrokes.add(stroke)
-                                        viewModel.addStroke(stroke)
+                                        val currentBrush = ErasePoint(
+                                            x = offset.x,
+                                            y = offset.y - uiState.brushOffset
+                                        )
+
+                                        fingerPoint = currentFinger
+                                        brushPreviewPoint = currentBrush
+                                        currentPoints = listOf(currentBrush)
+                                    },
+                                    onDrag = { change, _ ->
+                                        val currentFinger = ErasePoint(
+                                            x = change.position.x,
+                                            y = change.position.y
+                                        )
+
+                                        val currentBrush = ErasePoint(
+                                            x = change.position.x,
+                                            y = change.position.y - uiState.brushOffset
+                                        )
+
+                                        fingerPoint = currentFinger
+                                        brushPreviewPoint = currentBrush
+
+                                        currentPoints = currentPoints + currentBrush
+                                    },
+                                    onDragEnd = {
+                                        if (currentPoints.isNotEmpty()) {
+                                            val stroke = EraseStroke(
+                                                points = currentPoints,
+                                                brushSize = uiState.brushSize
+                                            )
+
+                                            localStrokes.add(stroke)
+                                            viewModel.addStroke(stroke)
+                                            currentPoints = emptyList()
+                                        }
+                                    },
+                                    onDragCancel = {
                                         currentPoints = emptyList()
                                     }
-                                },
-                                onDragCancel = {
-                                    currentPoints = emptyList()
-                                }
-                            )
-                        }
-                ) {
-                    val allStrokes = localStrokes + listOfNotNull(
-                        currentPoints.takeIf { it.isNotEmpty() }?.let {
-                            EraseStroke(
-                                points = it,
-                                brushSize = uiState.brushSize
-                            )
-                        }
-                    )
-
-                    graphicsLayer.record {
-                        drawImage(
-                            image = bitmap.asImageBitmap(),
-                            dstSize = IntSize(size.width.roundToInt(), size.height.roundToInt())
-                        )
-
-                        allStrokes.forEach { stroke ->
-                            val path = Path()
-
-                            stroke.points.forEachIndexed { index, point ->
-                                if (index == 0) {
-                                    path.moveTo(point.x, point.y)
-                                } else {
-                                    path.lineTo(point.x, point.y)
-                                }
+                                )
                             }
+                    ) {
+                        val allStrokes = localStrokes + listOfNotNull(
+                            currentPoints.takeIf { it.isNotEmpty() }?.let {
+                                EraseStroke(
+                                    points = it,
+                                    brushSize = uiState.brushSize
+                                )
+                            }
+                        )
 
-                            drawPath(
-                                path = path,
-                                color = Color.Transparent,
-                                style = Stroke(
-                                    width = stroke.brushSize,
-                                    cap = StrokeCap.Round,
-                                    join = StrokeJoin.Round
-                                ),
-                                blendMode = BlendMode.Clear
+                        graphicsLayer.record {
+                            drawImage(
+                                image = bitmap.asImageBitmap(),
+                                dstSize = IntSize(size.width.roundToInt(), size.height.roundToInt())
+                            )
+
+                            allStrokes.forEach { stroke ->
+                                val path = Path()
+
+                                stroke.points.forEachIndexed { index, point ->
+                                    if (index == 0) {
+                                        path.moveTo(point.x, point.y)
+                                    } else {
+                                        path.lineTo(point.x, point.y)
+                                    }
+                                }
+
+                                drawPath(
+                                    path = path,
+                                    color = Color.Transparent,
+                                    style = Stroke(
+                                        width = stroke.brushSize,
+                                        cap = StrokeCap.Round,
+                                        join = StrokeJoin.Round
+                                    ),
+                                    blendMode = BlendMode.Clear
+                                )
+                            }
+                        }
+
+                        drawLayer(graphicsLayer)
+
+                        brushPreviewPoint?.let { point ->
+                            drawCircle(
+                                color = PrimaryColor,
+                                radius = uiState.brushSize / 2f,
+                                center = Offset(point.x, point.y),
+                                style = Stroke(width = 2.dp.toPx())
                             )
                         }
-                    }
-
-                    drawLayer(graphicsLayer)
-
-                    brushPreviewPoint?.let { point ->
-                        drawCircle(
-                            color = PrimaryColor,
-                            radius = uiState.brushSize / 2f,
-                            center = Offset(point.x, point.y),
-                            style = Stroke(width = 2.dp.toPx())
-                        )
                     }
                 }
             }
+
+            EraserControlPanel(
+                brushSize = uiState.brushSize,
+                brushOffset = uiState.brushOffset,
+                canUndo = uiState.canUndo,
+                canRedo = uiState.canRedo,
+                onBrushSizeChange = viewModel::onBrushSizeChange,
+                onBrushOffsetChange = viewModel::onBrushOffsetChange,
+                onResetClick = viewModel::showResetDialog,
+                onUndoClick = {
+                    viewModel.undo()
+                    localStrokes.clear()
+                    localStrokes.addAll(viewModel.currentStrokes())
+                },
+                onRedoClick = {
+                    viewModel.redo()
+                    localStrokes.clear()
+                    localStrokes.addAll(viewModel.currentStrokes())
+                },
+                onBackClick = viewModel::onBackClick
+            )
         }
 
-        EraserControlPanel(
-            brushSize = uiState.brushSize,
-            brushOffset = uiState.brushOffset,
-            canUndo = uiState.canUndo,
-            canRedo = uiState.canRedo,
-            onBrushSizeChange = viewModel::onBrushSizeChange,
-            onBrushOffsetChange = viewModel::onBrushOffsetChange,
-            onResetClick = viewModel::showResetDialog,
-            onUndoClick = {
-                viewModel.undo()
-                localStrokes.clear()
-                localStrokes.addAll(viewModel.currentStrokes())
-            },
-            onRedoClick = {
-                viewModel.redo()
-                localStrokes.clear()
-                localStrokes.addAll(viewModel.currentStrokes())
-            },
-            onBackClick = viewModel::onBackClick
-        )
+        if (showAd) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+            ) {
+                LanguageBottomNativeAd(
+                    state = nativeState,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 10.dp)
+                )
+            }
+        }
     }
 
     if (uiState.showResetDialog) {

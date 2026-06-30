@@ -26,7 +26,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.android.gms.ads.AdView
+import com.google.android.libraries.ads.mobile.sdk.banner.AdView
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.presentation.splash.components.SplashBannerAd
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor

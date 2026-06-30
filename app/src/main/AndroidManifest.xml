@@ -44,17 +44,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.google.android.gms.ads.AdActivity"
+            android:name="com.google.android.libraries.ads.mobile.sdk.common.AdActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AdTheme"
             tools:replace="android:theme" />
         <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/admob_app_id" />
-
+            android:name="com.google.android.libraries.ads.mobile.sdk.flag.NATIVE_AD_DEBUGGER_ENABLED"
+            android:value="false" />
         <meta-data
             android:name="com.google.android.gms.ads.flag.NATIVE_AD_DEBUGGER_ENABLED"
             android:value="false" />
+        <meta-data
+            android:name="com.google.android.libraries.ads.mobile.sdk.OPTIMIZE_INITIALIZATION"
+            android:value="true" />
+        <meta-data
+            android:name="com.google.android.libraries.ads.mobile.sdk.OPTIMIZE_AD_LOADING"
+            android:value="true" />
+        <meta-data
+            android:name="com.google.android.libraries.ads.mobile.sdk.APPLICATION_ID"
+            android:value="@string/admob_app_id" />
 
 
         <provider

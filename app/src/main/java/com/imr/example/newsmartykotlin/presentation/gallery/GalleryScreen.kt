@@ -31,9 +31,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -41,12 +45,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.domain.model.GalleryImage
+import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
+import com.imr.example.newsmartykotlin.presentation.language.components.LanguageBottomNativeAd
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
 import com.imr.example.newsmartykotlin.presentation.navigation.SELECTED_BACKGROUND_IMAGE_KEY
+import com.imr.example.newsmartykotlin.presentation.viewmodel.AdViewModel
 import com.imr.example.newsmartykotlin.ui.theme.AppTypography
 import com.imr.example.newsmartykotlin.ui.theme.CardColor
 import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
@@ -62,9 +70,34 @@ import org.koin.androidx.compose.koinViewModel
 fun GalleryScreen(
     navController: NavController,
     isForBackground: Boolean = false,
-    viewModel: GalleryViewModel = koinViewModel()
+    viewModel: GalleryViewModel = koinViewModel(),
+    adViewModel: AdViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    val isPurchased by adViewModel.dataStorePrefs.getIsPurchased().collectAsStateWithLifecycle(initialValue = false)
+    val isConnected by adViewModel.isConnected.collectAsStateWithLifecycle(initialValue = true)
+    val config by adViewModel.adRepository.appConfig.collectAsStateWithLifecycle()
+
+    val showAd = config.galleryNative.toShow && !isPurchased && isConnected
+
+    var nativeState by remember { mutableStateOf<LanguageNativeState>(LanguageNativeState.Idle) }
+
+    LaunchedEffect(showAd) {
+        if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
+            nativeState = LanguageNativeState.Loading
+            adViewModel.loadNativeAd(
+                adId = config.galleryNative.adId,
+                tag = "GalleryBottomNative"
+            ) { ad ->
+                nativeState = if (ad != null) {
+                    LanguageNativeState.Loaded(ad)
+                } else {
+                    LanguageNativeState.Failed
+                }
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -114,117 +147,136 @@ fun GalleryScreen(
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
-        Spacer(modifier = Modifier.height(25.dp))
-
-        GalleryTopBar(
-            onBackClick = viewModel::onBackClick
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = WhiteColor,
-            shape = RoundedCornerShape(
-                topStart = 22.dp,
-                topEnd = 22.dp
-            )
+        Column(
+            modifier = Modifier.weight(1f).fillMaxWidth()
         ) {
-            when {
-                uiState.isLoading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(
-                            color = PrimaryColor
-                        )
+            Spacer(modifier = Modifier.height(25.dp))
+
+            GalleryTopBar(
+                onBackClick = viewModel::onBackClick
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = WhiteColor,
+                shape = RoundedCornerShape(
+                    topStart = 22.dp,
+                    topEnd = 22.dp
+                )
+            ) {
+                when {
+                    uiState.isLoading -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                color = PrimaryColor
+                            )
+                        }
                     }
-                }
 
-                uiState.errorMessage != null -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = uiState.errorMessage ?: stringResource(R.string.something_went_wrong),
-                            style = AppTypography.Body,
-                            color = RedColor
-                        )
-                    }
-                }
-
-                uiState.filteredImages.isEmpty() -> {
-                    Column(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        FolderTabsRow(
-                            folders = uiState.folders,
-                            selectedFolder = uiState.selectedFolderName,
-                            onFolderClick = viewModel::onFolderClick
-                        )
-
+                    uiState.errorMessage != null -> {
                         Box(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = stringResource(R.string.no_images_found),
+                                text = uiState.errorMessage ?: stringResource(R.string.something_went_wrong),
                                 style = AppTypography.Body,
-                                color = SubTextColor
+                                color = RedColor
                             )
                         }
                     }
-                }
 
-                else -> {
-                    Column(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        FolderTabsRow(
-                            folders = uiState.folders,
-                            selectedFolder = uiState.selectedFolderName,
-                            onFolderClick = viewModel::onFolderClick
-                        )
-
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(4),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
-                                .padding(horizontal = 22.dp),
-                            contentPadding = PaddingValues(
-                                top = 14.dp,
-                                bottom = 90.dp
-                            ),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                    uiState.filteredImages.isEmpty() -> {
+                        Column(
+                            modifier = Modifier.fillMaxSize()
                         ) {
-                            items(
-                                items = uiState.filteredImages,
-                                key = { it.id }
-                            ) { image ->
-                                GalleryImageItem(
-                                    image = image,
-                                    onImageClick = { selectedImage ->
-                                        if (isForBackground) {
-                                            navController.previousBackStackEntry
-                                                ?.savedStateHandle
-                                                ?.set(
-                                                    SELECTED_BACKGROUND_IMAGE_KEY,
-                                                    selectedImage.uri
-                                                )
+                            FolderTabsRow(
+                                folders = uiState.folders,
+                                selectedFolder = uiState.selectedFolderName,
+                                onFolderClick = viewModel::onFolderClick
+                            )
 
-                                            navController.popBackStack()
-                                        } else {
-                                            viewModel.onImageClick(selectedImage)
-                                        }
-                                    }
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.no_images_found),
+                                    style = AppTypography.Body,
+                                    color = SubTextColor
                                 )
                             }
                         }
                     }
+
+                    else -> {
+                        Column(
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            FolderTabsRow(
+                                folders = uiState.folders,
+                                selectedFolder = uiState.selectedFolderName,
+                                onFolderClick = viewModel::onFolderClick
+                            )
+
+                            LazyVerticalGrid(
+                                columns = GridCells.Fixed(4),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f)
+                                    .padding(horizontal = 22.dp),
+                                contentPadding = PaddingValues(
+                                    top = 14.dp,
+                                    bottom = 20.dp
+                                ),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                items(
+                                    items = uiState.filteredImages,
+                                    key = { it.id }
+                                ) { image ->
+                                    GalleryImageItem(
+                                        image = image,
+                                        onImageClick = { selectedImage ->
+                                            if (isForBackground) {
+                                                navController.previousBackStackEntry
+                                                    ?.savedStateHandle
+                                                    ?.set(
+                                                        SELECTED_BACKGROUND_IMAGE_KEY,
+                                                        selectedImage.uri
+                                                    )
+
+                                                navController.popBackStack()
+                                            } else {
+                                                viewModel.onImageClick(selectedImage)
+                                            }
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
+            }
+        }
+
+        if (showAd) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+            ) {
+                LanguageBottomNativeAd(
+                    state = nativeState,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 10.dp)
+                )
             }
         }
     }

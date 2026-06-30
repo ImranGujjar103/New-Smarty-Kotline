@@ -1,3 +1,5 @@
+package com.imr.example.newsmartykotlin.presentation.passport
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,6 +40,8 @@ import androidx.compose.ui.unit.sp
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.domain.model.DocumentType
 import com.imr.example.newsmartykotlin.domain.model.PassportCountry
+import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
+import com.imr.example.newsmartykotlin.presentation.language.components.LanguageBottomNativeAd
 import com.imr.example.newsmartykotlin.presentation.passport.components.PassportCountryItem
 import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
@@ -50,6 +54,8 @@ import com.imr.example.newsmartykotlin.ui.theme.WhiteColor
 fun PassportCountryScreen(
     countries: List<PassportCountry>,
     selectedType: DocumentType,
+    nativeState: LanguageNativeState,
+    showAd: Boolean,
     onTypeClick: (DocumentType) -> Unit,
     onBackClick: () -> Unit,
     onCountryClick: (PassportCountry, DocumentType) -> Unit,
@@ -63,114 +69,132 @@ fun PassportCountryScreen(
             .background(HomeBackgroundColor)
             .statusBarsPadding()
             .navigationBarsPadding()
-            .padding(horizontal = 20.dp)
     ) {
-        Spacer(Modifier.height(25.dp))
-        PassportTopBar(
-            title = stringResource(R.string.select_document_type),
-            onBackClick = onBackClick
-        )
-
-        Spacer(Modifier.height(20.dp))
-
-        TextField(
-            value = search,
-            textStyle = LocalTextStyle.current.copy(
-                fontSize = 12.sp
-            ),
-            onValueChange = {
-                search = it
-                onSearchChange(it)
-            },
-            placeholder = {
-                Text(text = stringResource(R.string.search_hint_passport),
-                    fontSize = 12.sp,
-                    fontFamily = SfProDisplayRegular,
-                    color = TextColor
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp),
-            shape = RoundedCornerShape(16.dp),
-            singleLine = true,
-            colors = TextFieldDefaults.colors(
-                focusedTextColor = TextColor,
-                unfocusedTextColor = TextColor,
-                cursorColor = TextColor,
-                errorCursorColor = TextColor,
-                errorIndicatorColor = Color.Transparent,
-                focusedContainerColor = WhiteColor,
-                unfocusedContainerColor = WhiteColor,
-                disabledContainerColor = WhiteColor,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent
-            ),
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(R.drawable.ic_search),
-                    contentDescription = null,
-                    tint = TextColor
-                )
-            }
-        )
-
-        Spacer(Modifier.height(20.dp))
-
-        val tabs = listOf(
-            DocumentType.ALL to R.string.all,
-            DocumentType.PASSPORT to R.string.passport,
-            DocumentType.VISA to R.string.visa,
-            DocumentType.STANDARD to R.string.standard
-        )
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        Column(
+            modifier = Modifier.weight(1f).fillMaxWidth().padding(horizontal = 20.dp)
         ) {
-            tabs.forEach { item ->
-                val type = item.first
-                val title = item.second
-                val selected = selectedType == type
+            Spacer(Modifier.height(25.dp))
+            PassportTopBar(
+                title = stringResource(R.string.select_document_type),
+                onBackClick = onBackClick
+            )
 
-                Text(
-                    text = stringResource(title),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .height(30.dp)
-                        .clip(shape = RoundedCornerShape(10.dp))
-                        .background(
-                            color = if (selected) PrimaryColor else WhiteColor,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                        .clickable { onTypeClick(type) }
+            Spacer(Modifier.height(20.dp))
 
-                        .padding(horizontal = (16.5).dp, vertical = 3.dp),
-
-                    color = if (selected) WhiteColor else TextColor,
-                    fontFamily = SfProDisplayBold,
+            TextField(
+                value = search,
+                textStyle = LocalTextStyle.current.copy(
                     fontSize = 12.sp
-                )
+                ),
+                onValueChange = {
+                    search = it
+                    onSearchChange(it)
+                },
+                placeholder = {
+                    Text(text = stringResource(R.string.search_hint_passport),
+                        fontSize = 12.sp,
+                        fontFamily = SfProDisplayRegular,
+                        color = TextColor
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                shape = RoundedCornerShape(16.dp),
+                singleLine = true,
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = TextColor,
+                    unfocusedTextColor = TextColor,
+                    cursorColor = TextColor,
+                    errorCursorColor = TextColor,
+                    errorIndicatorColor = Color.Transparent,
+                    focusedContainerColor = WhiteColor,
+                    unfocusedContainerColor = WhiteColor,
+                    disabledContainerColor = WhiteColor,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent
+                ),
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_search),
+                        contentDescription = null,
+                        tint = TextColor
+                    )
+                }
+            )
+
+            Spacer(Modifier.height(20.dp))
+
+            val tabs = listOf(
+                DocumentType.ALL to R.string.all,
+                DocumentType.PASSPORT to R.string.passport,
+                DocumentType.VISA to R.string.visa,
+                DocumentType.STANDARD to R.string.standard
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                tabs.forEach { item ->
+                    val type = item.first
+                    val title = item.second
+                    val selected = selectedType == type
+
+                    Text(
+                        text = stringResource(title),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .height(30.dp)
+                            .clip(shape = RoundedCornerShape(10.dp))
+                            .background(
+                                color = if (selected) PrimaryColor else WhiteColor,
+                                shape = RoundedCornerShape(10.dp)
+                            )
+                            .clickable { onTypeClick(type) }
+
+                            .padding(horizontal = (16.5).dp, vertical = 3.dp),
+
+                        color = if (selected) WhiteColor else TextColor,
+                        fontFamily = SfProDisplayBold,
+                        fontSize = 12.sp
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(20.dp))
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(
+                    items = countries,
+                    key = { it.id }
+                ) { country ->
+                    PassportCountryItem(
+                        country = country,
+                        selectedType = selectedType,
+                        onClick = {
+                            onCountryClick(country, selectedType)
+                        }
+                    )
+                }
             }
         }
 
-        Spacer(Modifier.height(20.dp))
-
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(
-                items = countries,
-                key = { it.id }
-            ) { country ->
-                PassportCountryItem(
-                    country = country,
-                    selectedType = selectedType,
-                    onClick = {
-                        onCountryClick(country, selectedType)
-                    }
+        if (showAd) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+            ) {
+                LanguageBottomNativeAd(
+                    state = nativeState,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 10.dp)
                 )
             }
         }

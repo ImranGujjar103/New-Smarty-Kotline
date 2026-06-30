@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -21,20 +22,26 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import com.imr.example.newsmartykotlin.R
+import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
+import com.imr.example.newsmartykotlin.presentation.language.components.LanguageBottomNativeAd
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
+import com.imr.example.newsmartykotlin.presentation.viewmodel.AdViewModel
 import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.RedColor
@@ -46,9 +53,27 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun BgRemoveScreen(
     navController: NavController,
-    viewModel: BgRemoveViewModel = koinViewModel()
+    viewModel: BgRemoveViewModel = koinViewModel(),
+    adViewModel: AdViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    val isPurchased by adViewModel.dataStorePrefs.getIsPurchased().collectAsStateWithLifecycle(initialValue = false)
+    val isConnected by adViewModel.isConnected.collectAsStateWithLifecycle(initialValue = true)
+    val config by adViewModel.adRepository.appConfig.collectAsStateWithLifecycle()
+
+    val showAd = config.bgRemoverNative.toShow && !isPurchased && isConnected
+
+    val nativeState by adViewModel.getNativeAdState("BgRemoverBottomNative").collectAsStateWithLifecycle()
+
+    LaunchedEffect(showAd) {
+        if (showAd) {
+            adViewModel.loadNativeAd(
+                adId = config.bgRemoverNative.adId,
+                tag = "BgRemoverBottomNative"
+            ) { _ -> }
+        }
+    }
 
     val painter = rememberAsyncImagePainter(
         model = uiState.croppedImageUri.toUri()
@@ -122,66 +147,86 @@ fun BgRemoveScreen(
             .navigationBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(30.dp))
-
-        Box(
-            modifier = Modifier
-                .padding(horizontal = 20.dp)
-                .width(320.dp)
-                .height(480.dp)
-                .clip(RoundedCornerShape(20.dp))
-                .background(WhiteColor),
-            contentAlignment = Alignment.Center
+        Column(
+            modifier = Modifier.weight(1f).fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painter,
-                contentDescription = null,
+            Spacer(modifier = Modifier.height(30.dp))
+
+            Box(
                 modifier = Modifier
-                    .aspectRatio(aspectRatio),
-                contentScale = ContentScale.Fit
-            )
-        }
+                    .padding(horizontal = 20.dp)
+                    .width(320.dp)
+                    .height(480.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(WhiteColor),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painter,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .aspectRatio(aspectRatio),
+                    contentScale = ContentScale.Fit
+                )
+            }
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Text(
-            text = uiState.progressText,
-            fontSize = 24.sp,
-            fontFamily = SfProDisplayBold,
-            color = TextColor
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        LinearProgressIndicator(
-            progress = { uiState.progress },
-            modifier = Modifier
-                .width(250.dp)
-                .height(10.dp)
-                .clip(RoundedCornerShape(50.dp)),
-            color = PrimaryColor,
-            trackColor = WhiteColor
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Text(
-            text = stringResource(R.string.removing_background),
-            fontSize = 12.sp,
-            fontFamily = SfProDisplayBold,
-            color = TextColor
-        )
-
-        uiState.errorMessage?.let { error ->
-            Log.d("ErrorTesting", "BgRemoveScreen: error is  === >>> >> $error")
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Text(
-                text = error,
+                text = uiState.progressText,
+                fontSize = 24.sp,
+                fontFamily = SfProDisplayBold,
+                color = TextColor
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            LinearProgressIndicator(
+                progress = { uiState.progress },
+                modifier = Modifier
+                    .width(250.dp)
+                    .height(10.dp)
+                    .clip(RoundedCornerShape(50.dp)),
+                color = PrimaryColor,
+                trackColor = WhiteColor
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(
+                text = stringResource(R.string.removing_background),
                 fontSize = 12.sp,
                 fontFamily = SfProDisplayBold,
-                color = RedColor
+                color = TextColor
             )
+
+            uiState.errorMessage?.let { error ->
+                Log.d("ErrorTesting", "BgRemoveScreen: error is  === >>> >> $error")
+                Spacer(modifier = Modifier.height(14.dp))
+
+                Text(
+                    text = error,
+                    fontSize = 12.sp,
+                    fontFamily = SfProDisplayBold,
+                    color = RedColor
+                )
+            }
+        }
+
+        if (showAd) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+            ) {
+                LanguageBottomNativeAd(
+                    state = nativeState,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 10.dp)
+                )
+            }
         }
     }
 }

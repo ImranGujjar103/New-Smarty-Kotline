@@ -19,17 +19,23 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -38,10 +44,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import com.imr.example.newsmartykotlin.R
+import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
+import com.imr.example.newsmartykotlin.presentation.language.components.LanguageBottomNativeAd
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
+import com.imr.example.newsmartykotlin.presentation.viewmodel.AdViewModel
 import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
 import com.imr.example.newsmartykotlin.ui.theme.SfProDisplayBold
@@ -53,10 +63,35 @@ import java.io.File
 @Composable
 fun SavedScreen(
     navController: NavController,
-    viewModel: SavedViewModel = koinViewModel()
+    viewModel: SavedViewModel = koinViewModel(),
+    adViewModel: AdViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    val isPurchased by adViewModel.dataStorePrefs.getIsPurchased().collectAsStateWithLifecycle(initialValue = false)
+    val isConnected by adViewModel.isConnected.collectAsStateWithLifecycle(initialValue = true)
+    val config by adViewModel.adRepository.appConfig.collectAsStateWithLifecycle()
+
+    val showAd = config.savedNative.toShow && !isPurchased && isConnected
+
+    var nativeState by remember { mutableStateOf<LanguageNativeState>(LanguageNativeState.Idle) }
+
+    LaunchedEffect(showAd) {
+        if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
+            nativeState = LanguageNativeState.Loading
+            adViewModel.loadNativeAd(
+                adId = config.savedNative.adId,
+                tag = "SavedBottomNative"
+            ) { ad ->
+                nativeState = if (ad != null) {
+                    LanguageNativeState.Loaded(ad)
+                } else {
+                    LanguageNativeState.Failed
+                }
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -115,69 +150,92 @@ fun SavedScreen(
             .background(HomeBackgroundColor)
             .statusBarsPadding()
             .navigationBarsPadding()
-            .padding(horizontal = 20.dp)
     ) {
-        Spacer(modifier = Modifier.height(25.dp))
-
-        SavedTopBar(
-            onHomeClick = {
-                navController.navigate(AppRoutes.Home.route) {
-                    popUpTo(AppRoutes.Home.route) {
-                        inclusive = true
-                    }
-                }
-
-            }
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        SavedImageCard(
-            imagePath = uiState.imagePath
-        )
-
-        Spacer(modifier = Modifier.height(18.dp))
-
-        Text(
-            text = stringResource(R.string.share_to),
-            fontFamily = SfProDisplayBold,
-            color = TextColor,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        ShareRow(
-            onInstagramClick = viewModel::onInstagramClick,
-            onFacebookClick = viewModel::onFacebookClick,
-            onWhatsAppClick = viewModel::onWhatsAppClick,
-            onXClick = viewModel::onXClick,
-            onShareClick = viewModel::onShareClick
-        )
-
-        Spacer(modifier = Modifier.height(22.dp))
-
-        Box(
+        Column(
             modifier = Modifier
+                .weight(1f)
                 .fillMaxWidth()
-                .height(52.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(PrimaryColor)
-                .clickable {
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp)
+        ) {
+            Spacer(modifier = Modifier.height(25.dp))
+
+            SavedTopBar(
+                onHomeClick = {
                     navController.navigate(AppRoutes.Home.route) {
                         popUpTo(AppRoutes.Home.route) {
                             inclusive = true
                         }
                     }
-                  //  viewModel.onTryMoreClick()
-                },
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = stringResource(R.string.try_more),
-                fontFamily = SfProDisplayBold,
-                color = WhiteColor
+
+                }
             )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            SavedImageCard(
+                imagePath = uiState.imagePath
+            )
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            Text(
+                text = stringResource(R.string.share_to),
+                fontFamily = SfProDisplayBold,
+                color = TextColor,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            ShareRow(
+                onInstagramClick = viewModel::onInstagramClick,
+                onFacebookClick = viewModel::onFacebookClick,
+                onWhatsAppClick = viewModel::onWhatsAppClick,
+                onXClick = viewModel::onXClick,
+                onShareClick = viewModel::onShareClick
+            )
+
+            Spacer(modifier = Modifier.height(22.dp))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(PrimaryColor)
+                    .clickable {
+                        navController.navigate(AppRoutes.Home.route) {
+                            popUpTo(AppRoutes.Home.route) {
+                                inclusive = true
+                            }
+                        }
+                        //  viewModel.onTryMoreClick()
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.try_more),
+                    fontFamily = SfProDisplayBold,
+                    color = WhiteColor
+                )
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+
+        if (showAd) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+            ) {
+                LanguageBottomNativeAd(
+                    state = nativeState,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 10.dp)
+                )
+            }
         }
     }
 }

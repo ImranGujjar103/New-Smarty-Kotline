@@ -5,7 +5,7 @@ import android.widget.FrameLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import com.google.android.gms.ads.AdView
+import com.google.android.libraries.ads.mobile.sdk.banner.AdView
 
 @Composable
 fun SplashBannerAd(

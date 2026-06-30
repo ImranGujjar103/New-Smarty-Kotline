@@ -57,11 +57,15 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.rememberAsyncImagePainter
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.domain.model.CropAspectRatio
+import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
+import com.imr.example.newsmartykotlin.presentation.language.components.LanguageBottomNativeAd
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
+import com.imr.example.newsmartykotlin.presentation.viewmodel.AdViewModel
 import com.imr.example.newsmartykotlin.ui.theme.AppTypography
 import com.imr.example.newsmartykotlin.ui.theme.HomeBackgroundColor
 import com.imr.example.newsmartykotlin.ui.theme.PrimaryColor
@@ -77,9 +81,27 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun CropFaceScreen(
     navController: NavController,
-    viewModel: CropFaceViewModel = koinViewModel()
+    viewModel: CropFaceViewModel = koinViewModel(),
+    adViewModel: AdViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    val isPurchased by adViewModel.dataStorePrefs.getIsPurchased().collectAsStateWithLifecycle(initialValue = false)
+    val isConnected by adViewModel.isConnected.collectAsStateWithLifecycle(initialValue = true)
+    val config by adViewModel.adRepository.appConfig.collectAsStateWithLifecycle()
+
+    val showAd = config.cropFaceNative.toShow && !isPurchased && isConnected
+
+    val nativeState by adViewModel.getNativeAdState("CropFaceBottomNative").collectAsStateWithLifecycle()
+
+    LaunchedEffect(showAd) {
+        if (showAd) {
+            adViewModel.loadNativeAd(
+                adId = config.cropFaceNative.adId,
+                tag = "CropFaceBottomNative"
+            ) { _ -> }
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -147,6 +169,21 @@ fun CropFaceScreen(
             selectedRatio = uiState.selectedRatio,
             onRatioClick = viewModel::onRatioSelected
         )
+
+        if (showAd) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+            ) {
+                LanguageBottomNativeAd(
+                    state = nativeState,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 10.dp)
+                )
+            }
+        }
     }
 }
 
@@ -239,7 +276,7 @@ private fun CropImageArea(
     var cropRect by remember { mutableStateOf<Rect?>(null) }
 
     val handleRadiusPx = with(LocalDensity.current) { 5.dp.toPx() }
-    val minCropSizePx = with(LocalDensity.current) { 120.dp.toPx() }
+    val minCropSizePx = with(LocalDensity.current) { 12.dp.toPx() }
 
     val imageBounds = remember(containerSize) {
         if (containerSize.width == 0 || containerSize.height == 0) {

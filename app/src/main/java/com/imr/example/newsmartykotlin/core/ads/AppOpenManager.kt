@@ -10,16 +10,17 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
-import com.google.android.gms.ads.AdActivity
-import com.google.android.gms.ads.AdError
-import com.google.android.gms.ads.FullScreenContentCallback
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.admanager.AdManagerAdRequest
-import com.google.android.gms.ads.appopen.AppOpenAd
+import com.google.android.libraries.ads.mobile.sdk.appopen.AppOpenAd
+import com.google.android.libraries.ads.mobile.sdk.appopen.AppOpenAdEventCallback
+import com.google.android.libraries.ads.mobile.sdk.common.AdActivity
+import com.google.android.libraries.ads.mobile.sdk.common.AdLoadCallback
+import com.google.android.libraries.ads.mobile.sdk.common.AdRequest
+import com.google.android.libraries.ads.mobile.sdk.common.FullScreenContentError
+import com.google.android.libraries.ads.mobile.sdk.common.LoadAdError
+
 import com.imr.example.newsmartykotlin.MyApp
 import com.imr.example.newsmartykotlin.core.extensions.hideNavigationBar
 import com.imr.example.newsmartykotlin.core.extensions.isActivityAlive
@@ -39,6 +40,13 @@ class AppOpenManager(
     private var runnable: Runnable? = null
 
     private var dialog: Dialog? = null
+
+    private var isRestricted = false
+
+    fun setIsRestricted(restricted: Boolean) {
+        isRestricted = restricted
+        Log.d(TAG, "setIsRestricted: $isRestricted")
+    }
 
 
     companion object {
@@ -64,28 +72,13 @@ class AppOpenManager(
     }
 
     private fun shouldShowAd(): Boolean {
-      //  if(isAppExit) return false
         if (application.isPurchased) return false
         if (!application.appConfig.appOpenResume.toShow) return false
+        if (isRestricted) return false
 
-        val activity = currentActivity as? FragmentActivity ?: return false
+        val activity = currentActivity ?: return false
 
-        // Try to find the nav host fragment safely
- /*       val navHostView = activity.findViewById<View?>(R.id.nav_host_fragment)
-        if (navHostView == null) {
-            // No nav host found — probably an activity that doesn't use navigation
-            Log.w(TAG, "No nav host found in ${activity.localClassName}, skipping ad.")
-            return false
-        }*/
-
-        /*return try {
-            val navController = Navigation.findNavController(navHostView)
-            navController.currentDestination?.id != R.id.splashFragment
-        } catch (e: Exception) {
-            Log.e(TAG, "Error finding NavController: ${e.message}")
-            false
-        }*/
-        return false
+        return true
     }
 
     private fun isAdAvailable(): Boolean {
@@ -112,26 +105,29 @@ class AppOpenManager(
 
 
         Log.d("ad_log_openapp", "⏳ Resume Open App Loading")
-        val request = AdManagerAdRequest.Builder().build()
         val adId = application.appConfig.appOpenResume.adId
-        Log.d(TAG, "adId : $adId")
-        AppOpenAd.load(context, adId, request, object : AppOpenAd.AppOpenAdLoadCallback() {
-            override fun onAdLoaded(ad: AppOpenAd) {
-                appOpenAd = ad
-                isLoadingAd = false
-                loadTime = Date().time
-                Log.d(TAG, "App Open Ad loaded.")
-                Log.d("ad_log_openapp", "✅ Resume Open App Loaded")
 
-                showAdIfAvailable(currentActivity)
-            }
+        Handler(Looper.getMainLooper()).post {
+            val request = AdRequest.Builder(adId).build()
+            Log.d(TAG, "adId : $adId")
+            AppOpenAd.load(request, object : AdLoadCallback<AppOpenAd> {
+                override fun onAdLoaded(ad: AppOpenAd) {
+                    appOpenAd = ad
+                    isLoadingAd = false
+                    loadTime = Date().time
+                    Log.d(TAG, "App Open Ad loaded.")
+                    Log.d("ad_log_openapp", "✅ Resume Open App Loaded")
 
-            override fun onAdFailedToLoad(error: LoadAdError) {
-                isLoadingAd = false
-                Log.d(TAG, "Failed to load App Open Ad: ${error.message}")
-                Log.d("ad_log_openapp", "❌ Resume Open App Failed")
-            }
-        })
+                    showAdIfAvailable(currentActivity)
+                }
+
+                override fun onAdFailedToLoad(error: LoadAdError) {
+                    isLoadingAd = false
+                    Log.d(TAG, "Failed to load App Open Ad: ${error.message}")
+                    Log.d("ad_log_openapp", "❌ Resume Open App Failed")
+                }
+            })
+        }
     }
 
     private fun showAdIfAvailable(activity: Activity?) {
@@ -139,8 +135,10 @@ class AppOpenManager(
 
         Log.d("openAppTest","isAdAvailable : ${isAdAvailable()}")
 
-        activity.isActivityAlive {
-            dialog?.dismiss()
+        Handler(Looper.getMainLooper()).post {
+            activity.isActivityAlive {
+                dialog?.dismiss()
+            }
         }
 
         if (!isAdAvailable()) {
@@ -152,22 +150,19 @@ class AppOpenManager(
 
         handler = Handler(Looper.getMainLooper())
         runnable = Runnable {
-            appOpenAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+            appOpenAd?.adEventCallback = object : AppOpenAdEventCallback {
                 override fun onAdDismissedFullScreenContent() {
                     appOpenAd = null
                     isShowingAd = false
-                  //  loadAd(activity)
 
                     activity.isActivityAlive {
                         dialog?.dismiss()
                     }
                 }
 
-                override fun onAdFailedToShowFullScreenContent(adError: AdError) {
-                 //   appOpenAd = null
+                override fun onAdFailedToShowFullScreenContent(fullScreenContentError: FullScreenContentError) {
                     isShowingAd = false
-                    Log.d("ad_log_openapp", "onAdFailedToShowFullScreenContent : ${adError.message}")
-                   // loadAd(activity)
+                    Log.d("ad_log_openapp", "onAdFailedToShowFullScreenContent : ${fullScreenContentError.message}")
                     activity.isActivityAlive {
                         dialog?.dismiss()
                     }
@@ -176,10 +171,16 @@ class AppOpenManager(
                 override fun onAdShowedFullScreenContent() {
                     isShowingAd = true
                     Log.d(TAG, "App Open Ad shown.")
-
-
                     Log.d("ad_log_openapp", "✨ Resume Open App Impression")
+                }
 
+                override fun onAdClicked() {
+                    Log.d(TAG, "App Open Ad clicked.")
+                }
+
+                override fun onAdImpression() {
+                    Log.d(TAG, "App Open Ad impression.")
+                    appOpenAd = null
                 }
             }
 
@@ -211,8 +212,7 @@ class AppOpenManager(
         if (!isShowingAd) {
             currentActivity = activity
         }
-
-        if (activity is AdActivity) {
+        if (activity is AdActivity){
             activity.hideNavigationBar()
         }
     }

@@ -27,24 +27,24 @@ fun LanguageRoute(
     val activity = context as ComponentActivity
     val uiState by languageViewModel.uiState.collectAsStateWithLifecycle()
 
-    var nativeState by remember { mutableStateOf<LanguageNativeState>(LanguageNativeState.Idle) }
+    val isPurchased by adViewModel.dataStorePrefs.getIsPurchased().collectAsStateWithLifecycle(initialValue = false)
+    val isConnected by adViewModel.isConnected.collectAsStateWithLifecycle(initialValue = true)
+    val config by adViewModel.adRepository.appConfig.collectAsStateWithLifecycle()
+
+    val showAd = config.languageNative.toShow && !isPurchased && isConnected
+
+    val nativeState by adViewModel.getNativeAdState("LanguageBottomNative").collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         activity.setupLightSystemBars()
-        val config = adViewModel.adRepository.appConfig.value
+    }
 
-        if (config.languageNative.toShow) {
-            nativeState = LanguageNativeState.Loading
+    LaunchedEffect(showAd) {
+        if (showAd) {
             adViewModel.loadNativeAd(
                 adId = config.languageNative.adId,
                 tag = "LanguageBottomNative"
-            ) { ad ->
-                nativeState = if (ad != null) {
-                    LanguageNativeState.Loaded(ad)
-                } else {
-                    LanguageNativeState.Failed
-                }
-            }
+            ) { _ -> }
         }
     }
 
@@ -59,6 +59,7 @@ fun LanguageRoute(
     LanguageScreen(
         state = uiState,
         nativeState = nativeState,
+        showAd = showAd,
         onLanguageClick = languageViewModel::onLanguageClick,
         onSaveClick = {
             languageViewModel.saveLanguage {

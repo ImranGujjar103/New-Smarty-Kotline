@@ -5,40 +5,42 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.appopen.AppOpenAd
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.libraries.ads.mobile.sdk.appopen.AppOpenAd
+import com.google.android.libraries.ads.mobile.sdk.banner.AdView
+import com.google.android.libraries.ads.mobile.sdk.interstitial.InterstitialAd
+import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAd
+import com.imr.example.newsmartykotlin.BuildConfig
 import com.imr.example.newsmartykotlin.core.ads.AdLoadingController
 import com.imr.example.newsmartykotlin.core.ads.AdManager
+import com.imr.example.newsmartykotlin.core.ads.AdsConsentManager
 import com.imr.example.newsmartykotlin.core.extensions.getCurrentTime
-import com.imr.example.newsmartykotlin.core.extensions.isInternetAvailable
+import com.imr.example.newsmartykotlin.core.network.NetworkMonitor
 import com.imr.example.newsmartykotlin.core.utils.DataStorePrefs
 import com.imr.example.newsmartykotlin.data.model.SplashAdConfig
 import com.imr.example.newsmartykotlin.domain.repository.AdRepository
+import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
 import com.imr.example.newsmartykotlin.presentation.states.AdState
 import com.imr.example.newsmartykotlin.presentation.states.ConsentState
 import com.imr.example.newsmartykotlin.presentation.states.NavigationState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.onFailure
-import kotlin.onSuccess
-import kotlin.text.isNotEmpty
 
 class AdViewModel(
     val adRepository: AdRepository,
     val dataStorePrefs: DataStorePrefs,
-    val context: Context
+    val context: Context,
+    val networkMonitor: NetworkMonitor,
+    private val adsConsentManager: AdsConsentManager
 ) : ViewModel()
 {
-    private val TAG = "AdViewModelLogs"
+    val isConnected: Flow<Boolean> = networkMonitor.isConnected
 
     private val _navigationState = MutableStateFlow<NavigationState>(NavigationState.Idle)
     val navigationState: StateFlow<NavigationState> = _navigationState.asStateFlow()
@@ -48,6 +50,14 @@ class AdViewModel(
 
     private val _adState = MutableStateFlow<AdState>(AdState.Idle)
     val adState: StateFlow<AdState> = _adState.asStateFlow()
+
+    private val _nativeAdStates = mutableMapOf<String, MutableStateFlow<LanguageNativeState>>()
+
+    fun getNativeAdState(tag: String): StateFlow<LanguageNativeState> {
+        return _nativeAdStates.getOrPut(tag) {
+            MutableStateFlow(LanguageNativeState.Idle)
+        }.asStateFlow()
+    }
 
     var interstitialAd: InterstitialAd? = null
         private set
@@ -93,8 +103,16 @@ class AdViewModel(
         INTERSTITIAL_PRO
     }
 
-    fun initialize(activity : Activity) {
+    fun initialize(activity: Activity) {
         viewModelScope.launch {
+            val isPurchased = dataStorePrefs.getIsPurchased().first()
+            if (isPurchased) {
+                Log.d(TAG, "initialize: User is premium, navigating after 2 seconds")
+                delay(2000)
+                checkNavigation("Premium user delay")
+                return@launch
+            }
+
             isFirstSplash = dataStorePrefs.isFirstSplash().first()
             Log.d(TAG, "initialize: isFirstSplash = $isFirstSplash ==== ${getCurrentTime()}")
 
@@ -167,7 +185,6 @@ class AdViewModel(
 
     private suspend fun applyBannerDelayIfNeeded() {
         val bannerConfig = adRepository.appConfig.value.splashBanner
-        bannerConfig.toShow = false
         if (bannerConfig.toShow && dataStorePrefs.getIsPurchased().first().not()) {
             if (bannerShownTime > 0 && !hasBannerDelayApplied) {
                 val elapsedSinceBanner = System.currentTimeMillis() - bannerShownTime
@@ -209,21 +226,36 @@ class AdViewModel(
         }
     }
 
-    fun onConsentCompleted(activity : Activity) {
+    private fun requestConsent(activity: Activity) {
+        if (adsConsentManager.canRequestAds) {
+            onConsentCompleted(activity)
+        } else {
+            adsConsentManager.showGDPRConsent(activity, BuildConfig.DEBUG) {
+                onConsentCompleted(activity)
+            }
+        }
+    }
+
+    fun onConsentCompleted(activity: Activity) {
         viewModelScope.launch {
             dataStorePrefs.setIsConsent(true)
             _consentState.value = ConsentState.Completed
 
-            adLoadStartTime = System.currentTimeMillis()
-            Log.d(TAG, "onConsentCompleted: Set adLoadStartTime = $adLoadStartTime ==== ${getCurrentTime()}")
+            val isPurchased = dataStorePrefs.getIsPurchased().first()
+            val isConnected = networkMonitor.isConnected.first()
+            shouldLoadAds = !isPurchased && isConnected && adRepository.appConfig.value.adShow
 
-            startAdLoading(activity)
-            waitForAdOrTimeout()
+            if (shouldLoadAds) {
+                adLoadStartTime = System.currentTimeMillis()
+                Log.d(TAG, "onConsentCompleted: Set adLoadStartTime = $adLoadStartTime ==== ${getCurrentTime()}")
+                startAdLoading(activity)
+                waitForAdOrTimeout()
+            }
             checkNavigation("Consent completed -------")
         }
     }
 
-    private fun initializeRemoteConfig(activity : Activity) {
+    private fun initializeRemoteConfig(activity: Activity) {
         Log.d(TAG, "initializeRemoteConfig: Started ==== ${getCurrentTime()}")
         viewModelScope.launch {
             _adState.value = AdState.FetchingConfig
@@ -241,19 +273,20 @@ class AdViewModel(
         }
     }
 
-    private fun checkInitialFlow(activity : Activity) {
+    private fun checkInitialFlow(activity: Activity) {
         Log.d(TAG, "==== checkInitialFlow ==== ${getCurrentTime()}")
         viewModelScope.launch {
             val isPurchased = dataStorePrefs.getIsPurchased().first()
-            val hasInternet = context.isInternetAvailable()
+            val isConnected = networkMonitor.isConnected.first()
             val hasConsent = dataStorePrefs.getIsConsent().first()
 
-            shouldLoadAds = !isPurchased && hasInternet
+            shouldLoadAds = !isPurchased && isConnected && adRepository.appConfig.value.adShow
 
             when {
-                !hasConsent && hasInternet -> {
+                !hasConsent && isConnected -> {
                     Log.d(TAG, "checkInitialFlow: Requires consent ==== ${getCurrentTime()}")
                     _consentState.value = ConsentState.RequiresConsent
+                    requestConsent(activity)
                 }
                 shouldLoadAds -> {
                     Log.d(TAG, "checkInitialFlow: Loading ads (not premium, has internet) ==== ${getCurrentTime()}")
@@ -266,7 +299,7 @@ class AdViewModel(
                     checkNavigation("Loading ads -------")
                 }
                 else -> {
-                    Log.d(TAG, "checkInitialFlow: Skipping ads (premium: $isPurchased, internet: $hasInternet) ==== ${getCurrentTime()}")
+                    Log.d(TAG, "checkInitialFlow: Skipping ads (premium: $isPurchased, internet: $isConnected) ==== ${getCurrentTime()}")
                     checkNavigation("Skipping ads -------")
                 }
             }
@@ -277,7 +310,7 @@ class AdViewModel(
         Log.d(TAG, "startAdLoading: shouldLoadAds = $shouldLoadAds, isFirstSplash = $isFirstSplash ==== ${getCurrentTime()}")
 
         if (!shouldLoadAds) {
-            Log.d(TAG, "startAdLoading: Skipping ad load - user is premium or no internet ==== ${getCurrentTime()}")
+            Log.d(TAG, "startAdLoading: Skipping ad load - user is premium, no internet or adShow is false ==== ${getCurrentTime()}")
             isAdLoadCompleted = true
             isNativePreloadCompleted = true
             isBannerPreloadCompleted = true
@@ -285,9 +318,8 @@ class AdViewModel(
             return
         }
 
-        MobileAds.initialize(context) {
-            Log.d(TAG, "==== MobileAds.initialize ==== ${getCurrentTime()}")
-            viewModelScope.launch {
+        Log.d(TAG, "==== MobileAds.initialize (Next Gen) ==== ${getCurrentTime()}")
+        viewModelScope.launch {
                 val splashAdConfig = adRepository.appConfig.value.splashAd
                 val splashProConfig = adRepository.appConfig.value.splashProAd
                 val bannerConfig = adRepository.appConfig.value.splashBanner
@@ -374,7 +406,6 @@ class AdViewModel(
                 }
             }
         }
-    }
 
     private suspend fun loadSplashAppOpenProAd(adId: String, callback: (AppOpenAd?) -> Unit) {
         Log.d(TAG, "loadSplashAppOpenProAd: adId = $adId ==== ${getCurrentTime()}")
@@ -563,9 +594,29 @@ class AdViewModel(
     }
 
     fun loadNativeAd(adId: String, tag: String, callback: (NativeAd?) -> Unit) {
+        val stateFlow = _nativeAdStates.getOrPut(tag) {
+            MutableStateFlow(LanguageNativeState.Idle)
+        }
+
+        if (stateFlow.value is LanguageNativeState.Loaded) {
+            Log.d(TAG, "loadNativeAd: tag = $tag - returning cached ad")
+            callback.invoke((stateFlow.value as LanguageNativeState.Loaded).nativeAd)
+            return
+        }
+
+        if (stateFlow.value is LanguageNativeState.Loading) {
+            Log.d(TAG, "loadNativeAd: tag = $tag - already loading")
+        }
+
+        stateFlow.value = LanguageNativeState.Loading
         Log.d(TAG, "loadNativeAd: tag = $tag")
-        AdManager.loadNativeAd(adId = adId, tag = tag) {
-            callback.invoke(it)
+        AdManager.loadNativeAd(adId = adId, tag = tag) { ad ->
+            stateFlow.value = if (ad != null) {
+                LanguageNativeState.Loaded(ad)
+            } else {
+                LanguageNativeState.Failed
+            }
+            callback.invoke(ad)
         }
     }
 
