@@ -22,7 +22,8 @@ val premiumModule = module {
 
     single<PremiumRepository> {
         PremiumRepositoryImpl(
-            prefs = get()
+            prefs = get(),
+            billingManager = get()
         )
     }
 
@@ -35,8 +36,7 @@ val premiumModule = module {
     viewModel {
         PremiumViewModel(
             observePremiumUiUseCase = get(),
-            fetchBillingProductsUseCase = get(),
-            purchasePremiumUseCase = get()
+            fetchBillingProductsUseCase = get()
         )
     }
 }

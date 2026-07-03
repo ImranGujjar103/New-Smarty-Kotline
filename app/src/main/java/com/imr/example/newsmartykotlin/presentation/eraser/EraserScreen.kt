@@ -109,13 +109,13 @@ fun EraserScreen(
 
     val showAd = config.eraserNative.toShow && !isPurchased && isConnected
 
-    val nativeState by adViewModel.getNativeAdState("EraserBottomNative").collectAsStateWithLifecycle()
+    val nativeState by adViewModel.getNativeAdState("EraserNative").collectAsStateWithLifecycle()
 
-    LaunchedEffect(showAd) {
-        if (showAd) {
+    LaunchedEffect(showAd, nativeState) {
+        if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
             adViewModel.loadNativeAd(
                 adId = config.eraserNative.adId,
-                tag = "EraserBottomNative"
+                tag = "EraserNative"
             ) { _ -> }
         }
     }

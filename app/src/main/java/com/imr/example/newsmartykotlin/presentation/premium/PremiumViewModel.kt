@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.imr.example.newsmartykotlin.domain.usecase.premium.FetchBillingProductsUseCase
 import com.imr.example.newsmartykotlin.domain.usecase.premium.ObservePremiumUiUseCase
 import com.imr.example.newsmartykotlin.domain.usecase.premium.PurchasePremiumUseCase
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
@@ -13,12 +15,14 @@ import kotlinx.coroutines.launch
 
 class PremiumViewModel(
     private val observePremiumUiUseCase: ObservePremiumUiUseCase,
-    private val fetchBillingProductsUseCase: FetchBillingProductsUseCase,
-    private val purchasePremiumUseCase: PurchasePremiumUseCase
+    private val fetchBillingProductsUseCase: FetchBillingProductsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PremiumUiState())
     val uiState = _uiState.asStateFlow()
+
+    private val _purchaseEvent = MutableSharedFlow<String>()
+    val purchaseEvent = _purchaseEvent.asSharedFlow()
 
     init {
         observeData()
@@ -34,7 +38,7 @@ class PremiumViewModel(
             ) { plans, layout, purchased ->
 
                 PremiumUiState(
-                    isLoading = plans.any { it.price == "Loading..." },
+                    isLoading = plans.isEmpty(),
                     layoutType = layout,
                     plans = plans,
                     selectedProductId = plans.firstOrNull { it.isSelected }?.productId.orEmpty(),
@@ -68,7 +72,13 @@ class PremiumViewModel(
         if (productId.isEmpty()) return
 
         viewModelScope.launch {
-            purchasePremiumUseCase(productId)
+            _purchaseEvent.emit(productId)
+        }
+    }
+
+    fun purchaseProduct(productId: String) {
+        viewModelScope.launch {
+            _purchaseEvent.emit(productId)
         }
     }
 }

@@ -19,10 +19,8 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -75,21 +73,14 @@ fun SavedScreen(
 
     val showAd = config.savedNative.toShow && !isPurchased && isConnected
 
-    var nativeState by remember { mutableStateOf<LanguageNativeState>(LanguageNativeState.Idle) }
+    val nativeState by adViewModel.getNativeAdState("SavedNative").collectAsStateWithLifecycle()
 
-    LaunchedEffect(showAd) {
+    LaunchedEffect(showAd, nativeState) {
         if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
-            nativeState = LanguageNativeState.Loading
             adViewModel.loadNativeAd(
                 adId = config.savedNative.adId,
-                tag = "SavedBottomNative"
-            ) { ad ->
-                nativeState = if (ad != null) {
-                    LanguageNativeState.Loaded(ad)
-                } else {
-                    LanguageNativeState.Failed
-                }
-            }
+                tag = "SavedNative"
+            ) { _ -> }
         }
     }
 
@@ -155,7 +146,6 @@ fun SavedScreen(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp)
         ) {
             Spacer(modifier = Modifier.height(25.dp))
@@ -174,7 +164,8 @@ fun SavedScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             SavedImageCard(
-                imagePath = uiState.imagePath
+                imagePath = uiState.imagePath,
+                modifier = Modifier.weight(1f)
             )
 
             Spacer(modifier = Modifier.height(18.dp))
@@ -278,12 +269,12 @@ private fun SavedTopBar(
 
 @Composable
 private fun SavedImageCard(
-    imagePath: String
+    imagePath: String,
+    modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .height(420.dp)
             .clip(RoundedCornerShape(22.dp))
             .background(WhiteColor),
         contentAlignment = Alignment.Center
@@ -293,7 +284,7 @@ private fun SavedImageCard(
             contentDescription = stringResource(R.string.saved_image),
             modifier = Modifier
                 .fillMaxSize()
-                ,
+                .padding(10.dp),
             contentScale = ContentScale.Fit
         )
     }

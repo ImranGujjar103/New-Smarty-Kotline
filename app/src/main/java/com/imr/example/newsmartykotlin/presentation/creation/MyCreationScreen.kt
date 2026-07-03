@@ -82,13 +82,13 @@ fun MyCreationScreen(
 
     val showAd = config.myCreationNative.toShow && !isPurchased && isConnected
 
-    val nativeState by adViewModel.getNativeAdState("MyCreationBottomNative").collectAsStateWithLifecycle()
+    val nativeState by adViewModel.getNativeAdState("MyCreationNative").collectAsStateWithLifecycle()
 
-    LaunchedEffect(showAd) {
-        if (showAd) {
+    LaunchedEffect(showAd, nativeState) {
+        if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
             adViewModel.loadNativeAd(
                 adId = config.myCreationNative.adId,
-                tag = "MyCreationBottomNative"
+                tag = "MyCreationNative"
             ) { _ -> }
         }
     }

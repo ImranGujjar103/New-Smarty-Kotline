@@ -9,15 +9,15 @@ class AdLoadingController {
 
     fun show(
         scope: CoroutineScope,
-        delayMillis: Long = 1000L,
+        delayMillis: Long = 800L,
         callback: () -> Unit
     ) {
         AdLoadingState.show()
 
         scope.launch {
             delay(delayMillis.milliseconds)
-            AdLoadingState.hide()
             callback()
+            // We don't hide here anymore, AdManager will hide it on ad dismiss or fail
         }
     }
 }

@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.imr.example.newsmartykotlin.core.ads.AdLoadingState
 import com.imr.example.newsmartykotlin.core.extensions.setupLightSystemBars
 import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
 import com.imr.example.newsmartykotlin.presentation.viewmodel.AdViewModel
@@ -35,19 +36,30 @@ fun HomeRoute(
 
     val showAd = config.homeNative.toShow && !isPurchased && isConnected
 
-    val nativeState by adViewModel.getNativeAdState("HomeBottomNative").collectAsStateWithLifecycle()
+    val nativeState by adViewModel.getNativeAdState("HomeNative").collectAsStateWithLifecycle()
+    val isAdDismissed by AdLoadingState.isAdDismissed.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         activity.setupLightSystemBars()
         viewModel.isFirstSplash(false)
+        adViewModel.clearNativeAdStatesExcept("HomeNative")
     }
 
-    LaunchedEffect(showAd) {
-        if (showAd) {
+    LaunchedEffect(showAd, nativeState) {
+        if (showAd && !isAdDismissed && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
             adViewModel.loadNativeAd(
                 adId = config.homeNative.adId,
-                tag = "HomeBottomNative"
+                tag = "HomeNative"
             ) { _ -> }
+        }
+    }
+
+    LaunchedEffect(config.homeInterstitial.toShow) {
+        if (config.homeInterstitial.toShow && !isPurchased && isConnected) {
+            adViewModel.loadInterstitialAd(
+                adId = config.homeInterstitial.adId,
+                tag = "Home_Interstitial"
+            )
         }
     }
 
@@ -57,13 +69,29 @@ fun HomeRoute(
         showAd = showAd,
         onCrownClick = onNavigateToPremium,
         onSettingClick = onNavigateToSettings,
-        onChangeClick = onNavigateToSuits,
+        onChangeClick = {
+            adViewModel.showInterstitialAd(
+                activity = activity,
+                toShow = config.homeInterstitial.toShow,
+                adId = config.homeInterstitial.adId,
+                tag = "Home_Interstitial",
+                callback = onNavigateToSuits
+            )
+        },
         onFeatureClick = { feature ->
-            when (feature.id) {
-                "passport_pic" -> onNavigateToPassportPic()
-                "bg_changer" -> onNavigateToBgChanger()
-                "my_creation" -> onNavigateToMyCreation()
-            }
+            adViewModel.showInterstitialAd(
+                activity = activity,
+                toShow = config.homeInterstitial.toShow,
+                adId = config.homeInterstitial.adId,
+                tag = "Home_Interstitial",
+                callback = {
+                    when (feature.id) {
+                        "passport_pic" -> onNavigateToPassportPic()
+                        "bg_changer" -> onNavigateToBgChanger()
+                        "my_creation" -> onNavigateToMyCreation()
+                    }
+                }
+            )
         }
     )
 }

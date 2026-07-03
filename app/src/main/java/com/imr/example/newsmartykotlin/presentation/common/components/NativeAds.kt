@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -57,9 +58,85 @@ fun AdShimmerBox(
 
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(14.dp))
-            .background(brush)
-    )
+            .fillMaxWidth()
+            .height(144.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(androidx.compose.ui.graphics.Color.White)
+            .padding(12.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            // MediaView placeholder
+            Box(
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(brush)
+            )
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                // Headline & AD badge row
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(24.dp, 14.dp)
+                            .clip(RoundedCornerShape(3.dp))
+                            .background(brush)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(0.7f)
+                            .height(16.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(brush)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Body row
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(brush)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(10.dp)
+                                .clip(RoundedCornerShape(2.dp))
+                                .background(brush)
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(0.6f)
+                                .height(10.dp)
+                                .clip(RoundedCornerShape(2.dp))
+                                .background(brush)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Button
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(brush)
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -70,8 +147,6 @@ fun NativeAdMedium(
     if (nativeAd == null) {
         AdShimmerBox(
             modifier = modifier
-                .fillMaxWidth()
-                .height(134.dp)
         )
         return
     }
@@ -96,9 +171,9 @@ fun NativeAdMedium(
                 // Left: MediaView (120x120 dp)
                 val adMediaView = MediaView(context).apply {
                     layoutParams = LinearLayout.LayoutParams(dpToPx(context, 120), dpToPx(context, 120))
-                    outlineProvider = android.view.ViewOutlineProvider.BACKGROUND
+                    outlineProvider = ViewOutlineProvider.BACKGROUND
                     clipToOutline = true
-                    background = android.graphics.drawable.GradientDrawable().apply {
+                    background = GradientDrawable().apply {
                         cornerRadius = dpToPx(context, 10).toFloat()
                         setColor(Color.LTGRAY)
                     }

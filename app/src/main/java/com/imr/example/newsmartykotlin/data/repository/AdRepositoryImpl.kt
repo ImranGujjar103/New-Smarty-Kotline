@@ -3,7 +3,6 @@ package com.imr.example.newsmartykotlin.data.repository
 import android.util.Log
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue
 import com.google.gson.Gson
 import com.imr.example.newsmartykotlin.BuildConfig
 import com.imr.example.newsmartykotlin.MyApp
@@ -38,49 +37,47 @@ class AdRepositoryImpl(
         withContext(Dispatchers.IO) {
             suspendCancellableCoroutine { continuation ->
                 try {
-                    // 1. Get the right config key
-
                     remoteConfig.fetchAndActivate().addOnCompleteListener { task ->
-                        when {
-                            task.isSuccessful -> {
+                        if (!continuation.isActive) return@addOnCompleteListener
 
-                                Log.d(TAG, "fetchRemoteConfig: task.isSuccessful")
-                                val wasUpdated = task.result  // Boolean (true/false)
+                        if (task.isSuccessful) {
+                            Log.d(TAG, "fetchRemoteConfig: task.isSuccessful")
 
-                                // 2. ✅ Parse the config
+                            // Parse config on the current thread (IO thread if resumed properly,
+                            // but listener might be on Main. Gson is small here, but let's be safe).
+                            try {
                                 adSettingsSynced = true
-                                var adData: FirebaseRemoteConfigValue? = null
-                                if (BuildConfig.DEBUG) {
-                                    adData =
-                                        remoteConfig.getValue(AdManager.AD_SETTING_DEBUG)
-
-                                    Log.d(TAG, "config-data-for-dubug-is ${adData.asString()}")
+                                val adData = if (BuildConfig.DEBUG) {
+                                    remoteConfig.getValue(AdManager.AD_SETTING_DEBUG)
                                 } else {
-                                    adData =
-                                        remoteConfig.getValue(AdManager.AD_SETTING_RELEASE)
-
-                                    Log.d(TAG, "config-data-for-release-is ${adData.asString()}")
+                                    remoteConfig.getValue(AdManager.AD_SETTING_RELEASE)
                                 }
-                                val adSettings =
-                                    Gson().fromJson(adData.asString(), AppConfig::class.java)
+
+                                val json = adData.asString()
+                                Log.d(TAG, "config-data is $json")
+
+                                if (json.isEmpty()) {
+                                    continuation.resume(Result.success(AppConfig()))
+                                    return@addOnCompleteListener
+                                }
+
+                                val adSettings = Gson().fromJson(json, AppConfig::class.java)
                                 MyApp.mInstance?.appConfig = adSettings
                                 MyApp.mInstance?.ctrBTNColor = adSettings.ctrColor
                                 _appConfig.value = adSettings
 
                                 continuation.resume(Result.success(adSettings))
+                            } catch (e: Exception) {
+                                Log.e(TAG, "Parsing failed", e)
+                                continuation.resume(Result.success(AppConfig())) // Return default on parse error
                             }
-
-                            else -> {
-                                //  Log.d(TAG, "fetchRemoteConfig: exception ==== ${task.exception?.message}   =====\n \n \n result =====  ${task.result}   ")
-
-                                continuation.resume(Result.failure(kotlin.Exception("Fetch failed  === ")))
-                            }
-                            // ... error handling
+                        } else {
+                            Log.e(TAG, "Fetch failed", task.exception)
+                            continuation.resume(Result.failure(task.exception ?: Exception("Fetch failed")))
                         }
                     }
                 } catch (e: Exception) {
-                    Log.d(TAG, "fetchRemoteConfig: catch  exception ==== ")
-
+                    Log.e(TAG, "fetchRemoteConfig catch", e)
                     continuation.resume(Result.failure(e))
                 }
             }

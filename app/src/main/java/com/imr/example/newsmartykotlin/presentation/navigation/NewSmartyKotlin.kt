@@ -48,7 +48,9 @@ fun NewSmartyKotlin(
     navController: NavHostController
 ) {
     val context = LocalContext.current
-    val isAdLoading = AdLoadingState.isShowing.collectAsStateWithLifecycle()
+    val isAdLoading by AdLoadingState.isShowing.collectAsStateWithLifecycle()
+    val isAdDismissed by AdLoadingState.isAdDismissed.collectAsStateWithLifecycle()
+    val isInterstitialShowing by AdLoadingState.isInterstitialShowing.collectAsStateWithLifecycle()
     val networkMonitor = koinInject<NetworkMonitor>()
     val isOnline by networkMonitor.isConnected.collectAsStateWithLifecycle(initialValue = false)
     val internetConnectionMsg = stringResource(id = R.string.internet_connection_required)
@@ -667,7 +669,7 @@ fun NewSmartyKotlin(
 
         }
 
-        if (isAdLoading.value) {
+        if (isAdLoading || isAdDismissed || isInterstitialShowing) {
             AdLoadingOverlay()
         }
     }

@@ -24,21 +24,14 @@ fun PassportCountryRoute(
 
     val showAd = config.passportCountryNative.toShow && !isPurchased && isConnected
 
-    var nativeState by remember { mutableStateOf<LanguageNativeState>(LanguageNativeState.Idle) }
+    val nativeState by adViewModel.getNativeAdState("PassportCountryNative").collectAsStateWithLifecycle()
 
-    LaunchedEffect(showAd) {
+    LaunchedEffect(showAd, nativeState) {
         if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
-            nativeState = LanguageNativeState.Loading
             adViewModel.loadNativeAd(
                 adId = config.passportCountryNative.adId,
-                tag = "PassportCountryBottomNative"
-            ) { ad ->
-                nativeState = if (ad != null) {
-                    LanguageNativeState.Loaded(ad)
-                } else {
-                    LanguageNativeState.Failed
-                }
-            }
+                tag = "PassportCountryNative"
+            ) { _ -> }
         }
     }
 

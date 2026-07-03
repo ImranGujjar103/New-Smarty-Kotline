@@ -79,21 +79,14 @@ fun GalleryPermissionScreen(
 
     val showAd = config.galleryPermissionNative.toShow && !isPurchased && isConnected
 
-    var nativeState by remember { mutableStateOf<LanguageNativeState>(LanguageNativeState.Idle) }
+    val nativeState by adViewModel.getNativeAdState("GalleryPermissionNative").collectAsStateWithLifecycle()
 
-    LaunchedEffect(showAd) {
+    LaunchedEffect(showAd, nativeState) {
         if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
-            nativeState = LanguageNativeState.Loading
             adViewModel.loadNativeAd(
                 adId = config.galleryPermissionNative.adId,
-                tag = "GalleryPermissionBottomNative"
-            ) { ad ->
-                nativeState = if (ad != null) {
-                    LanguageNativeState.Loaded(ad)
-                } else {
-                    LanguageNativeState.Failed
-                }
-            }
+                tag = "GalleryPermissionNative"
+            ) { _ -> }
         }
     }
 

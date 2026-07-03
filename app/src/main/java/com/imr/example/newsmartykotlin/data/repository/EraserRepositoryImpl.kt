@@ -36,8 +36,8 @@ class EraserRepositoryImpl(
         )
     }
 
-    override suspend fun saveBitmap(bitmap: Bitmap): String {
-        return BitmapUtils.saveBitmapToCache(
+    override suspend fun saveBitmap(bitmap: Bitmap): String = withContext(Dispatchers.IO) {
+        BitmapUtils.saveBitmapToCache(
             context = context,
             bitmap = bitmap
         )

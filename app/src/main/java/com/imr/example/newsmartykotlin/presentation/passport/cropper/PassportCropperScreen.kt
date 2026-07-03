@@ -74,21 +74,14 @@ fun PassportCropperScreen(
 
     val showAd = config.passportCropperNative.toShow && !isPurchased && isConnected
 
-    var nativeState by remember { mutableStateOf<LanguageNativeState>(LanguageNativeState.Idle) }
+    val nativeState by adViewModel.getNativeAdState("PassportCropperNative").collectAsStateWithLifecycle()
 
-    LaunchedEffect(showAd) {
+    LaunchedEffect(showAd, nativeState) {
         if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
-            nativeState = LanguageNativeState.Loading
             adViewModel.loadNativeAd(
                 adId = config.passportCropperNative.adId,
-                tag = "PassportCropperBottomNative"
-            ) { ad ->
-                nativeState = if (ad != null) {
-                    LanguageNativeState.Loaded(ad)
-                } else {
-                    LanguageNativeState.Failed
-                }
-            }
+                tag = "PassportCropperNative"
+            ) { _ -> }
         }
     }
 

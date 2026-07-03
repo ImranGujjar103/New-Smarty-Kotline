@@ -33,17 +33,17 @@ fun LanguageRoute(
 
     val showAd = config.languageNative.toShow && !isPurchased && isConnected
 
-    val nativeState by adViewModel.getNativeAdState("LanguageBottomNative").collectAsStateWithLifecycle()
+    val nativeState by adViewModel.getNativeAdState("LanguageNative").collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         activity.setupLightSystemBars()
     }
 
-    LaunchedEffect(showAd) {
-        if (showAd) {
+    LaunchedEffect(showAd, nativeState) {
+        if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
             adViewModel.loadNativeAd(
                 adId = config.languageNative.adId,
-                tag = "LanguageBottomNative"
+                tag = "LanguageNative"
             ) { _ -> }
         }
     }

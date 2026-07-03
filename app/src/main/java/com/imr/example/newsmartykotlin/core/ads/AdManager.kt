@@ -35,8 +35,8 @@ import kotlinx.coroutines.CoroutineScope
 
 object AdManager {
     private const val TAG = "AdManager"
-    const val AD_SETTING_RELEASE = "ad_monetization_release"
-    const val AD_SETTING_DEBUG = "ad_strategy_debug"
+    const val AD_SETTING_RELEASE = "ad_monetization"
+    const val AD_SETTING_DEBUG = "ad_monetization_debug"
 
     private var cachedInterstitialAd: InterstitialAd? = null
     private var isLoadingInterstitial = false
@@ -123,7 +123,9 @@ object AdManager {
                 ad.adEventCallback = object : InterstitialAdEventCallback {
                     override fun onAdDismissedFullScreenContent() {
                         Handler(Looper.getMainLooper()).post {
+                            AdLoadingState.hide()
                             AdLoadingState.setInterstitialShowing(false)
+                            AdLoadingState.setAdDismissed(true)
                             cachedInterstitialAd = null
                             callback()
                         }
@@ -131,7 +133,9 @@ object AdManager {
 
                     override fun onAdFailedToShowFullScreenContent(fullScreenContentError: FullScreenContentError) {
                         Handler(Looper.getMainLooper()).post {
+                            AdLoadingState.hide()
                             AdLoadingState.setInterstitialShowing(false)
+                            AdLoadingState.setAdDismissed(true)
                             cachedInterstitialAd = null
                             callback()
                         }
@@ -169,6 +173,7 @@ object AdManager {
                         Handler(Looper.getMainLooper()).post {
                             AdLoadingState.hide()
                             AdLoadingState.setInterstitialShowing(false)
+                            AdLoadingState.setAdDismissed(true)
                             showLogsInter("$tag interstitial ad dismissed")
                             cachedInterstitialAd = null
                             callback()
@@ -179,6 +184,7 @@ object AdManager {
                         Handler(Looper.getMainLooper()).post {
                             AdLoadingState.hide()
                             AdLoadingState.setInterstitialShowing(false)
+                            AdLoadingState.setAdDismissed(true)
                             showLogsInter("$tag interstitial ad failed to show: ${fullScreenContentError.message}")
                             cachedInterstitialAd = null
                             callback()
@@ -280,6 +286,7 @@ object AdManager {
                     override fun onAdDismissedFullScreenContent() {
                         Handler(Looper.getMainLooper()).post {
                             AdLoadingState.hide()
+                            AdLoadingState.setAdDismissed(true)
                             showLogsAppOpen("$tag app open ad dismissed")
                             cachedAppOpenAd = null
                             callback()
@@ -289,6 +296,7 @@ object AdManager {
                     override fun onAdFailedToShowFullScreenContent(fullScreenContentError: FullScreenContentError) {
                         Handler(Looper.getMainLooper()).post {
                             AdLoadingState.hide()
+                            AdLoadingState.setAdDismissed(true)
                             showLogsAppOpen("$tag app open ad failed to show: ${fullScreenContentError.message}")
                             cachedAppOpenAd = null
                             callback()
@@ -536,7 +544,38 @@ object AdManager {
 
     fun clearInterstitialCache() { cachedInterstitialAd = null }
     fun clearAppOpenCache() { cachedAppOpenAd = null }
-    fun clearNativeCache() { nativeAdCache.clear() }
+    fun clearNativeCache() {
+        nativeAdCache.clear()
+        isLoadingNativeMap.clear()
+        nativeWaitingCallbacksMap.clear()
+    }
+
+    fun clearNativeCacheExcept(tagToKeep: String) {
+        val nativeIterator = nativeAdCache.entries.iterator()
+        while (nativeIterator.hasNext()) {
+            val entry = nativeIterator.next()
+            if (entry.key != tagToKeep) {
+                nativeIterator.remove()
+            }
+        }
+
+        val loadingIterator = isLoadingNativeMap.entries.iterator()
+        while (loadingIterator.hasNext()) {
+            val entry = loadingIterator.next()
+            if (entry.key != tagToKeep) {
+                loadingIterator.remove()
+            }
+        }
+
+        val callbacksIterator = nativeWaitingCallbacksMap.entries.iterator()
+        while (callbacksIterator.hasNext()) {
+            val entry = callbacksIterator.next()
+            if (entry.key != tagToKeep) {
+                callbacksIterator.remove()
+            }
+        }
+    }
+
     fun clearBannerCache() { 
         Handler(Looper.getMainLooper()).post {
             cachedBannerAdView?.destroy()

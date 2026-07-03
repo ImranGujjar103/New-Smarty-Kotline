@@ -195,7 +195,11 @@ class AppOpenManager(
             }
         }
 
-        handler?.postDelayed(runnable!!, 500)
+        handler?.let { h ->
+            runnable?.let { r ->
+                h.postDelayed(r, 500)
+            }
+        }
     }
 
     private fun safeDismissDialog() {

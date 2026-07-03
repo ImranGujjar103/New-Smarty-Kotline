@@ -64,13 +64,13 @@ fun BgRemoveScreen(
 
     val showAd = config.bgRemoverNative.toShow && !isPurchased && isConnected
 
-    val nativeState by adViewModel.getNativeAdState("BgRemoverBottomNative").collectAsStateWithLifecycle()
+    val nativeState by adViewModel.getNativeAdState("BgRemoverNative").collectAsStateWithLifecycle()
 
-    LaunchedEffect(showAd) {
-        if (showAd) {
+    LaunchedEffect(showAd, nativeState) {
+        if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
             adViewModel.loadNativeAd(
                 adId = config.bgRemoverNative.adId,
-                tag = "BgRemoverBottomNative"
+                tag = "BgRemoverNative"
             ) { _ -> }
         }
     }
@@ -156,8 +156,8 @@ fun BgRemoveScreen(
             Box(
                 modifier = Modifier
                     .padding(horizontal = 20.dp)
-                    .width(320.dp)
-                    .height(480.dp)
+                    .fillMaxWidth()
+                    .weight(1f)
                     .clip(RoundedCornerShape(20.dp))
                     .background(WhiteColor),
                 contentAlignment = Alignment.Center
@@ -166,7 +166,8 @@ fun BgRemoveScreen(
                     painter = painter,
                     contentDescription = null,
                     modifier = Modifier
-                        .aspectRatio(aspectRatio),
+                        .fillMaxSize()
+                        .padding(10.dp),
                     contentScale = ContentScale.Fit
                 )
             }

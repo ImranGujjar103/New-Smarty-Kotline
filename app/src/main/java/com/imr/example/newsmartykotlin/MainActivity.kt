@@ -25,10 +25,12 @@ class MainActivity : ComponentActivity() {
                 val currentRoute = navBackStackEntry?.destination?.route
 
                 val isInterstitialShowing by AdLoadingState.isInterstitialShowing.collectAsState()
+                val isAdDismissed by AdLoadingState.isAdDismissed.collectAsState()
 
-                LaunchedEffect(currentRoute, isInterstitialShowing) {
+                LaunchedEffect(currentRoute, isInterstitialShowing, isAdDismissed) {
                     val shouldRestrict = when {
                         isInterstitialShowing -> true
+                        isAdDismissed -> true
                         currentRoute == AppRoutes.Splash.route -> true
                         currentRoute == AppRoutes.Premium.route -> true
                         else -> false

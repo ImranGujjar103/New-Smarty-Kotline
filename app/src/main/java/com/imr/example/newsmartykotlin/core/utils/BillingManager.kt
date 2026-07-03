@@ -48,6 +48,7 @@ class BillingManager(val context: Context, val dataStorePrefs: DataStorePrefs) :
     private val _purchaseState = MutableStateFlow<PurchaseState>(PurchaseState.Idle)
     val purchaseState: StateFlow<PurchaseState> = _purchaseState.asStateFlow()
 
+    private var weeklyProductDetails: ProductDetails? = null
     private var monthlyProductDetails: ProductDetails? = null
     private var yearlyProductDetails: ProductDetails? = null
 
@@ -67,7 +68,8 @@ class BillingManager(val context: Context, val dataStorePrefs: DataStorePrefs) :
 
     companion object {
         private const val TAG = "BillingManager"
-        const val MONTHLY_SUBSCRIPTION_ID = "monthly_purchases"
+        const val WEEKLY_SUBSCRIPTION_ID = "weekly_package"
+        const val MONTHLY_SUBSCRIPTION_ID = "monthly_package"
         const val YEARLY_SUBSCRIPTION_ID = "yearly_purchases"
     }
 
@@ -83,6 +85,7 @@ class BillingManager(val context: Context, val dataStorePrefs: DataStorePrefs) :
     }
 
     private fun startConnection() {
+        Log.d(TAG, "startConnection: Current state = $connectionState")
         // Prevent multiple simultaneous connection attempts
         if (connectionState == ConnectionState.CONNECTING ||
             connectionState == ConnectionState.CONNECTED) {
@@ -95,6 +98,7 @@ class BillingManager(val context: Context, val dataStorePrefs: DataStorePrefs) :
 
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
+                Log.d(TAG, "onBillingSetupFinished: ResponseCode = ${billingResult.responseCode}, Message = ${billingResult.debugMessage}")
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     Log.d(TAG, "Billing client connected")
                     connectionState = ConnectionState.CONNECTED
@@ -146,7 +150,9 @@ class BillingManager(val context: Context, val dataStorePrefs: DataStorePrefs) :
             }
         }
 
-        reconnectHandler.postDelayed(reconnectRunnable!!, delay)
+        reconnectRunnable?.let { r ->
+            reconnectHandler.postDelayed(r, delay)
+        }
     }
 
     fun resetConnection() {
@@ -158,9 +164,15 @@ class BillingManager(val context: Context, val dataStorePrefs: DataStorePrefs) :
     }
 
     private fun queryProducts() {
+        Log.d(TAG, "queryProducts called")
         val subscriptionParams = QueryProductDetailsParams.newBuilder()
             .setProductList(
                 listOf(
+                    QueryProductDetailsParams.Product.newBuilder()
+                        .setProductId(WEEKLY_SUBSCRIPTION_ID)
+                        .setProductType(BillingClient.ProductType.SUBS)
+                        .build(),
+
                     QueryProductDetailsParams.Product.newBuilder()
                         .setProductId(MONTHLY_SUBSCRIPTION_ID)
                         .setProductType(BillingClient.ProductType.SUBS)
@@ -175,10 +187,15 @@ class BillingManager(val context: Context, val dataStorePrefs: DataStorePrefs) :
             .build()
 
         billingClient.queryProductDetailsAsync(subscriptionParams) { billingResult, productDetailsResult ->
+            Log.d(TAG, "queryProductDetailsAsync Response: ${billingResult.responseCode}, ${billingResult.debugMessage}")
+            Log.d(TAG, "Products found: ${productDetailsResult.productDetailsList.size}")
 
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
 
                 productDetailsResult.productDetailsList.forEach { productDetails ->
+                    Log.d(TAG, "Processing product: ${productDetails.productId}")
+                    Log.d(TAG, "ProductDetails: $productDetails")
+                    Log.d(TAG, "Offers count: ${productDetails.subscriptionOfferDetails?.size ?: 0}")
 
                     val price = getRegularPrice(productDetails)
                     val trialInfo = getTrialText(productDetails)
@@ -186,7 +203,25 @@ class BillingManager(val context: Context, val dataStorePrefs: DataStorePrefs) :
                     val hasFreeTrial = trialInfo.isNotEmpty()
                     val priceAmountMicros = getPriceAmountMicros(productDetails)
 
+                    Log.d(TAG, "Extracted values for ${productDetails.productId}: price=$price, hasTrial=$hasFreeTrial")
+
                     when (productDetails.productId) {
+
+                        WEEKLY_SUBSCRIPTION_ID -> {
+                            weeklyProductDetails = productDetails
+                            _weeklySubscriptionState.value = ProductState.Available(
+                                productDetails = productDetails,
+                                price = price,
+                                priceAmountMicros = priceAmountMicros
+                            )
+
+                            saveWeeklyTrialInfo(
+                                trialInfo = trialInfo,
+                                trialInfoAfter = trialInfoAfter,
+                                hasFreeTrial = hasFreeTrial,
+                                weeklyPrice = price
+                            )
+                        }
 
                         MONTHLY_SUBSCRIPTION_ID -> {
                             monthlyProductDetails = productDetails
@@ -227,12 +262,31 @@ class BillingManager(val context: Context, val dataStorePrefs: DataStorePrefs) :
                         }
                     }
                 }
-
             } else {
                 Log.e(TAG, "Billing query failed: ${billingResult.debugMessage}")
-
+                _weeklySubscriptionState.value = ProductState.Error(billingResult.debugMessage)
                 _monthlySubscriptionState.value = ProductState.Error(billingResult.debugMessage)
                 _yearlySubscriptionState.value = ProductState.Error(billingResult.debugMessage)
+            }
+        }
+    }
+
+    private fun saveWeeklyTrialInfo(
+        trialInfo: String,
+        trialInfoAfter: String,
+        hasFreeTrial: Boolean,
+        weeklyPrice: String
+    ) {
+        CoroutineScope(Dispatchers.Main).launch {
+            dataStorePrefs.setIsWeeklyTrial(hasFreeTrial)
+            dataStorePrefs.setWeeklyPrice(weeklyPrice)
+
+            if (hasFreeTrial) {
+                dataStorePrefs.setWeeklyTrialInfo(trialInfo)
+                dataStorePrefs.setWeeklyTrialInfoAfter(trialInfoAfter)
+            } else {
+                dataStorePrefs.setWeeklyTrialInfo("")
+                dataStorePrefs.setWeeklyTrialInfoAfter("")
             }
         }
     }
@@ -348,10 +402,29 @@ class BillingManager(val context: Context, val dataStorePrefs: DataStorePrefs) :
         productId: String
     ) {
         when (productId) {
+            WEEKLY_SUBSCRIPTION_ID -> purchaseWeeklySubscription(activity)
             MONTHLY_SUBSCRIPTION_ID -> purchaseMonthlySubscription(activity)
             YEARLY_SUBSCRIPTION_ID -> purchaseYearlySubscription(activity)
             else -> {
                 _purchaseState.value = PurchaseState.Error("Invalid subscription product")
+            }
+        }
+    }
+
+    fun purchaseWeeklySubscription(activity: Activity) {
+        ensureConnectionAndLaunch(activity) {
+            weeklyProductDetails?.let { productDetails ->
+                val offerToken = productDetails.subscriptionOfferDetails
+                    ?.firstOrNull()
+                    ?.offerToken
+
+                launchSubscriptionBillingFlow(
+                    activity = activity,
+                    productDetails = productDetails,
+                    offerToken = offerToken
+                )
+            } ?: run {
+                _purchaseState.value = PurchaseState.Error("Weekly subscription not available")
             }
         }
     }
@@ -641,10 +714,10 @@ class BillingManager(val context: Context, val dataStorePrefs: DataStorePrefs) :
             period.contains("P1W") -> "week"
             period.contains("W") -> "weeks"
             period.contains("P1M") -> "month"
-            period.contains("M") -> "months"
+            period.contains("M") -> "Months"
             period.contains("P1Y") -> "year"
             period.contains("Y") -> "years"
-            else -> "week"
+            else -> "Week"
         }
     }
 

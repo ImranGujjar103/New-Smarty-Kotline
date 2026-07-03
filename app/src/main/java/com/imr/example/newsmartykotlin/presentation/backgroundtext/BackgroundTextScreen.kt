@@ -1,5 +1,6 @@
 package com.imr.example.newsmartykotlin.presentation.backgroundtext
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -89,13 +90,22 @@ fun BackgroundTextScreen(
 
     val showAd = config.backgroundTextNative.toShow && !isPurchased && isConnected
 
-    val nativeState by adViewModel.getNativeAdState("BackgroundTextBottomNative").collectAsStateWithLifecycle()
+    LaunchedEffect(config.saveInterstitial.toShow) {
+        if (config.saveInterstitial.toShow && !isPurchased && isConnected) {
+            adViewModel.loadInterstitialAd(
+                adId = config.saveInterstitial.adId,
+                tag = "Save_Interstitial"
+            )
+        }
+    }
 
-    LaunchedEffect(showAd) {
-        if (showAd) {
+    val nativeState by adViewModel.getNativeAdState("BackgroundTextNative").collectAsStateWithLifecycle()
+
+    LaunchedEffect(showAd, nativeState) {
+        if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
             adViewModel.loadNativeAd(
                 adId = config.backgroundTextNative.adId,
-                tag = "BackgroundTextBottomNative"
+                tag = "BackgroundTextNative"
             ) { _ -> }
         }
     }
@@ -125,12 +135,20 @@ fun BackgroundTextScreen(
         viewModel.event.collect { event ->
             when (event) {
                 is BackgroundTextEvent.Done -> {
-                     navController.navigate(
-                         AppRoutes.Saved.createRoute(
-                             imagePath = event.imagePath,
-                             isForSuitChanger = true
-                         )
-                     )
+                    adViewModel.showInterstitialAd(
+                        activity = context as ComponentActivity,
+                        toShow = config.saveInterstitial.toShow,
+                        adId = config.saveInterstitial.adId,
+                        tag = "Save_Interstitial",
+                        callback = {
+                            navController.navigate(
+                                AppRoutes.Saved.createRoute(
+                                    imagePath = event.imagePath,
+                                    isForSuitChanger = true
+                                )
+                            )
+                        }
+                    )
                 }
             }
         }

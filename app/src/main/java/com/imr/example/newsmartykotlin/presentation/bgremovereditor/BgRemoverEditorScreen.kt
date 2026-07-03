@@ -3,6 +3,7 @@ package com.imr.example.newsmartykotlin.presentation.bgremovereditor
 
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -76,13 +77,22 @@ fun BgRemoverEditorScreen(
 
     val showAd = config.bgRemoverEditorNative.toShow && !isPurchased && isConnected
 
-    val nativeState by adViewModel.getNativeAdState("BgRemoverEditorBottomNative").collectAsStateWithLifecycle()
+    LaunchedEffect(config.saveInterstitial.toShow) {
+        if (config.saveInterstitial.toShow && !isPurchased && isConnected) {
+            adViewModel.loadInterstitialAd(
+                adId = config.saveInterstitial.adId,
+                tag = "Save_Interstitial"
+            )
+        }
+    }
 
-    LaunchedEffect(showAd) {
-        if (showAd) {
+    val nativeState by adViewModel.getNativeAdState("BgRemoverEditorNative").collectAsStateWithLifecycle()
+
+    LaunchedEffect(showAd, nativeState) {
+        if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
             adViewModel.loadNativeAd(
                 adId = config.bgRemoverEditorNative.adId,
-                tag = "BgRemoverEditorBottomNative"
+                tag = "BgRemoverEditorNative"
             ) { _ -> }
         }
     }
@@ -131,11 +141,19 @@ fun BgRemoverEditorScreen(
                 BgRemoverEditorEvent.Back -> navController.popBackStack()
 
                 is BgRemoverEditorEvent.Saved -> {
-                    navController.navigate(
-                        AppRoutes.Saved.createRoute(
-                            imagePath = event.imagePath,
-                            isForBgRemover = true
-                        )
+                    adViewModel.showInterstitialAd(
+                        activity = context as ComponentActivity,
+                        toShow = config.saveInterstitial.toShow,
+                        adId = config.saveInterstitial.adId,
+                        tag = "Save_Interstitial",
+                        callback = {
+                            navController.navigate(
+                                AppRoutes.Saved.createRoute(
+                                    imagePath = event.imagePath,
+                                    isForBgRemover = true
+                                )
+                            )
+                        }
                     )
                 }
 
@@ -207,6 +225,7 @@ private fun BgRemoverEditorContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
+                    .padding(vertical = 10.dp)
             ) {
                 EditorPreview(
                     uiState = uiState,
@@ -402,8 +421,8 @@ private fun EditorPreview(
 ) {
     Box(
         modifier = modifier
-            .fillMaxWidth(0.82f)
-            .aspectRatio(0.75f),
+            .fillMaxSize()
+            .aspectRatio(0.75f, matchHeightConstraintsFirst = true),
         contentAlignment = Alignment.Center
     ) {
         when (val bg = uiState.selectedBackground) {

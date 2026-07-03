@@ -32,25 +32,18 @@ fun SuitRoute(
 
     val showAd = config.suitNative.toShow && !isPurchased && isConnected
 
-    var nativeState by remember { mutableStateOf<LanguageNativeState>(LanguageNativeState.Idle) }
+    val nativeState by adViewModel.getNativeAdState("SuitNative").collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         activity.setupLightSystemBars()
     }
 
-    LaunchedEffect(showAd) {
+    LaunchedEffect(showAd, nativeState) {
         if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
-            nativeState = LanguageNativeState.Loading
             adViewModel.loadNativeAd(
                 adId = config.suitNative.adId,
-                tag = "SuitBottomNative"
-            ) { ad ->
-                nativeState = if (ad != null) {
-                    LanguageNativeState.Loaded(ad)
-                } else {
-                    LanguageNativeState.Failed
-                }
-            }
+                tag = "SuitNative"
+            ) { _ -> }
         }
     }
 

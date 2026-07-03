@@ -11,6 +11,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.imr.example.newsmartykotlin.BuildConfig
 import com.imr.example.newsmartykotlin.core.ads.AdLoadingController
+import com.imr.example.newsmartykotlin.core.ads.AdLoadingState
 import com.imr.example.newsmartykotlin.core.ads.AdsConsentManager
 import com.imr.example.newsmartykotlin.core.extensions.enableFullScreenMode
 import com.imr.example.newsmartykotlin.core.utils.DataStorePrefs
@@ -40,6 +41,7 @@ fun SplashRoute(
     val adState by viewModel.adState.collectAsStateWithLifecycle()
     val navigationState by viewModel.navigationState.collectAsStateWithLifecycle()
     val consentState by viewModel.consentState.collectAsStateWithLifecycle()
+    val isAdDismissed by AdLoadingState.isAdDismissed.collectAsStateWithLifecycle()
 
     var isAdFailed by remember { mutableStateOf(false) }
     var isPremiumUser by remember { mutableStateOf(false) }
@@ -92,7 +94,9 @@ fun SplashRoute(
         }
     }
 
-    LaunchedEffect(navigationState) {
+    LaunchedEffect(navigationState, isAdDismissed) {
+        if (isAdDismissed) return@LaunchedEffect
+
         when (val state = navigationState) {
 
             is NavigationState.NavigateToLanguage -> {

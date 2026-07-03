@@ -92,13 +92,13 @@ fun CropFaceScreen(
 
     val showAd = config.cropFaceNative.toShow && !isPurchased && isConnected
 
-    val nativeState by adViewModel.getNativeAdState("CropFaceBottomNative").collectAsStateWithLifecycle()
+    val nativeState by adViewModel.getNativeAdState("CropFaceNative").collectAsStateWithLifecycle()
 
-    LaunchedEffect(showAd) {
-        if (showAd) {
+    LaunchedEffect(showAd, nativeState) {
+        if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
             adViewModel.loadNativeAd(
                 adId = config.cropFaceNative.adId,
-                tag = "CropFaceBottomNative"
+                tag = "CropFaceNative"
             ) { _ -> }
         }
     }

@@ -24,6 +24,12 @@ class DataStorePrefs(private val context: Context) {
     private val IS_FIRST_SPLASH = booleanPreferencesKey("IS_FIRST_SPLASH")
 
     // Premium Billing Keys
+    private val IS_WEEKLY_TRIAL = booleanPreferencesKey("IS_WEEKLY_TRIAL")
+    private val WEEKLY_TRIAL_INFO = stringPreferencesKey("WEEKLY_TRIAL_INFO")
+    private val WEEKLY_TRIAL_PRICE = stringPreferencesKey("WEEKLY_TRIAL_PRICE")
+    private val WEEKLY_TRIAL_INFO_AFTER = stringPreferencesKey("WEEKLY_TRIAL_INFO_AFTER")
+    private val WEEKLY_PRICE = stringPreferencesKey("WEEKLY_PRICE")
+
     private val IS_MONTHLY_TRIAL = booleanPreferencesKey("IS_MONTHLY_TRIAL")
     private val MONTHLY_TRIAL_INFO = stringPreferencesKey("MONTHLY_TRIAL_INFO")
     private val MONTHLY_TRIAL_PRICE = stringPreferencesKey("MONTHLY_TRIAL_PRICE")
@@ -386,6 +392,22 @@ class DataStorePrefs(private val context: Context) {
 
     suspend fun setIsPurchased(value: Boolean) = setBoolean(PREMIUM_PURCHASED, value)
     fun getIsPurchased(): Flow<Boolean> = getBoolean(PREMIUM_PURCHASED, false)
+
+    // Weekly Premium Preferences
+    suspend fun setIsWeeklyTrial(value: Boolean) = setBoolean(IS_WEEKLY_TRIAL, value)
+    fun getIsWeeklyTrial(): Flow<Boolean> = getBoolean(IS_WEEKLY_TRIAL, false)
+
+    suspend fun setWeeklyTrialInfo(value: String) = setString(WEEKLY_TRIAL_INFO, value)
+    fun getWeeklyTrialInfo(): Flow<String> = getString(WEEKLY_TRIAL_INFO, "")
+
+    suspend fun setWeeklyTrialPrice(value: String) = setString(WEEKLY_TRIAL_PRICE, value)
+    fun getWeeklyTrialPrice(): Flow<String> = getString(WEEKLY_TRIAL_PRICE, "")
+
+    suspend fun setWeeklyTrialInfoAfter(value: String) = setString(WEEKLY_TRIAL_INFO_AFTER, value)
+    fun getWeeklyTrialInfoAfter(): Flow<String> = getString(WEEKLY_TRIAL_INFO_AFTER, "")
+
+    suspend fun setWeeklyPrice(value: String) = setString(WEEKLY_PRICE, value)
+    fun getWeeklyPrice(): Flow<String> = getString(WEEKLY_PRICE, "")
 
     // Monthly Premium Preferences
     suspend fun setIsMonthlyTrial(value: Boolean) = setBoolean(IS_MONTHLY_TRIAL, value)

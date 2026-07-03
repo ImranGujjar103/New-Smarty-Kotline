@@ -6,7 +6,6 @@ import com.google.gson.annotations.SerializedName
 @Keep
 data class AppConfig(
     /* Premium flags */
-    @SerializedName("ad_show") val adShow: Boolean = true,
     @SerializedName("premium_home_show") val premiumHomeShow: Boolean = true,
     @SerializedName("premium_feature") val premiumFeature: Boolean = true,
     @SerializedName("premium_after_splash_show") val premiumAfterSplashShow: Boolean = false,
@@ -25,6 +24,8 @@ data class AppConfig(
     @SerializedName("language_interstitial") val languageInterstitial: InterstitialAdConfig = InterstitialAdConfig(),
     @SerializedName("onboarding_interstitial") val onBoardingInterstitial: InterstitialAdConfig = InterstitialAdConfig(),
     @SerializedName("home_interstitial") val homeInterstitial: InterstitialAdConfig = InterstitialAdConfig(),
+    @SerializedName("gallery_interstitial") val galleryInterstitial: InterstitialAdConfig = InterstitialAdConfig(),
+    @SerializedName("save_interstitial") val saveInterstitial: InterstitialAdConfig = InterstitialAdConfig(),
 
 
     @SerializedName("languageNative") val languageNative: NativeAdConfig = NativeAdConfig(),

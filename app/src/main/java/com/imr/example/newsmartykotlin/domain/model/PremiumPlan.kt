@@ -5,5 +5,8 @@ data class PremiumPlan(
     val title: String,
     val price: String,
     val billingPeriod: String,
-    val isSelected: Boolean = false
+    val isSelected: Boolean = false,
+    val hasTrial: Boolean = false,
+    val trialInfo: String = "",
+    val trialInfoAfter: String = ""
 )

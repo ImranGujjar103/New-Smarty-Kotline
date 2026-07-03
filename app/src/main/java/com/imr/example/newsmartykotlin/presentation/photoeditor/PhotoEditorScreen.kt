@@ -116,13 +116,13 @@ fun PhotoEditorScreen(
 
     val showAd = config.photoEditorNative.toShow && !isPurchased && isConnected
 
-    val nativeState by adViewModel.getNativeAdState("PhotoEditorBottomNative").collectAsStateWithLifecycle()
+    val nativeState by adViewModel.getNativeAdState("PhotoEditorNative").collectAsStateWithLifecycle()
 
-    LaunchedEffect(showAd) {
-        if (showAd) {
+    LaunchedEffect(showAd, nativeState) {
+        if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
             adViewModel.loadNativeAd(
                 adId = config.photoEditorNative.adId,
-                tag = "PhotoEditorBottomNative"
+                tag = "PhotoEditorNative"
             ) { _ -> }
         }
     }

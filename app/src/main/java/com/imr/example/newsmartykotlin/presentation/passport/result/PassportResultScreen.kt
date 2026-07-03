@@ -1,6 +1,7 @@
 package com.imr.example.newsmartykotlin.presentation.passport.result
 
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -73,21 +74,23 @@ fun PassportResultScreen(
 
     val showAd = config.passportResultNative.toShow && !isPurchased && isConnected
 
-    var nativeState by remember { mutableStateOf<LanguageNativeState>(LanguageNativeState.Idle) }
+    LaunchedEffect(config.saveInterstitial.toShow) {
+        if (config.saveInterstitial.toShow && !isPurchased && isConnected) {
+            adViewModel.loadInterstitialAd(
+                adId = config.saveInterstitial.adId,
+                tag = "Save_Interstitial"
+            )
+        }
+    }
 
-    LaunchedEffect(showAd) {
+    val nativeState by adViewModel.getNativeAdState("PassportResultNative").collectAsStateWithLifecycle()
+
+    LaunchedEffect(showAd, nativeState) {
         if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
-            nativeState = LanguageNativeState.Loading
             adViewModel.loadNativeAd(
                 adId = config.passportResultNative.adId,
-                tag = "PassportResultBottomNative"
-            ) { ad ->
-                nativeState = if (ad != null) {
-                    LanguageNativeState.Loaded(ad)
-                } else {
-                    LanguageNativeState.Failed
-                }
-            }
+                tag = "PassportResultNative"
+            ) { _ -> }
         }
     }
 
@@ -135,18 +138,26 @@ fun PassportResultScreen(
                 }
 
                 is PassportResultEvent.ImageSaved -> {
-                    navController.navigate(
-                        AppRoutes.Saved.createRoute(
-                            imagePath = event.uri,
-                            isForPassport = true,
-                            countryId = uiState.countryId,
-                            documentType = uiState.documentType
-                        )
-                    ) {
-                        popUpTo(AppRoutes.PassportResult.route) {
-                            inclusive = true
+                    adViewModel.showInterstitialAd(
+                        activity = navController.context as ComponentActivity,
+                        toShow = config.saveInterstitial.toShow,
+                        adId = config.saveInterstitial.adId,
+                        tag = "Save_Interstitial",
+                        callback = {
+                            navController.navigate(
+                                AppRoutes.Saved.createRoute(
+                                    imagePath = event.uri,
+                                    isForPassport = true,
+                                    countryId = uiState.countryId,
+                                    documentType = uiState.documentType
+                                )
+                            ) {
+                                popUpTo(AppRoutes.PassportResult.route) {
+                                    inclusive = true
+                                }
+                            }
                         }
-                    }
+                    )
                     Toast.makeText(
                         navController.context,
                         navController.context.getString(

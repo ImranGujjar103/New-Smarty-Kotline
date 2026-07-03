@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.imr.example.newsmartykotlin.R
@@ -111,15 +112,17 @@ private fun FeatureRow(
         Text(
             text = feature,
             fontFamily = SfProDisplayBold,
-            fontSize = if (isHeader) 16.sp else 15.sp,
+            fontSize = if (isHeader) 14.sp else 13.sp,
             color = TextColor,
+            lineHeight = 10.sp,
             modifier = Modifier.weight(1f)
         )
 
         Text(
             text = free,
             fontFamily = SfProDisplayBold,
-            fontSize = 15.sp,
+            fontSize = 14.sp,
+            lineHeight = 10.sp,
             color = TextColor,
             modifier = Modifier.width(54.dp),
             textAlign = TextAlign.Center
@@ -128,7 +131,8 @@ private fun FeatureRow(
         Text(
             text = pro,
             fontFamily = SfProDisplayBold,
-            fontSize = 15.sp,
+            fontSize = 14.sp,
+            lineHeight = 10.sp,
             color = TextColor,
             modifier = Modifier.width(54.dp),
             textAlign = TextAlign.Center
@@ -145,13 +149,14 @@ private fun FeatureRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(40.dp),
+            .height(30.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = feature,
             fontFamily = SfProDisplayRegular,
-            fontSize = 15.sp,
+            fontSize = 13.sp,
+            lineHeight = 10.sp,
             color = TextColor,
             modifier = Modifier.weight(1f)
         )
@@ -197,10 +202,12 @@ private fun FeatureStatus(
 
 @Composable
 fun PremiumContinueButton(
+    hasTrial: Boolean = false,
     enabled: Boolean,
     onClick: () -> Unit
 ) {
     Button(
+
         onClick = onClick,
         enabled = enabled,
         shape = RoundedCornerShape(16.dp),
@@ -216,7 +223,7 @@ fun PremiumContinueButton(
             .height(50.dp)
     ) {
         Text(
-            text = stringResource(R.string.continue_for_free),
+            text = if (hasTrial)stringResource(R.string.continue_for_free) else stringResource(R.string.continue_text),
             fontFamily = SfProDisplayBold,
             fontSize = 16.sp
         )
@@ -267,6 +274,7 @@ private fun PremiumLinkText(text: String) {
         text = text,
         fontFamily = SfProDisplayBold,
         fontSize = 10.sp,
-        color = PrimaryColor
+        color = PrimaryColor,
+        textDecoration = TextDecoration.Underline
     )
 }

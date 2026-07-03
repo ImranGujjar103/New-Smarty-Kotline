@@ -1,5 +1,6 @@
 package com.imr.example.newsmartykotlin.presentation.gallery
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -81,21 +82,23 @@ fun GalleryScreen(
 
     val showAd = config.galleryNative.toShow && !isPurchased && isConnected
 
-    var nativeState by remember { mutableStateOf<LanguageNativeState>(LanguageNativeState.Idle) }
+    LaunchedEffect(config.galleryInterstitial.toShow) {
+        if (config.galleryInterstitial.toShow && !isPurchased && isConnected) {
+            adViewModel.loadInterstitialAd(
+                adId = config.galleryInterstitial.adId,
+                tag = "Gallery_Interstitial"
+            )
+        }
+    }
 
-    LaunchedEffect(showAd) {
+    val nativeState by adViewModel.getNativeAdState("GalleryNative").collectAsStateWithLifecycle()
+
+    LaunchedEffect(showAd, nativeState) {
         if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
-            nativeState = LanguageNativeState.Loading
             adViewModel.loadNativeAd(
                 adId = config.galleryNative.adId,
-                tag = "GalleryBottomNative"
-            ) { ad ->
-                nativeState = if (ad != null) {
-                    LanguageNativeState.Loaded(ad)
-                } else {
-                    LanguageNativeState.Failed
-                }
-            }
+                tag = "GalleryNative"
+            ) { _ -> }
         }
     }
 
@@ -253,7 +256,15 @@ fun GalleryScreen(
 
                                                 navController.popBackStack()
                                             } else {
-                                                viewModel.onImageClick(selectedImage)
+                                                adViewModel.showInterstitialAd(
+                                                    activity = navController.context as ComponentActivity,
+                                                    toShow = config.galleryInterstitial.toShow,
+                                                    adId = config.galleryInterstitial.adId,
+                                                    tag = "Gallery_Interstitial",
+                                                    callback = {
+                                                        viewModel.onImageClick(selectedImage)
+                                                    }
+                                                )
                                             }
                                         }
                                     )

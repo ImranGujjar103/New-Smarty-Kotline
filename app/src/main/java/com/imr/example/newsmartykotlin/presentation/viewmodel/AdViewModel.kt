@@ -11,6 +11,7 @@ import com.google.android.libraries.ads.mobile.sdk.interstitial.InterstitialAd
 import com.google.android.libraries.ads.mobile.sdk.nativead.NativeAd
 import com.imr.example.newsmartykotlin.BuildConfig
 import com.imr.example.newsmartykotlin.core.ads.AdLoadingController
+import com.imr.example.newsmartykotlin.core.ads.AdLoadingState
 import com.imr.example.newsmartykotlin.core.ads.AdManager
 import com.imr.example.newsmartykotlin.core.ads.AdsConsentManager
 import com.imr.example.newsmartykotlin.core.extensions.getCurrentTime
@@ -243,7 +244,7 @@ class AdViewModel(
 
             val isPurchased = dataStorePrefs.getIsPurchased().first()
             val isConnected = networkMonitor.isConnected.first()
-            shouldLoadAds = !isPurchased && isConnected && adRepository.appConfig.value.adShow
+            shouldLoadAds = !isPurchased && isConnected
 
             if (shouldLoadAds) {
                 adLoadStartTime = System.currentTimeMillis()
@@ -280,7 +281,7 @@ class AdViewModel(
             val isConnected = networkMonitor.isConnected.first()
             val hasConsent = dataStorePrefs.getIsConsent().first()
 
-            shouldLoadAds = !isPurchased && isConnected && adRepository.appConfig.value.adShow
+            shouldLoadAds = !isPurchased && isConnected
 
             when {
                 !hasConsent && isConnected -> {
@@ -310,7 +311,7 @@ class AdViewModel(
         Log.d(TAG, "startAdLoading: shouldLoadAds = $shouldLoadAds, isFirstSplash = $isFirstSplash ==== ${getCurrentTime()}")
 
         if (!shouldLoadAds) {
-            Log.d(TAG, "startAdLoading: Skipping ad load - user is premium, no internet or adShow is false ==== ${getCurrentTime()}")
+            Log.d(TAG, "startAdLoading: Skipping ad load - user is premium or no internet ==== ${getCurrentTime()}")
             isAdLoadCompleted = true
             isNativePreloadCompleted = true
             isBannerPreloadCompleted = true
@@ -494,6 +495,74 @@ class AdViewModel(
     fun showInterstitialAd(
         activity: Activity,
         toShow: Boolean,
+        adId: String,
+        tag: String,
+        callback: () -> Unit
+    ) {
+        viewModelScope.launch {
+            val isPurchased = dataStorePrefs.getIsPurchased().first()
+            val isConnected = networkMonitor.isConnected.first()
+            
+            if (!toShow || isPurchased || !isConnected) {
+                callback()
+                return@launch
+            }
+
+            AdLoadingState.show()
+            
+            // Check if already cached
+            if (AdManager.getCachedInterstitialAd() != null) {
+                delay(800) // Small delay for better UX
+                AdManager.showInterstitialAdWithCallBack(
+                    activity = activity,
+                    tag = tag,
+                    adId = adId,
+                    adLoadingController = AdLoadingController(),
+                    scope = viewModelScope,
+                    callback = {
+                        AdLoadingState.hide()
+                        callback()
+                        viewModelScope.launch {
+                            delay(600)
+                            AdLoadingState.setAdDismissed(false)
+                        }
+                    }
+                )
+            } else {
+                // Not cached, load it first
+                AdManager.loadInterstitialAd(adId, tag) { ad ->
+                    if (ad != null) {
+                        AdManager.showInterstitialAdWithCallBack(
+                            activity = activity,
+                            tag = tag,
+                            adId = adId,
+                            adLoadingController = AdLoadingController(),
+                            scope = viewModelScope,
+                            callback = {
+                                AdLoadingState.hide()
+                                callback()
+                                viewModelScope.launch {
+                                    delay(600)
+                                    AdLoadingState.setAdDismissed(false)
+                                }
+                            }
+                        )
+                    } else {
+                        AdLoadingState.hide()
+                        callback()
+                        viewModelScope.launch {
+                            delay(600)
+                            AdLoadingState.setAdDismissed(false)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun showInterstitialAd(
+        activity: Activity,
+        toShow: Boolean,
         adLoadingController: AdLoadingController,
         callback: () -> Unit
     ) {
@@ -502,7 +571,13 @@ class AdViewModel(
                 activity = activity,
                 adLoadingController = adLoadingController,
                 scope = viewModelScope,
-                callback = callback
+                callback = {
+                    callback()
+                    viewModelScope.launch {
+                        delay(600)
+                        AdLoadingState.setAdDismissed(false)
+                    }
+                }
             )
         } else {
             callback.invoke()
@@ -524,7 +599,13 @@ class AdViewModel(
                 adId = adId,
                 adLoadingController = adLoadingController,
                 scope = viewModelScope,
-                callback = callback
+                callback = {
+                    callback()
+                    viewModelScope.launch {
+                        delay(600)
+                        AdLoadingState.setAdDismissed(false)
+                    }
+                }
             )
         } else {
             callback.invoke()
@@ -546,7 +627,13 @@ class AdViewModel(
                 adId = adId,
                 adLoadingController = adLoadingController,
                 scope = viewModelScope,
-                callback = callback
+                callback = {
+                    callback()
+                    viewModelScope.launch {
+                        delay(600)
+                        AdLoadingState.setAdDismissed(false)
+                    }
+                }
             )
         } else {
             callback.invoke()
@@ -606,6 +693,7 @@ class AdViewModel(
 
         if (stateFlow.value is LanguageNativeState.Loading) {
             Log.d(TAG, "loadNativeAd: tag = $tag - already loading")
+            return
         }
 
         stateFlow.value = LanguageNativeState.Loading
@@ -618,6 +706,16 @@ class AdViewModel(
             }
             callback.invoke(ad)
         }
+    }
+
+    fun clearNativeAdStatesExcept(tagToKeep: String) {
+        Log.d(TAG, "clearNativeAdStatesExcept: tagToKeep = $tagToKeep")
+        val keepState = _nativeAdStates[tagToKeep]
+        _nativeAdStates.clear()
+        if (keepState != null) {
+            _nativeAdStates[tagToKeep] = keepState
+        }
+        AdManager.clearNativeCacheExcept(tagToKeep)
     }
 
     fun loadAdaptiveBanner(activity: Activity, adId: String, tag: String, callback: (AdView?) -> Unit) {
@@ -797,5 +895,6 @@ class AdViewModel(
         appOpenAd = null
         proAppOpenAd = null
         proInterstitialAd = null
+        _nativeAdStates.clear()
     }
 }
