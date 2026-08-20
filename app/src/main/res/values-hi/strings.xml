@@ -1,0 +1,171 @@
+<resources>
+    <string name="app_name">New-Smarty-Kotlin</string>
+    <string name="welcome">स्वागत है!</string>
+    <string name="to_suit_changer">सूट चेंजर में</string>
+    <string name="save">सहेजें</string>
+    <string name="select_language">भाषा चुनें</string>
+    <string name="select_language_subtitle">बेहतरीन अनुभव के लिए अपनी पसंदीदा भाषा चुनें!</string>
+    <string name="next">अगला</string>
+    <string name="continue_text">जारी रखें</string>
+    <string name="change_outfits_in_one_tap">एक टैप में आउटफिट बदलें</string>
+    <string name="make_passport_size">पासपोर्ट साइज बनाएं</string>
+    <string name="photos">तस्वीरें</string>
+    <string name="change_backgrounds">बैकग्राउंड बदलें</string>
+    <string name="beach_photo_while_staying_at_home">घर बैठे बीच फोटो</string>
+
+
+    <string name="get_text">प्राप्त करें</string>
+    <string name="premium">प्रीमियम</string>
+    <string name="premium_subtitle">100% विज्ञापन-मुक्त अनुभव के साथ सभी सुविधाओं तक असीमित पहुंच</string>
+
+    <string name="features">सुविधाएँ</string>
+    <string name="free">मुफ़्त</string>
+    <string name="pro">प्रो</string>
+
+    <string name="unlimited_photo_editing">असीमित फोटो एडिटिंग</string>
+    <string name="unlimited_ai_suit_changer">असीमित एआई सूट चेंजर</string>
+    <string name="unlimited_bg_removes">असीमित बैकग्राउंड हटाना</string>
+    <string name="remove_all_ads">सभी विज्ञापन हटाएं</string>
+
+    <string name="monthly">मासिक</string>
+    <string name="month">माह</string>
+    <string name="year">वर्ष</string>
+    <string name="loading">लोड हो रहा है…</string>
+
+    <string name="premium_trial_text">3 दिन के नि:शुल्क परीक्षण का आनंद लें फिर $ 3.99/सप्ताह</string>
+    <string name="continue_for_free">मुफ़्त में जारी रखें</string>
+    <string name="subscription_auto_renew_text">आपकी सदस्यता स्वतः नवीनीकृत हो जाएगी, और आपसे प्रत्येक बिलिंग चक्र की शुरुआत में शुल्क लिया जाएगा।</string>
+    <string name="no_commitment_cancel_anytime">कोई प्रतिबद्धता नहीं - कभी भी रद्द करें</string>
+
+    <string name="terms_and_conditions">नियम और शर्तें</string>
+    <string name="privacy_policy">गोपनीयता नीति</string>
+    <string name="subscription_details">सदस्यता विवरण</string>
+
+
+    <string name="suit">सूट</string>
+    <string name="changer">चेंजर</string>
+
+    <string name="suit_changer">सूट चेंजर</string>
+    <string name="suit_changer_subtitle">अपने लुक्स को निजीकृत करने का सबसे आसान तरीका।</string>
+    <string name="lets_change">बदलें</string>
+    <string name="passport_pic">पासपोर्ट फोटो</string>
+    <string name="bg_changer">बीजी चेंजर</string>
+    <string name="my_creation">मेरी रचना</string>
+    <string name="suits">सूट्स</string>
+    <string name="select_image">छवि चुनें</string>
+    <string name="no_images_to_show">दिखाने के लिए कोई छवि नहीं है।</string>
+    <string name="permission_required_to_access_your_photo_gallery">आपकी फोटो गैलरी तक पहुंचने के लिए अनुमति आवश्यक है</string>
+    <string name="grant_permission">अनुमति दें</string>
+    <string name="unlock_your_best_looks">अपने बेहतरीन लुक्स अनलॉक करें!</string>
+    <string name="to_seamlessly_swap_suits_and_create_stunning_transformations_we_need_access_to_your_gallery_your_photos_stay_private_and_secure_only_you_can_see_them_grant_access_start_styling"><![CDATA[सूट को आसानी से बदलने और शानदार बदलाव करने के लिए, हमें आपकी गैलरी तक पहुंच की आवश्यकता है। आपकी तस्वीरें निजी और सुरक्षित रहती हैं—केवल आप ही उन्हें देख सकते हैं। पहुंच प्रदान करें और स्टाइलिंग शुरू करें!]]></string>
+    <string name="deny">अस्वीकार करें</string>
+    <string name="allow">अनुमति दें</string>
+    <string name="permission_required">अनुमति आवश्यक</string>
+    <string name="gallery_access_is_required_to_continue_please_enable_it_from_settings">जारी रखने के लिए गैलरी एक्सेस आवश्यक है। कृपया इसे सेटिंग्स से सक्षम करें।</string>
+
+
+    <string name="camera_access_is_required_to_continue_please_enable_it_from_settings">जारी रखने के लिए कैमरा एक्सेस आवश्यक है। कृपया इसे सेटिंग्स से सक्षम करें।</string>
+    <string name="camera_permission_required">कैमरा अनुमति आवश्यक</string>
+    <string name="to_take_photos_for_your_passport_we_need_access_to_your_camera_please_grant_permission_to_continue">अपने पासपोर्ट के लिए फोटो लेने के लिए, हमें आपके कैमरे तक पहुंच की आवश्यकता है। कृपया जारी रखने के लिए अनुमति दें।</string>
+
+    <string name="crop_face">चेहरा क्रॉप करें</string>
+    <string name="crop_original">मूल</string>
+    <string name="crop_free">मुक्त</string>
+    <string name="crop_ratio_1_1">1:1</string>
+    <string name="crop_ratio_4_5">4:5</string>
+    <string name="crop_ratio_3_4">3:4</string>
+    <string name="crop_ratio_16_9">16:9</string>
+    <string name="crop_ratio_9_16">9:16</string>
+    <string name="failed_to_crop_image">छवि क्रॉप करने में विफल</string>
+    <string name="removing_background">बैकग्राउंड हटा रहा है....</string>
+    <string name="photo_editor">फोटो संपादक</string>
+    <string name="outfits">आउटफिट्स</string>
+    <string name="eraser">इरेज़र</string>
+    <string name="face_flip">फेस फ्लिप</string>
+    <string name="suit_flip">सूट फ्लिप</string>
+    <string name="size">आकार</string>
+    <string name="offset">ऑफसेट</string>
+
+    <string name="background_and_text">बैकग्राउंड और टेक्स्ट</string>
+    <string name="background">बैकग्राउंड</string>
+    <string name="add_text">टेक्स्ट जोड़ें</string>
+    <string name="stickers">स्टिकर</string>
+
+    <string name="add_text_here">यहाँ टेक्स्ट जोड़ें</string>
+    <string name="cancel">रद्द करें</string>
+    <string name="add">जोड़ें</string>
+    <string name="backgrounds">बैकग्राउंड्स</string>
+    <string name="gallery">गैलरी</string>
+
+    <string name="saved">सहेजा गया</string>
+    <string name="saved_image">सहेजी गई छवि</string>
+    <string name="share_to">यहाँ साझा करें</string>
+    <string name="try_more">और अधिक प्रयास करें</string>
+    <string name="instagram">इंस्टाग्राम</string>
+    <string name="facebook">फेसबुक</string>
+    <string name="whatsapp">व्हाट्सएप</string>
+    <string name="x">X</string>
+    <string name="share">साझा करें</string>
+    <string name="editor">संपादक</string>
+
+    <string name="select_document_type">दस्तावेज़ प्रकार चुनें</string>
+    <string name="search_hint_passport">उदा. भारतीय पासपोर्ट</string>
+    <string name="all">सभी</string>
+    <string name="passport">पासपोर्ट</string>
+    <string name="visa">वीजा</string>
+    <string name="standard">मानक</string>
+    <string name="pixel">पिक्सेल</string>
+    <string name="camera">कैमरा</string>
+
+    <string name="done">हो गया</string>
+    <string name="back">पीछे</string>
+    <string name="expand_collapse">विस्तार या संक्षिप्त करें</string>
+    <string name="passport_background_preview">पासपोर्ट बैकग्राउंड पूर्वावलोकन</string>
+    <string name="image_saved_successfully">छवि सफलतापूर्वक सहेजी गई</string>
+    <string name="creation">रचना</string>
+    <string name="no_creations_found">कोई रचना नहीं मिली</string>
+
+    <string name="settings">सेटिंग्स</string>
+    <string name="unlock_premium">प्रीमियम अनलॉक करें</string>
+    <string name="upgrade_for_smooth">एक सहज, विज्ञापन-मुक्त \nअनुभव के लिए अपग्रेड करें</string>
+    <string name="get_pro">प्रो प्राप्त करें</string>
+    <string name="language_selection">भाषा चयन</string>
+    <string name="rate_us">हमें रेट करें</string>
+    <string name="help_us_improve">हमें बेहतर बनाने में मदद करें</string>
+    <string name="tell_a_friend">दोस्त को बताएं</string>
+    <string name="share_the_app">ऐप साझा करें</string>
+    <string name="crop">क्रॉप</string>
+    <string name="internet_connection_required">कृपया अपना इंटरनेट कनेक्शन जांचें और पुन: प्रयास करें</string>
+    <string name="app_not_installed">%1$s इंस्टॉल नहीं है</string>
+    <string name="close">बंद करें</string>
+    <string name="retry">पुन: प्रयास करें</string>
+    <string name="no_backgrounds_found">कोई बैकग्राउंड नहीं मिला</string>
+    <string name="choose_color">रंग चुनें</string>
+    <string name="please_wait">कृपया प्रतीक्षा करें</string>
+    <string name="delete">हटाएं</string>
+    <string name="delete_creation_confirmation">क्या आप वाकई इस रचना को हटाना चाहते हैं?</string>
+    <string name="reset">रीसेट</string>
+    <string name="reset_confirmation">सभी संपादन खो जाएंगे। क्या आप वाकई रीसेट करना चाहते हैं?</string>
+    <string name="no_images_found">कोई छवि नहीं मिली।</string>
+    <string name="install">इंस्टॉल करें</string>
+    <string name="fonts">फ़ॉन्ट्स</string>
+    <string name="shadow">छाया</string>
+    <string name="color">रंग</string>
+    <string name="align">संरेखित करें</string>
+    <string name="no_shadow">कोई छाया नहीं</string>
+    <string name="left">बाएं</string>
+    <string name="center">केंद्र</string>
+    <string name="right">दाएं</string>
+    <string name="something_went_wrong">कुछ गलत हो गया</string>
+    <string name="try_again">पुन: प्रयास करें</string>
+    <string name="printable">मुद्रण योग्य</string>
+    <string name="suitable_for_online_submission">ऑनलाइन सबमिशन के लिए उपयुक्त</string>
+    <string name="inch">इंच</string>
+    <string name="background_remove_failed">बैकग्राउंड हटाना विफल रहा</string>
+    <string name="thank_you_title">इस ऐप का उपयोग करने के लिए धन्यवाद! हम आपके समर्थन की सराहना करते हैं!</string>
+    <string name="exit_confirmation_title">क्या आप वाकई बाहर निकलना चाहते हैं?</string>
+    <string name="exit">बाहर निकलें</string>
+    <string name="enjoying_app_title">क्या आपको सूट चेंजर पसंद है?</string>
+    <string name="how_would_you_rate_app">हम बेहतर उपयोगकर्ता अनुभव के लिए कड़ी मेहनत कर रहे हैं। यदि आप हमें रेट कर सकें तो हम इसकी बहुत सराहना करेंगे</string>
+    <string name="the_best_we_can_get">सबसे अच्छा जो हमें मिल सकता है</string>
+</resources>

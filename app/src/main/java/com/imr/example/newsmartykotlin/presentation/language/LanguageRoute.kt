@@ -5,14 +5,14 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.imr.example.newsmartykotlin.core.ads.AdLoadingController
+import com.imr.example.newsmartykotlin.core.ads.AdManager
 import com.imr.example.newsmartykotlin.core.extensions.setupLightSystemBars
 import com.imr.example.newsmartykotlin.presentation.viewmodel.AdViewModel
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 @Composable
 fun LanguageRoute(
@@ -21,7 +21,8 @@ fun LanguageRoute(
     onNavigateToHome: () -> Unit,
     onBackClick: () -> Unit,
     languageViewModel: LanguageViewModel = koinViewModel(),
-    adViewModel: AdViewModel = koinViewModel()
+    adViewModel: AdViewModel = koinViewModel(),
+    adLoadingController: AdLoadingController = koinInject()
 ) {
     val context = LocalContext.current
     val activity = context as ComponentActivity
@@ -32,6 +33,8 @@ fun LanguageRoute(
     val config by adViewModel.adRepository.appConfig.collectAsStateWithLifecycle()
 
     val showAd = config.languageNative.toShow && !isPurchased && isConnected
+    val interConfig = config.languageInterstitial
+    val isInterEnabled = interConfig.toShow && !isPurchased && isConnected
 
     val nativeState by adViewModel.getNativeAdState("LanguageNative").collectAsStateWithLifecycle()
 
@@ -48,9 +51,47 @@ fun LanguageRoute(
         }
     }
 
+    LaunchedEffect(isInterEnabled) {
+        if (isInterEnabled) {
+            adViewModel.loadInterstitialAd(
+                adId = interConfig.adId,
+                tag = "LanguageInter"
+            )
+        }
+    }
+
+    val handleSave = {
+        languageViewModel.saveLanguage {
+            val isInterCached = AdManager.isInterstitialCached()
+            if (isInterEnabled && isInterCached) {
+                adViewModel.showInterstitialAdWithCallBack(
+                    activity = activity,
+                    toShow = true,
+                    tag = "LanguageInter",
+                    adId = interConfig.adId,
+                    adLoadingController = adLoadingController,
+                    delayMillis = 500L,
+                    callback = {
+                        if (fromSplash) {
+                            onNavigateToOnboarding()
+                        } else {
+                            onNavigateToHome()
+                        }
+                    }
+                )
+            } else {
+                if (fromSplash) {
+                    onNavigateToOnboarding()
+                } else {
+                    onNavigateToHome()
+                }
+            }
+        }
+    }
+
     BackHandler {
         if (fromSplash) {
-            onNavigateToOnboarding()
+            handleSave()
         } else {
             onBackClick()
         }
@@ -61,14 +102,6 @@ fun LanguageRoute(
         nativeState = nativeState,
         showAd = showAd,
         onLanguageClick = languageViewModel::onLanguageClick,
-        onSaveClick = {
-            languageViewModel.saveLanguage {
-                if (fromSplash) {
-                    onNavigateToOnboarding()
-                } else {
-                    onNavigateToHome()
-                }
-            }
-        }
+        onSaveClick = handleSave
     )
 }

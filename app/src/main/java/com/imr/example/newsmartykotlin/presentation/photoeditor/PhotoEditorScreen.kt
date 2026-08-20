@@ -48,7 +48,6 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
@@ -63,11 +62,13 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import android.app.Activity
+import com.imr.example.newsmartykotlin.presentation.common.components.BannerAd
+import com.imr.example.newsmartykotlin.presentation.common.components.BannerAdShimmer
+import com.imr.example.newsmartykotlin.presentation.language.LanguageBannerState
 import coil3.compose.rememberAsyncImagePainter
 import com.imr.example.newsmartykotlin.R
 import com.imr.example.newsmartykotlin.core.utils.BitmapUtils
-import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
-import com.imr.example.newsmartykotlin.presentation.language.components.LanguageBottomNativeAd
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
 import com.imr.example.newsmartykotlin.presentation.navigation.ERASED_IMAGE_RESULT_KEY
 import com.imr.example.newsmartykotlin.presentation.navigation.SELECTED_SUIT_URL_KEY
@@ -114,16 +115,16 @@ fun PhotoEditorScreen(
     val isConnected by adViewModel.isConnected.collectAsStateWithLifecycle(initialValue = true)
     val config by adViewModel.adRepository.appConfig.collectAsStateWithLifecycle()
 
-    val showAd = config.photoEditorNative.toShow && !isPurchased && isConnected
+    val showBannerAd = config.photoEditorBanner.toShow && !isPurchased && isConnected
+    val bannerState by adViewModel.getBannerAdState("PhotoEditorBanner").collectAsStateWithLifecycle()
 
-    val nativeState by adViewModel.getNativeAdState("PhotoEditorNative").collectAsStateWithLifecycle()
-
-    LaunchedEffect(showAd, nativeState) {
-        if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
-            adViewModel.loadNativeAd(
-                adId = config.photoEditorNative.adId,
-                tag = "PhotoEditorNative"
-            ) { _ -> }
+    LaunchedEffect(showBannerAd) {
+        if (showBannerAd) {
+            adViewModel.loadBannerAd(
+                activity = context as Activity,
+                adId = config.photoEditorBanner.adId,
+                tag = "PhotoEditorBanner"
+            )
         }
     }
 
@@ -209,6 +210,34 @@ fun PhotoEditorScreen(
                     }
                 }
             )
+
+            if (showBannerAd) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp)
+                ) {
+                    when (bannerState) {
+                        is LanguageBannerState.Loaded -> {
+                            BannerAd(
+                                adView = (bannerState as LanguageBannerState.Loaded).adView,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+
+                        is LanguageBannerState.Loading -> {
+                            BannerAdShimmer(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 20.dp)
+                            )
+                        }
+
+                        else -> {}
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(20.dp))
 
             Box(
@@ -311,21 +340,6 @@ fun PhotoEditorScreen(
                         onActionClick(action)
                     }
                 }
-            }
-        }
-
-        if (showAd) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White)
-            ) {
-                LanguageBottomNativeAd(
-                    state = nativeState,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 10.dp)
-                )
             }
         }
     }

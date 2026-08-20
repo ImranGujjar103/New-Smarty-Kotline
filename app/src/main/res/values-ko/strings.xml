@@ -1,0 +1,171 @@
+<resources>
+    <string name="app_name">New-Smarty-Kotlin</string>
+    <string name="welcome">환영합니다!</string>
+    <string name="to_suit_changer">Suit Changer에 오신 것을</string>
+    <string name="save">저장</string>
+    <string name="select_language">언어 선택</string>
+    <string name="select_language_subtitle">최상의 경험을 위해 선호하는 언어를 선택하세요!</string>
+    <string name="next">다음</string>
+    <string name="continue_text">계속</string>
+    <string name="change_outfits_in_one_tap">한 번의 탭으로 의상 교체</string>
+    <string name="make_passport_size">여권 사진 만들기</string>
+    <string name="photos">사진</string>
+    <string name="change_backgrounds">배경 변경</string>
+    <string name="beach_photo_while_staying_at_home">집에서 즐기는 해변 사진</string>
+
+
+    <string name="get_text">구매</string>
+    <string name="premium">프리미엄</string>
+    <string name="premium_subtitle">100% 광고 없는 경험과 함께 모든 기능을 무제한으로 이용하세요</string>
+
+    <string name="features">기능</string>
+    <string name="free">무료</string>
+    <string name="pro">프로</string>
+
+    <string name="unlimited_photo_editing">무제한 사진 편집</string>
+    <string name="unlimited_ai_suit_changer">무제한 AI 수트 체인저</string>
+    <string name="unlimited_bg_removes">무제한 배경 제거</string>
+    <string name="remove_all_ads">모든 광고 제거</string>
+
+    <string name="monthly">월간</string>
+    <string name="month">월</string>
+    <string name="year">년</string>
+    <string name="loading">로딩 중…</string>
+
+    <string name="premium_trial_text">3일 무료 체험 후 주당 $3.99</string>
+    <string name="continue_for_free">무료로 계속하기</string>
+    <string name="subscription_auto_renew_text">구독은 자동으로 갱신되며, 각 청구 주기가 시작될 때 요금이 부과됩니다.</string>
+    <string name="no_commitment_cancel_anytime">약정 없음 - 언제든지 취소 가능</string>
+
+    <string name="terms_and_conditions">이용 약관</string>
+    <string name="privacy_policy">개인정보 처리방침</string>
+    <string name="subscription_details">구독 상세 정보</string>
+
+
+    <string name="suit">수트</string>
+    <string name="changer">체인저</string>
+
+    <string name="suit_changer">Suit Changer</string>
+    <string name="suit_changer_subtitle">당신의 룩을 맞춤화하는 가장 쉬운 방법입니다.</string>
+    <string name="lets_change">변경하기</string>
+    <string name="passport_pic">여권 사진</string>
+    <string name="bg_changer">배경 체인저</string>
+    <string name="my_creation">내 작품</string>
+    <string name="suits">수트</string>
+    <string name="select_image">이미지 선택</string>
+    <string name="no_images_to_show">표시할 이미지가 없습니다.</string>
+    <string name="permission_required_to_access_your_photo_gallery">사진 갤러리에 접근하기 위한 권한이 필요합니다</string>
+    <string name="grant_permission">권한 허용</string>
+    <string name="unlock_your_best_looks">최고의 스타일을 완성하세요!</string>
+    <string name="to_seamlessly_swap_suits_and_create_stunning_transformations_we_need_access_to_your_gallery_your_photos_stay_private_and_secure_only_you_can_see_them_grant_access_start_styling"><![CDATA[수트를 원활하게 교체하고 멋진 변신을 하려면 갤러리에 대한 접근 권한이 필요합니다. 사진은 비공개로 안전하게 유지되며 본인만 볼 수 있습니다. 접근 권한을 허용하고 스타일링을 시작하세요!]]></string>
+    <string name="deny">거부</string>
+    <string name="allow">허용</string>
+    <string name="permission_required">권한 필요</string>
+    <string name="gallery_access_is_required_to_continue_please_enable_it_from_settings">계속하려면 갤러리 접근 권한이 필요합니다. 설정에서 활성화해 주세요.</string>
+
+
+    <string name="camera_access_is_required_to_continue_please_enable_it_from_settings">계속하려면 카메라 접근 권한이 필요합니다. 설정에서 활성화해 주세요.</string>
+    <string name="camera_permission_required">카메라 권한 필요</string>
+    <string name="to_take_photos_for_your_passport_we_need_access_to_your_camera_please_grant_permission_to_continue">여권 사진을 찍으려면 카메라 접근 권한이 필요합니다. 계속하려면 권한을 허용해 주세요.</string>
+
+    <string name="crop_face">얼굴 자르기</string>
+    <string name="crop_original">원본</string>
+    <string name="crop_free">자유</string>
+    <string name="crop_ratio_1_1">1:1</string>
+    <string name="crop_ratio_4_5">4:5</string>
+    <string name="crop_ratio_3_4">3:4</string>
+    <string name="crop_ratio_16_9">16:9</string>
+    <string name="crop_ratio_9_16">9:16</string>
+    <string name="failed_to_crop_image">이미지 자르기 실패</string>
+    <string name="removing_background">배경 제거 중…</string>
+    <string name="photo_editor">사진 편집기</string>
+    <string name="outfits">의상</string>
+    <string name="eraser">지우개</string>
+    <string name="face_flip">얼굴 반전</string>
+    <string name="suit_flip">수트 반전</string>
+    <string name="size">크기</string>
+    <string name="offset">오프셋</string>
+
+    <string name="background_and_text">배경 및 텍스트</string>
+    <string name="background">배경</string>
+    <string name="add_text">텍스트 추가</string>
+    <string name="stickers">스티커</string>
+
+    <string name="add_text_here">여기에 텍스트 추가</string>
+    <string name="cancel">취소</string>
+    <string name="add">추가</string>
+    <string name="backgrounds">배경</string>
+    <string name="gallery">갤러리</string>
+
+    <string name="saved">저장됨</string>
+    <string name="saved_image">저장된 이미지</string>
+    <string name="share_to">공유하기</string>
+    <string name="try_more">더 해보기</string>
+    <string name="instagram">Instagram</string>
+    <string name="facebook">Facebook</string>
+    <string name="whatsapp">WhatsApp</string>
+    <string name="x">X</string>
+    <string name="share">공유</string>
+    <string name="editor">편집기</string>
+
+    <string name="select_document_type">문서 유형 선택</string>
+    <string name="search_hint_passport">예: 대한민국 여권</string>
+    <string name="all">전체</string>
+    <string name="passport">여권</string>
+    <string name="visa">비자</string>
+    <string name="standard">표준</string>
+    <string name="pixel">픽셀</string>
+    <string name="camera">카메라</string>
+
+    <string name="done">완료</string>
+    <string name="back">뒤로</string>
+    <string name="expand_collapse">확장 또는 축소</string>
+    <string name="passport_background_preview">여권 배경 미리보기</string>
+    <string name="image_saved_successfully">이미지가 성공적으로 저장되었습니다</string>
+    <string name="creation">작품</string>
+    <string name="no_creations_found">저장된 작품이 없습니다</string>
+
+    <string name="settings">설정</string>
+    <string name="unlock_premium">프리미엄 잠금 해제</string>
+    <string name="upgrade_for_smooth">부드럽고 광고 없는 경험을 위해 \n업그레이드하세요</string>
+    <string name="get_pro">프로 구매</string>
+    <string name="language_selection">언어 선택</string>
+    <string name="rate_us">평가하기</string>
+    <string name="help_us_improve">개선에 도움을 주세요</string>
+    <string name="tell_a_friend">친구에게 알리기</string>
+    <string name="share_the_app">앱 공유</string>
+    <string name="crop">자르기</string>
+    <string name="internet_connection_required">인터넷 연결을 확인하고 다시 시도해 주세요</string>
+    <string name="app_not_installed">%1$s이(가) 설치되지 않았습니다</string>
+    <string name="close">닫기</string>
+    <string name="retry">재시도</string>
+    <string name="no_backgrounds_found">배경을 찾을 수 없습니다</string>
+    <string name="choose_color">색상 선택</string>
+    <string name="please_wait">잠시 기다려 주세요</string>
+    <string name="delete">삭제</string>
+    <string name="delete_creation_confirmation">이 작품을 삭제하시겠습니까?</string>
+    <string name="reset">초기화</string>
+    <string name="reset_confirmation">모든 편집 내용이 손실됩니다. 초기화하시겠습니까?</string>
+    <string name="no_images_found">이미지를 찾을 수 없습니다.</string>
+    <string name="install">설치</string>
+    <string name="fonts">글꼴</string>
+    <string name="shadow">그림자</string>
+    <string name="color">색상</string>
+    <string name="align">정렬</string>
+    <string name="no_shadow">그림자 없음</string>
+    <string name="left">왼쪽</string>
+    <string name="center">가운데</string>
+    <string name="right">오른쪽</string>
+    <string name="something_went_wrong">오류가 발생했습니다</string>
+    <string name="try_again">다시 시도</string>
+    <string name="printable">인쇄 가능</string>
+    <string name="suitable_for_online_submission">온라인 제출에 적합</string>
+    <string name="inch">인치</string>
+    <string name="background_remove_failed">배경 제거 실패</string>
+    <string name="thank_you_title">앱을 이용해 주셔서 감사합니다! 성원에 감사드립니다!</string>
+    <string name="exit_confirmation_title">정말 종료하시겠습니까?</string>
+    <string name="exit">종료</string>
+    <string name="enjoying_app_title">Suit Changer가 마음에 드시나요?</string>
+    <string name="how_would_you_rate_app">더 나은 사용자 경험을 위해 노력하고 있습니다. 평가해 주시면 큰 힘이 됩니다</string>
+    <string name="the_best_we_can_get">최고의 평가입니다</string>
+</resources>

@@ -274,4 +274,10 @@
     <string name="suitable_for_online_submission">Suitable for online submission</string>
     <string name="inch">inch</string>
     <string name="background_remove_failed">Background remove failed</string>
+    <string name="thank_you_title">Thank you for using this app! We appreciate your support!</string>
+    <string name="exit_confirmation_title">Are you sure you want to exit.</string>
+    <string name="exit">Exit</string>
+    <string name="enjoying_app_title">Do you like Suit Changer?</string>
+    <string name="how_would_you_rate_app">We are working hard for a better user experience. We greatly appreciate if you can rate us</string>
+    <string name="the_best_we_can_get">The best we can get</string>
 </resources>

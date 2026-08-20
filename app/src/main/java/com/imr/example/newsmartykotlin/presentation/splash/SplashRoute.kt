@@ -82,17 +82,7 @@ fun SplashRoute(
         // Handled by AdViewModel
     }
 
-    LaunchedEffect(adState) {
-        when (adState) {
-            is AdState.Failed -> {
-                if (viewModel.adRepository.appConfig.value.premiumAdFailedShow) {
-                    isAdFailed = true
-                }
-            }
 
-            else -> Unit
-        }
-    }
 
     LaunchedEffect(navigationState, isAdDismissed) {
         if (isAdDismissed) return@LaunchedEffect
@@ -129,7 +119,7 @@ fun SplashRoute(
                     moveNext = {
                         val config = viewModel.adRepository.appConfig.value
 
-                        if (config.premiumHomeShow && !isPremiumUser) {
+                        if (config.premiumNormalUser && !isPremiumUser) {
                             onNavigateToPremium()
                         } else {
                             onNavigateToHome()

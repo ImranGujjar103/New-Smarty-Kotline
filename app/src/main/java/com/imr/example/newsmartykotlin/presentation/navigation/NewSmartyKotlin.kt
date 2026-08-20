@@ -1,11 +1,20 @@
 package com.imr.example.newsmartykotlin.presentation.navigation
 
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.DialogWindowProvider
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -40,7 +49,10 @@ import com.imr.example.newsmartykotlin.presentation.saved.SavedScreen
 import com.imr.example.newsmartykotlin.presentation.settings.SettingsScreen
 import com.imr.example.newsmartykotlin.presentation.splash.SplashRoute
 import com.imr.example.newsmartykotlin.presentation.suits.SuitRoute
+import com.imr.example.newsmartykotlin.presentation.thankyou.ThankYouRoute
 import com.imr.example.newsmartykotlin.R
+import com.imr.example.newsmartykotlin.core.extensions.hideSystemBars
+import com.imr.example.newsmartykotlin.core.extensions.showSystemBars
 import org.koin.compose.koinInject
 
 @Composable
@@ -123,6 +135,11 @@ fun NewSmartyKotlin(
                         navController.navigate(AppRoutes.Premium.route) {
                             popUpTo(AppRoutes.Onboarding.route) { inclusive = true }
                         }
+                    },
+                    onNavigateToHome = {
+                        navController.navigate(AppRoutes.Home.route) {
+                            popUpTo(AppRoutes.Onboarding.route) { inclusive = true }
+                        }
                     }
                 )
             }
@@ -168,6 +185,11 @@ fun NewSmartyKotlin(
                     },
                     onNavigateToPremium = {
                         navController.navigate(AppRoutes.Premium.route)
+                    },
+                    onNavigateToThankYou = {
+                        navController.navigate(AppRoutes.ThankYou.route) {
+                            popUpTo(AppRoutes.Home.route) { inclusive = true }
+                        }
                     }
                 )
             }
@@ -667,10 +689,44 @@ fun NewSmartyKotlin(
                 SavedScreen(navController = navController)
             }
 
+            composable(AppRoutes.ThankYou.route) {
+                ThankYouRoute()
+            }
+
         }
 
         if (isAdLoading || isAdDismissed || isInterstitialShowing) {
-            AdLoadingOverlay()
+            val activity = context as? ComponentActivity
+            DisposableEffect(isAdLoading, isAdDismissed, isInterstitialShowing) {
+                if (isAdLoading || isInterstitialShowing) {
+                    activity?.hideSystemBars()
+                }
+                onDispose {
+                    activity?.showSystemBars()
+                }
+            }
+
+            if (isAdLoading) {
+                Dialog(
+                    onDismissRequest = { },
+                    properties = DialogProperties(
+                        usePlatformDefaultWidth = false,
+                        decorFitsSystemWindows = false
+                    )
+                ) {
+                    val view = LocalView.current
+                    DisposableEffect(view) {
+                        val window = (view.parent as? DialogWindowProvider)?.window
+                        window?.let { w ->
+                            val controller = WindowCompat.getInsetsController(w, w.decorView)
+                            controller.hide(WindowInsetsCompat.Type.systemBars())
+                            controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                        }
+                        onDispose {}
+                    }
+                    AdLoadingOverlay()
+                }
+            }
         }
     }
 }

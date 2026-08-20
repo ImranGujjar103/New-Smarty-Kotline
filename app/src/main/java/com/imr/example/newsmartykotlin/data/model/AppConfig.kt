@@ -6,15 +6,12 @@ import com.google.gson.annotations.SerializedName
 @Keep
 data class AppConfig(
     /* Premium flags */
-    @SerializedName("premium_home_show") val premiumHomeShow: Boolean = true,
-    @SerializedName("premium_feature") val premiumFeature: Boolean = true,
-    @SerializedName("premium_after_splash_show") val premiumAfterSplashShow: Boolean = false,
-    @SerializedName("premium_ad_failed_show") val premiumAdFailedShow: Boolean = true,
+    @SerializedName("premium_firstTime_Show") val premiumFirstTimeShow: Boolean = true,
+    @SerializedName("premium_normal_user") val premiumNormalUser: Boolean = true,
     @SerializedName("showOnboardingScreen") val showOnboardingScreen: Boolean = true,
     @SerializedName("splashDuration") val splashDuration: TimeDurationConfig = TimeDurationConfig(),//it's in seconds
     @SerializedName("premiumCloseBtnDuration") val premiumCloseBtnDuration: TimeDurationForCloseBtnConfig = TimeDurationForCloseBtnConfig(),//it's in seconds
 
-    @SerializedName("show_premium_dialog") val showPremiumDialog: Boolean = false,
     @SerializedName("ctr_color") val ctrColor: String = "#1e9956",
 
     @SerializedName("splash_ad") val splashAd: SplashAdConfig = SplashAdConfig(),
@@ -52,6 +49,8 @@ data class AppConfig(
     @SerializedName("passport_result_native") val passportResultNative: NativeAdConfig = NativeAdConfig(),
     
     @SerializedName("splash_banner") val splashBanner: BannerAdConfig = BannerAdConfig(),
+    @SerializedName("photo_editor_banner") val photoEditorBanner: BannerAdConfig = BannerAdConfig(),
+    @SerializedName("background_text_banner") val backgroundTextBanner: BannerAdConfig = BannerAdConfig(),
 
 
     )

@@ -1,0 +1,171 @@
+<resources>
+    <string name="app_name">New-Smarty-Kotlin</string>
+    <string name="welcome">Bem-vindo!</string>
+    <string name="to_suit_changer">Ao Suit Changer</string>
+    <string name="save">Salvar</string>
+    <string name="select_language">Selecionar Idioma</string>
+    <string name="select_language_subtitle">Escolha o seu idioma preferido para a melhor experiência!</string>
+    <string name="next">Próximo</string>
+    <string name="continue_text">Continuar</string>
+    <string name="change_outfits_in_one_tap">Mude de roupa com um toque</string>
+    <string name="make_passport_size">Tamanho Passaporte</string>
+    <string name="photos">Fotos</string>
+    <string name="change_backgrounds">Mudar Fundos</string>
+    <string name="beach_photo_while_staying_at_home">Foto na praia sem sair de casa</string>
+
+
+    <string name="get_text">Obter</string>
+    <string name="premium">Premium</string>
+    <string name="premium_subtitle">Acesso ilimitado a todos os recursos com experiência 100% livre de anúncios</string>
+
+    <string name="features">Recursos</string>
+    <string name="free">Grátis</string>
+    <string name="pro">Pro</string>
+
+    <string name="unlimited_photo_editing">Edição de fotos ilimitada</string>
+    <string name="unlimited_ai_suit_changer">Trocador de roupas IA ilimitado</string>
+    <string name="unlimited_bg_removes">Remoção de fundo ilimitada</string>
+    <string name="remove_all_ads">Remover todos os anúncios</string>
+
+    <string name="monthly">Mensal</string>
+    <string name="month">Mês</string>
+    <string name="year">Ano</string>
+    <string name="loading">Carregando…</string>
+
+    <string name="premium_trial_text">Aproveite 3 dias de teste grátis, depois US$ 3,99/semana</string>
+    <string name="continue_for_free">Continuar de graça</string>
+    <string name="subscription_auto_renew_text">Sua assinatura será renovada automaticamente e você será cobrado no início de cada ciclo de faturamento.</string>
+    <string name="no_commitment_cancel_anytime">Sem compromisso - Cancele a qualquer momento</string>
+
+    <string name="terms_and_conditions">Termos e Condições</string>
+    <string name="privacy_policy">Política de Privacidade</string>
+    <string name="subscription_details">Detalhes da Assinatura</string>
+
+
+    <string name="suit">Terno</string>
+    <string name="changer">Trocador</string>
+
+    <string name="suit_changer">Suit Changer</string>
+    <string name="suit_changer_subtitle">A maneira mais fácil de personalizar seu visual.</string>
+    <string name="lets_change">Vamos Mudar</string>
+    <string name="passport_pic">Foto para Passaporte</string>
+    <string name="bg_changer">Trocador de Fundo</string>
+    <string name="my_creation">Minha Criação</string>
+    <string name="suits">Ternos</string>
+    <string name="select_image">Selecionar Imagem</string>
+    <string name="no_images_to_show">Nenhuma imagem para mostrar.</string>
+    <string name="permission_required_to_access_your_photo_gallery">Permissão necessária para acessar sua galeria de fotos</string>
+    <string name="grant_permission">Conceder Permissão</string>
+    <string name="unlock_your_best_looks">Desbloqueie seus melhores visuais!</string>
+    <string name="to_seamlessly_swap_suits_and_create_stunning_transformations_we_need_access_to_your_gallery_your_photos_stay_private_and_secure_only_you_can_see_them_grant_access_start_styling"><![CDATA[Para trocar de terno perfeitamente e criar transformações impressionantes, precisamos de acesso à sua galeria. Suas fotos permanecem privadas e seguras — só você pode vê-las. Conceda acesso e comece a criar seu estilo!]]></string>
+    <string name="deny">Negar</string>
+    <string name="allow">Permitir</string>
+    <string name="permission_required">Permissão Necessária</string>
+    <string name="gallery_access_is_required_to_continue_please_enable_it_from_settings">O acesso à galeria é necessário para continuar. Ative-o nas Configurações.</string>
+
+
+    <string name="camera_access_is_required_to_continue_please_enable_it_from_settings">O acesso à câmera é necessário para continuar. Ative-o nas Configurações.</string>
+    <string name="camera_permission_required">Permissão de Câmera Necessária</string>
+    <string name="to_take_photos_for_your_passport_we_need_access_to_your_camera_please_grant_permission_to_continue">Para tirar fotos para o seu passaporte, precisamos de acesso à sua câmera. Conceda permissão para continuar.</string>
+
+    <string name="crop_face">Recortar Rosto</string>
+    <string name="crop_original">Original</string>
+    <string name="crop_free">Livre</string>
+    <string name="crop_ratio_1_1">1:1</string>
+    <string name="crop_ratio_4_5">4:5</string>
+    <string name="crop_ratio_3_4">3:4</string>
+    <string name="crop_ratio_16_9">16:9</string>
+    <string name="crop_ratio_9_16">9:16</string>
+    <string name="failed_to_crop_image">Falha ao recortar a imagem</string>
+    <string name="removing_background">Removendo fundo…</string>
+    <string name="photo_editor">Editor de Fotos</string>
+    <string name="outfits">Trajes</string>
+    <string name="eraser">Borracha</string>
+    <string name="face_flip">Inverter Rosto</string>
+    <string name="suit_flip">Inverter Terno</string>
+    <string name="size">Tamanho</string>
+    <string name="offset">Deslocamento</string>
+
+    <string name="background_and_text">Fundo e Texto</string>
+    <string name="background">Fundo</string>
+    <string name="add_text">Adicionar Texto</string>
+    <string name="stickers">Adesivos</string>
+
+    <string name="add_text_here">Adicione Texto Aqui</string>
+    <string name="cancel">Cancelar</string>
+    <string name="add">Adicionar</string>
+    <string name="backgrounds">Fundos</string>
+    <string name="gallery">Galeria</string>
+
+    <string name="saved">Salvo</string>
+    <string name="saved_image">Imagem salva</string>
+    <string name="share_to">Compartilhar com</string>
+    <string name="try_more">Tentar mais</string>
+    <string name="instagram">Instagram</string>
+    <string name="facebook">Facebook</string>
+    <string name="whatsapp">WhatsApp</string>
+    <string name="x">X</string>
+    <string name="share">Compartilhar</string>
+    <string name="editor">Editor</string>
+
+    <string name="select_document_type">Selecionar tipo de documento</string>
+    <string name="search_hint_passport">ex. Passaporte do Brasil</string>
+    <string name="all">Tudo</string>
+    <string name="passport">Passaporte</string>
+    <string name="visa">Visto</string>
+    <string name="standard">Padrão</string>
+    <string name="pixel">Pixel</string>
+    <string name="camera">Câmera</string>
+
+    <string name="done">Concluído</string>
+    <string name="back">Voltar</string>
+    <string name="expand_collapse">Expandir ou recolher</string>
+    <string name="passport_background_preview">Visualização do fundo do passaporte</string>
+    <string name="image_saved_successfully">Imagem salva com sucesso</string>
+    <string name="creation">Criação</string>
+    <string name="no_creations_found">Nenhuma criação encontrada</string>
+
+    <string name="settings">Configurações</string>
+    <string name="unlock_premium">Desbloquear Premium</string>
+    <string name="upgrade_for_smooth">Atualize para uma experiência \nfluida e sem anúncios</string>
+    <string name="get_pro">Obter Pro</string>
+    <string name="language_selection">Seleção de Idioma</string>
+    <string name="rate_us">Avalie-nos</string>
+    <string name="help_us_improve">Ajude-nos a Melhorar</string>
+    <string name="tell_a_friend">Conte a um Amigo</string>
+    <string name="share_the_app">Compartilhar o App</string>
+    <string name="crop">Recortar</string>
+    <string name="internet_connection_required">Por favor, verifique sua conexão com a internet e tente novamente</string>
+    <string name="app_not_installed">%1$s não está instalado</string>
+    <string name="close">Fechar</string>
+    <string name="retry">Tentar novamente</string>
+    <string name="no_backgrounds_found">Nenhum fundo encontrado</string>
+    <string name="choose_color">Escolher Cor</string>
+    <string name="please_wait">Aguarde por favor</string>
+    <string name="delete">Excluir</string>
+    <string name="delete_creation_confirmation">Tem certeza de que deseja excluir esta criação?</string>
+    <string name="reset">Redefinir</string>
+    <string name="reset_confirmation">Todas as edições serão perdidas. Tem certeza de que deseja redefinir?</string>
+    <string name="no_images_found">Nenhuma imagem encontrada.</string>
+    <string name="install">Instalar</string>
+    <string name="fonts">Fontes</string>
+    <string name="shadow">Sombra</string>
+    <string name="color">Cor</string>
+    <string name="align">Alinhar</string>
+    <string name="no_shadow">Sem Sombra</string>
+    <string name="left">Esquerda</string>
+    <string name="center">Centro</string>
+    <string name="right">Direita</string>
+    <string name="something_went_wrong">Algo deu errado</string>
+    <string name="try_again">Tente novamente</string>
+    <string name="printable">Imprimível</string>
+    <string name="suitable_for_online_submission">Adequado para envio online</string>
+    <string name="inch">polegada</string>
+    <string name="background_remove_failed">Falha ao remover o fundo</string>
+    <string name="thank_you_title">Obrigado por usar este app! Agradecemos o seu apoio!</string>
+    <string name="exit_confirmation_title">Tem certeza de que deseja sair?</string>
+    <string name="exit">Sair</string>
+    <string name="enjoying_app_title">Está gostando do Suit Changer?</string>
+    <string name="how_would_you_rate_app">Estamos trabalhando duro para uma melhor experiência do usuário. Agradeceríamos muito se você pudesse nos avaliar</string>
+    <string name="the_best_we_can_get">O melhor que podemos conseguir</string>
+</resources>

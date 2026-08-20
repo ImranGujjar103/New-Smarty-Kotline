@@ -1,0 +1,171 @@
+<resources>
+    <string name="app_name">New-Smarty-Kotlin</string>
+    <string name="welcome">Hoş geldiniz!</string>
+    <string name="to_suit_changer">Suit Changer\'a</string>
+    <string name="save">Kaydet</string>
+    <string name="select_language">Dil Seçin</string>
+    <string name="select_language_subtitle">En İyi Deneyim İçin Tercih Ettiğiniz Dili Seçin!</string>
+    <string name="next">Sonraki</string>
+    <string name="continue_text">Devam Et</string>
+    <string name="change_outfits_in_one_tap">Tek Dokunuşla Kıyafet Değiştirin</string>
+    <string name="make_passport_size">Vesikalık Yap</string>
+    <string name="photos">Fotoğraflar</string>
+    <string name="change_backgrounds">Arka Planları Değiştir</string>
+    <string name="beach_photo_while_staying_at_home">Evde kalırken plaj fotoğrafı</string>
+
+
+    <string name="get_text">Al</string>
+    <string name="premium">Premium</string>
+    <string name="premium_subtitle">%100 Reklamsız deneyim ile tüm özelliklere sınırsız erişim</string>
+
+    <string name="features">Özellikler</string>
+    <string name="free">Ücretsiz</string>
+    <string name="pro">Pro</string>
+
+    <string name="unlimited_photo_editing">Sınırsız Fotoğraf Düzenleme</string>
+    <string name="unlimited_ai_suit_changer">Sınırsız AI Kıyafet Değiştirici</string>
+    <string name="unlimited_bg_removes">Sınırsız Arka Plan Kaldırma</string>
+    <string name="remove_all_ads">Tüm Reklamları Kaldır</string>
+
+    <string name="monthly">Aylık</string>
+    <string name="month">Ay</string>
+    <string name="year">Yıl</string>
+    <string name="loading">Yükleniyor…</string>
+
+    <string name="premium_trial_text">3 gün ücretsiz denemenin tadını çıkarın, sonra haftalık 3,99 $</string>
+    <string name="continue_for_free">Ücretsiz Devam Et</string>
+    <string name="subscription_auto_renew_text">Aboneliğiniz otomatik olarak yenilenecek ve her fatura döneminin başında ücretlendirileceksiniz.</string>
+    <string name="no_commitment_cancel_anytime">Taahhüt Yok - İstediğiniz Zaman İptal Edin</string>
+
+    <string name="terms_and_conditions">Şartlar ve Koşullar</string>
+    <string name="privacy_policy">Gizlilik Politikası</string>
+    <string name="subscription_details">Abonelik Detayları</string>
+
+
+    <string name="suit">Takım Elbise</string>
+    <string name="changer">Değiştirici</string>
+
+    <string name="suit_changer">Suit Changer</string>
+    <string name="suit_changer_subtitle">Görünümünüzü kişiselleştirmenin en kolay yolu.</string>
+    <string name="lets_change">Değiştirelim</string>
+    <string name="passport_pic">Vesikalık Fotoğraf</string>
+    <string name="bg_changer">Arka Plan Değiştirici</string>
+    <string name="my_creation">Benim Tasarımım</string>
+    <string name="suits">Takım Elbiseler</string>
+    <string name="select_image">Resim Seç</string>
+    <string name="no_images_to_show">Gösterilecek resim yok.</string>
+    <string name="permission_required_to_access_your_photo_gallery">Fotoğraf galerinize erişmek için izin gerekiyor</string>
+    <string name="grant_permission">İzin Ver</string>
+    <string name="unlock_your_best_looks">En İyi Görünümünüzü Ortaya Çıkarın!</string>
+    <string name="to_seamlessly_swap_suits_and_create_stunning_transformations_we_need_access_to_your_gallery_your_photos_stay_private_and_secure_only_you_can_see_them_grant_access_start_styling"><![CDATA[Takımları sorunsuz bir şekilde değiştirmek ve çarpıcı dönüşümler oluşturmak için galerinize erişmemiz gerekiyor. Fotoğraflarınız gizli ve güvende kalır; onları yalnızca siz görebilirsiniz. Erişim İzni Verin ve Stil Vermeye Başlayın!]]></string>
+    <string name="deny">Reddet</string>
+    <string name="allow">İzin Ver</string>
+    <string name="permission_required">İzin Gerekli</string>
+    <string name="gallery_access_is_required_to_continue_please_enable_it_from_settings">Devam etmek için galeri erişimi gereklidir. Lütfen Ayarlar\'dan etkinleştirin.</string>
+
+
+    <string name="camera_access_is_required_to_continue_please_enable_it_from_settings">Devam etmek için kamera erişimi gereklidir. Lütfen Ayarlar\'dan etkinleştirin.</string>
+    <string name="camera_permission_required">Kamera İzni Gerekli</string>
+    <string name="to_take_photos_for_your_passport_we_need_access_to_your_camera_please_grant_permission_to_continue">Pasaportunuz için fotoğraf çekmek amacıyla kameranıza erişmemiz gerekiyor. Lütfen devam etmek için izin verin.</string>
+
+    <string name="crop_face">Yüzü Kırp</string>
+    <string name="crop_original">Orijinal</string>
+    <string name="crop_free">Serbest</string>
+    <string name="crop_ratio_1_1">1:1</string>
+    <string name="crop_ratio_4_5">4:5</string>
+    <string name="crop_ratio_3_4">3:4</string>
+    <string name="crop_ratio_16_9">16:9</string>
+    <string name="crop_ratio_9_16">9:16</string>
+    <string name="failed_to_crop_image">Resim kırpılamadı</string>
+    <string name="removing_background">Arka Plan Kaldırılıyor....</string>
+    <string name="photo_editor">Fotoğraf Düzenleyici</string>
+    <string name="outfits">Kıyafetler</string>
+    <string name="eraser">Silgi</string>
+    <string name="face_flip">Yüz Çevir</string>
+    <string name="suit_flip">Takım Elbise Çevir</string>
+    <string name="size">Boyut</string>
+    <string name="offset">Ofset</string>
+
+    <string name="background_and_text">Arka Plan ve Metin</string>
+    <string name="background">Arka Plan</string>
+    <string name="add_text">Metin Ekle</string>
+    <string name="stickers">Çıkartmalar</string>
+
+    <string name="add_text_here">Buraya Metin Ekle</string>
+    <string name="cancel">İptal</string>
+    <string name="add">Ekle</string>
+    <string name="backgrounds">Arka Planlar</string>
+    <string name="gallery">Galeri</string>
+
+    <string name="saved">Kaydedildi</string>
+    <string name="saved_image">Kaydedilen resim</string>
+    <string name="share_to">Şuraya Paylaş</string>
+    <string name="try_more">Daha Fazlasını Dene</string>
+    <string name="instagram">Instagram</string>
+    <string name="facebook">Facebook</string>
+    <string name="whatsapp">WhatsApp</string>
+    <string name="x">X</string>
+    <string name="share">Paylaş</string>
+    <string name="editor">Editör</string>
+
+    <string name="select_document_type">Belge türünü seçin</string>
+    <string name="search_hint_passport">örn. Türkiye Pasaportu</string>
+    <string name="all">Hepsi</string>
+    <string name="passport">Pasaport</string>
+    <string name="visa">Vize</string>
+    <string name="standard">Standart</string>
+    <string name="pixel">Piksel</string>
+    <string name="camera">Kamera</string>
+
+    <string name="done">Tamam</string>
+    <string name="back">Geri</string>
+    <string name="expand_collapse">Genişlet veya daralt</string>
+    <string name="passport_background_preview">Vesikalık arka plan önizleme</string>
+    <string name="image_saved_successfully">Resim başarıyla kaydedildi</string>
+    <string name="creation">Tasarım</string>
+    <string name="no_creations_found">Tasarım bulunamadı</string>
+
+    <string name="settings">Ayarlar</string>
+    <string name="unlock_premium">Premium Kilidini Aç</string>
+    <string name="upgrade_for_smooth">Sorunsuz ve reklamsız bir \ndeneyim için yükseltin</string>
+    <string name="get_pro">Pro Al</string>
+    <string name="language_selection">Dil Seçimi</string>
+    <string name="rate_us">Bizi Değerlendirin</string>
+    <string name="help_us_improve">Gelişmemize Yardımcı Olun</string>
+    <string name="tell_a_friend">Bir Arkadaşına Söyle</string>
+    <string name="share_the_app">Uygulamayı Paylaş</string>
+    <string name="crop">Kırp</string>
+    <string name="internet_connection_required">Lütfen internet bağlantınızı kontrol edin ve tekrar deneyin</string>
+    <string name="app_not_installed">%1$s yüklü değil</string>
+    <string name="close">Kapat</string>
+    <string name="retry">Tekrar Dene</string>
+    <string name="no_backgrounds_found">Arka plan bulunamadı</string>
+    <string name="choose_color">Renk Seç</string>
+    <string name="please_wait">Lütfen Bekleyin</string>
+    <string name="delete">Sil</string>
+    <string name="delete_creation_confirmation">Bu tasarımı silmek istediğinizden emin misiniz?</string>
+    <string name="reset">Sıfırla</string>
+    <string name="reset_confirmation">Tüm düzenlemeler kaybolacak. Sıfırlamak istediğinizden emin misiniz?</string>
+    <string name="no_images_found">Resim bulunamadı.</string>
+    <string name="install">Yükle</string>
+    <string name="fonts">Yazı Tipleri</string>
+    <string name="shadow">Gölge</string>
+    <string name="color">Renk</string>
+    <string name="align">Hizala</string>
+    <string name="no_shadow">Gölge Yok</string>
+    <string name="left">Sol</string>
+    <string name="center">Orta</string>
+    <string name="right">Sağ</string>
+    <string name="something_went_wrong">Bir şeyler yanlış gitti</string>
+    <string name="try_again">Tekrar dene</string>
+    <string name="printable">Yazdırılabilir</string>
+    <string name="suitable_for_online_submission">Çevrimiçi başvuru için uygun</string>
+    <string name="inch">inç</string>
+    <string name="background_remove_failed">Arka plan kaldırma başarısız oldu</string>
+    <string name="thank_you_title">Bu uygulamayı kullandığınız için teşekkür ederiz! Desteğinizi takdir ediyoruz!</string>
+    <string name="exit_confirmation_title">Çıkmak istediğinizden emin misiniz?</string>
+    <string name="exit">Çıkış</string>
+    <string name="enjoying_app_title">Suit Changer\'ı seviyor musunuz?</string>
+    <string name="how_would_you_rate_app">Daha iyi bir kullanıcı deneyimi için çok çalışıyoruz. Bizi değerlendirirseniz çok seviniriz</string>
+    <string name="the_best_we_can_get">Alabileceğimiz en iyisi</string>
+</resources>

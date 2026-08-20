@@ -5,4 +5,5 @@ import com.imr.example.newsmartykotlin.domain.model.Creation
 sealed class MyCreationEvent {
     data object NavigateBack : MyCreationEvent()
     data class ShareCreation(val creation: Creation) : MyCreationEvent()
+    data class ShowToast(val message: String) : MyCreationEvent()
 }

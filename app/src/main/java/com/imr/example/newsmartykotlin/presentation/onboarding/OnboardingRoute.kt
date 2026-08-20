@@ -16,6 +16,7 @@ import com.imr.example.newsmartykotlin.core.extensions.isInternetAvailable
 @Composable
 fun OnboardingRoute(
     onNavigateToPremium: () -> Unit,
+    onNavigateToHome: () -> Unit,
     onboardingViewModel: OnboardingViewModel = koinViewModel(),
     adViewModel: AdViewModel = koinViewModel(),
     adLoadingController: AdLoadingController = koinInject()
@@ -53,7 +54,13 @@ fun OnboardingRoute(
                 tag = "Onboarding_Interstitial",
                 adId = adViewModel.adRepository.appConfig.value.onBoardingInterstitial.adId,
                 adLoadingController = adLoadingController,
-                callback = onNavigateToPremium
+                callback = {
+                    if (config.premiumFirstTimeShow) {
+                        onNavigateToPremium()
+                    } else {
+                        onNavigateToHome()
+                    }
+                }
             )
         } else {
             onboardingViewModel.onPageChanged(uiState.currentPage + 1)

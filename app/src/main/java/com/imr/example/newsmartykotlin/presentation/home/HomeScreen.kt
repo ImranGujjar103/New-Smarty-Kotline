@@ -224,7 +224,9 @@ private fun SuitChangerCard(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(150.dp),
+            .height(150.dp)
+            .clip(RoundedCornerShape(24.dp))
+            .clickable(onClick = onChangeClick),
         shape = RoundedCornerShape(24.dp),
         color = WhiteColor,
         shadowElevation = 0.dp

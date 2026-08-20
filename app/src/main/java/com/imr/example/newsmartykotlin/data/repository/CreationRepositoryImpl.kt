@@ -71,12 +71,10 @@ class CreationRepositoryImpl(
 
     override suspend fun deleteCreation(creation: Creation): Boolean = withContext(Dispatchers.IO) {
         try {
-            val uri = ContentUris.withAppendedId(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                creation.id
-            )
+            val uri = android.net.Uri.parse(creation.uri)
             context.contentResolver.delete(uri, null, null) > 0
         } catch (e: Exception) {
+            e.printStackTrace()
             false
         }
     }

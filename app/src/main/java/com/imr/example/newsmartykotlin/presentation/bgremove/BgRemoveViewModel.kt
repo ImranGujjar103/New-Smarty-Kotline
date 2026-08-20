@@ -51,7 +51,8 @@ class BgRemoveViewModel(
     private val _uiState = MutableStateFlow(
         BgRemoveUiState(
             suitId = suitId,
-            croppedImageUri = croppedImageUri
+            croppedImageUri = croppedImageUri,
+            isForPassport = isForPassport
         )
     )
     val uiState = _uiState.asStateFlow()

@@ -1,0 +1,171 @@
+<resources>
+    <string name="app_name">New-Smarty-Kotlin</string>
+    <string name="welcome">ยินดีต้อนรับ!</string>
+    <string name="to_suit_changer">สู่ Suit Changer</string>
+    <string name="save">บันทึก</string>
+    <string name="select_language">เลือกภาษา</string>
+    <string name="select_language_subtitle">เลือกภาษาที่คุณต้องการเพื่อประสบการณ์การใช้งานที่ดีที่สุด!</string>
+    <string name="next">ถัดไป</string>
+    <string name="continue_text">ดำเนินต่อ</string>
+    <string name="change_outfits_in_one_tap">เปลี่ยนชุดได้ในแตะเดียว</string>
+    <string name="make_passport_size">ทำรูปถ่ายหนังสือเดินทาง</string>
+    <string name="photos">รูปภาพ</string>
+    <string name="change_backgrounds">เปลี่ยนพื้นหลัง</string>
+    <string name="beach_photo_while_staying_at_home">รูปถ่ายชายหาดแม้อยู่บ้าน</string>
+
+
+    <string name="get_text">รับ</string>
+    <string name="premium">พรีเมียม</string>
+    <string name="premium_subtitle">เข้าถึงทุกฟีเจอร์ได้ไม่จำกัดพร้อมประสบการณ์แบบไม่มีโฆษณา 100%</string>
+
+    <string name="features">ฟีเจอร์</string>
+    <string name="free">ฟรี</string>
+    <string name="pro">โปร</string>
+
+    <string name="unlimited_photo_editing">แก้ไขรูปภาพได้ไม่จำกัด</string>
+    <string name="unlimited_ai_suit_changer">เปลี่ยนชุดด้วย AI ได้ไม่จำกัด</string>
+    <string name="unlimited_bg_removes">ลบพื้นหลังได้ไม่จำกัด</string>
+    <string name="remove_all_ads">ลบโฆษณาทั้งหมด</string>
+
+    <string name="monthly">รายเดือน</string>
+    <string name="month">เดือน</string>
+    <string name="year">ปี</string>
+    <string name="loading">กำลังโหลด…</string>
+
+    <string name="premium_trial_text">ทดลองใช้ฟรี 3 วัน จากนั้น $3.99/สัปดาห์</string>
+    <string name="continue_for_free">ดำเนินต่อแบบฟรี</string>
+    <string name="subscription_auto_renew_text">การสมัครสมาชิกของคุณจะต่ออายุอัตโนมัติ และคุณจะถูกเรียกเก็บเงินเมื่อเริ่มต้นรอบการเรียกเก็บเงินแต่ละรอบ</string>
+    <string name="no_commitment_cancel_anytime">ไม่มีข้อผูกมัด - ยกเลิกได้ทุกเมื่อ</string>
+
+    <string name="terms_and_conditions">ข้อกำหนดและเงื่อนไข</string>
+    <string name="privacy_policy">นโยบายความเป็นส่วนตัว</string>
+    <string name="subscription_details">รายละเอียดการสมัครสมาชิก</string>
+
+
+    <string name="suit">ชุด</string>
+    <string name="changer">เครื่องมือเปลี่ยน</string>
+
+    <string name="suit_changer">Suit Changer</string>
+    <string name="suit_changer_subtitle">วิธีที่ง่ายที่สุดในการปรับแต่งลุคของคุณ</string>
+    <string name="lets_change">มาเปลี่ยนกันเถอะ</string>
+    <string name="passport_pic">รูปถ่ายหนังสือเดินทาง</string>
+    <string name="bg_changer">เครื่องมือเปลี่ยนพื้นหลัง</string>
+    <string name="my_creation">ผลงานของฉัน</string>
+    <string name="suits">ชุดสูท</string>
+    <string name="select_image">เลือกรูปภาพ</string>
+    <string name="no_images_to_show">ไม่มีรูปภาพที่จะแสดง</string>
+    <string name="permission_required_to_access_your_photo_gallery">ต้องได้รับอนุญาตเพื่อเข้าถึงคลังรูปภาพของคุณ</string>
+    <string name="grant_permission">ให้การอนุญาต</string>
+    <string name="unlock_your_best_looks">ปลดล็อกลุคที่ดีที่สุดของคุณ!</string>
+    <string name="to_seamlessly_swap_suits_and_create_stunning_transformations_we_need_access_to_your_gallery_your_photos_stay_private_and_secure_only_you_can_see_them_grant_access_start_styling"><![CDATA[เพื่อเปลี่ยนชุดได้อย่างราบรื่นและสร้างการเปลี่ยนแปลงที่น่าทึ่ง เราจำเป็นต้องเข้าถึงคลังภาพของคุณ รูปภาพของคุณจะเป็นส่วนตัวและปลอดภัย—มีเพียงคุณเท่านั้นที่เห็น ให้สิทธิ์การเข้าถึงและเริ่มจัดสไตล์ได้เลย!]]></string>
+    <string name="deny">ปฏิเสธ</string>
+    <string name="allow">อนุญาต</string>
+    <string name="permission_required">จำเป็นต้องมีการอนุญาต</string>
+    <string name="gallery_access_is_required_to_continue_please_enable_it_from_settings">จำเป็นต้องเข้าถึงคลังภาพเพื่อดำเนินต่อ กรุณาเปิดใช้งานในการตั้งค่า</string>
+
+
+    <string name="camera_access_is_required_to_continue_please_enable_it_from_settings">จำเป็นต้องเข้าถึงกล้องเพื่อดำเนินต่อ กรุณาเปิดใช้งานในการตั้งค่า</string>
+    <string name="camera_permission_required">จำเป็นต้องได้รับอนุญาตการใช้กล้อง</string>
+    <string name="to_take_photos_for_your_passport_we_need_access_to_your_camera_please_grant_permission_to_continue">ในการถ่ายรูปสำหรับหนังสือเดินทางของคุณ เราจำเป็นต้องเข้าถึงกล้องของคุณ กรุณาให้การอนุญาตเพื่อดำเนินต่อ</string>
+
+    <string name="crop_face">ครอบตัดใบหน้า</string>
+    <string name="crop_original">ต้นฉบับ</string>
+    <string name="crop_free">อิสระ</string>
+    <string name="crop_ratio_1_1">1:1</string>
+    <string name="crop_ratio_4_5">4:5</string>
+    <string name="crop_ratio_3_4">3:4</string>
+    <string name="crop_ratio_16_9">16:9</string>
+    <string name="crop_ratio_9_16">9:16</string>
+    <string name="failed_to_crop_image">ครอบตัดรูปภาพไม่สำเร็จ</string>
+    <string name="removing_background">กำลังลบพื้นหลัง…</string>
+    <string name="photo_editor">ตัวแก้ไขรูปภาพ</string>
+    <string name="outfits">ชุดเครื่องแต่งกาย</string>
+    <string name="eraser">ยางลบ</string>
+    <string name="face_flip">พลิกใบหน้า</string>
+    <string name="suit_flip">พลิกชุด</string>
+    <string name="size">ขนาด</string>
+    <string name="offset">ระยะห่าง</string>
+
+    <string name="background_and_text">พื้นหลังและข้อความ</string>
+    <string name="background">พื้นหลัง</string>
+    <string name="add_text">เพิ่มข้อความ</string>
+    <string name="stickers">สติกเกอร์</string>
+
+    <string name="add_text_here">เพิ่มข้อความที่นี่</string>
+    <string name="cancel">ยกเลิก</string>
+    <string name="add">เพิ่ม</string>
+    <string name="backgrounds">พื้นหลัง</string>
+    <string name="gallery">คลังภาพ</string>
+
+    <string name="saved">บันทึกแล้ว</string>
+    <string name="saved_image">บันทึกรูปภาพแล้ว</string>
+    <string name="share_to">แชร์ไปยัง</string>
+    <string name="try_more">ลองเพิ่มเติม</string>
+    <string name="instagram">Instagram</string>
+    <string name="facebook">Facebook</string>
+    <string name="whatsapp">WhatsApp</string>
+    <string name="x">X</string>
+    <string name="share">แชร์</string>
+    <string name="editor">ตัวแก้ไข</string>
+
+    <string name="select_document_type">เลือกประเภทเอกสาร</string>
+    <string name="search_hint_passport">เช่น หนังสือเดินทางประเทศไทย</string>
+    <string name="all">ทั้งหมด</string>
+    <string name="passport">หนังสือเดินทาง</string>
+    <string name="visa">วีซ่า</string>
+    <string name="standard">มาตรฐาน</string>
+    <string name="pixel">พิกเซล</string>
+    <string name="camera">กล้อง</string>
+
+    <string name="done">เสร็จสิ้น</string>
+    <string name="back">กลับ</string>
+    <string name="expand_collapse">ขยายหรือยุบ</string>
+    <string name="passport_background_preview">ตัวอย่างพื้นหลังรูปถ่ายหนังสือเดินทาง</string>
+    <string name="image_saved_successfully">บันทึกรูปภาพสำเร็จ</string>
+    <string name="creation">ผลงาน</string>
+    <string name="no_creations_found">ไม่พบผลงาน</string>
+
+    <string name="settings">การตั้งค่า</string>
+    <string name="unlock_premium">ปลดล็อกพรีเมียม</string>
+    <string name="upgrade_for_smooth">อัปเกรดเพื่อประสบการณ์การใช้งาน \nที่ราบรื่นและไม่มีโฆษณา</string>
+    <string name="get_pro">รับโปร</string>
+    <string name="language_selection">การเลือกภาษา</string>
+    <string name="rate_us">ให้คะแนนเรา</string>
+    <string name="help_us_improve">ช่วยเราพัฒนาให้ดีขึ้น</string>
+    <string name="tell_a_friend">บอกเพื่อน</string>
+    <string name="share_the_app">แชร์แอป</string>
+    <string name="crop">ครอบตัด</string>
+    <string name="internet_connection_required">กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ตแล้วลองอีกครั้ง</string>
+    <string name="app_not_installed">%1$s ยังไม่ได้ติดตั้ง</string>
+    <string name="close">ปิด</string>
+    <string name="retry">ลองใหม่</string>
+    <string name="no_backgrounds_found">ไม่พบพื้นหลัง</string>
+    <string name="choose_color">เลือกสี</string>
+    <string name="please_wait">กรุณารอสักครู่</string>
+    <string name="delete">ลบ</string>
+    <string name="delete_creation_confirmation">คุณแน่ใจหรือไม่ว่าต้องการลบผลงานนี้?</string>
+    <string name="reset">รีเซ็ต</string>
+    <string name="reset_confirmation">การแก้ไขทั้งหมดจะหายไป คุณแน่ใจหรือไม่ว่าต้องการรีเซ็ต?</string>
+    <string name="no_images_found">ไม่พบรูปภาพ</string>
+    <string name="install">ติดตั้ง</string>
+    <string name="fonts">แบบอักษร</string>
+    <string name="shadow">เงา</string>
+    <string name="color">สี</string>
+    <string name="align">จัดวาง</string>
+    <string name="no_shadow">ไม่มีเงา</string>
+    <string name="left">ซ้าย</string>
+    <string name="center">กลาง</string>
+    <string name="right">ขวา</string>
+    <string name="something_went_wrong">เกิดข้อผิดพลาดบางอย่าง</string>
+    <string name="try_again">ลองใหม่</string>
+    <string name="printable">สั่งพิมพ์ได้</string>
+    <string name="suitable_for_online_submission">เหมาะสำหรับการยื่นแบบออนไลน์</string>
+    <string name="inch">นิ้ว</string>
+    <string name="background_remove_failed">ลบพื้นหลังไม่สำเร็จ</string>
+    <string name="thank_you_title">ขอบคุณที่ใช้แอปนี้! เราขอขอบคุณสำหรับการสนับสนุนของคุณ!</string>
+    <string name="exit_confirmation_title">คุณแน่ใจหรือไม่ว่าต้องการออก?</string>
+    <string name="exit">ออก</string>
+    <string name="enjoying_app_title">คุณชอบ Suit Changer ไหม?</string>
+    <string name="how_would_you_rate_app">เรากำลังทำงานอย่างหนักเพื่อประสบการณ์การใช้งานที่ดียิ่งขึ้น เราจะขอบคุณมากหากคุณสามารถให้คะแนนเราได้</string>
+    <string name="the_best_we_can_get">สิ่งที่ดีที่สุดที่เราจะได้รับ</string>
+</resources>

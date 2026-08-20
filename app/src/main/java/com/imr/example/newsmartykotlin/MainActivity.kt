@@ -31,6 +31,7 @@ class MainActivity : ComponentActivity() {
                     val shouldRestrict = when {
                         isInterstitialShowing -> true
                         isAdDismissed -> true
+                        currentRoute == null -> true // Restrict until route is determined
                         currentRoute == AppRoutes.Splash.route -> true
                         currentRoute == AppRoutes.Premium.route -> true
                         else -> false

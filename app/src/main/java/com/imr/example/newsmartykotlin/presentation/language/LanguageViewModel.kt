@@ -45,7 +45,7 @@ class LanguageViewModel(
             _uiState.value = LanguageUiState(
                 languages = updatedList,
                 selectedLanguage = tempSelectedLanguage,
-                isSaveEnabled = isLanguageSelected,
+                isSaveEnabled = tempSelectedLanguage != null,
                 showHandAnimation = !handShown && !isLanguageSelected
             )
         }
@@ -71,9 +71,9 @@ class LanguageViewModel(
     }
 
     fun saveLanguage(onSaved: () -> Unit) {
-        val selected = tempSelectedLanguage ?: return
-
         viewModelScope.launch {
+            val selected = tempSelectedLanguage ?: getLocalizationList().first { it.languageCode == "en" }
+
             dataStorePrefs.setSelectedLanguageCode(selected.languageCode)
             dataStorePrefs.setSelectedLanguageData(Gson().toJson(selected))
             dataStorePrefs.setLanguageSelected(true)

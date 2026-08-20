@@ -1,0 +1,171 @@
+<resources>
+    <string name="app_name">New-Smarty-Kotlin</string>
+    <string name="welcome">Chào mừng!</string>
+    <string name="to_suit_changer">Đến với Suit Changer</string>
+    <string name="save">Lưu</string>
+    <string name="select_language">Chọn Ngôn Ngữ</string>
+    <string name="select_language_subtitle">Chọn ngôn ngữ yêu thích của bạn để có trải nghiệm tốt nhất!</string>
+    <string name="next">Tiếp theo</string>
+    <string name="continue_text">Tiếp tục</string>
+    <string name="change_outfits_in_one_tap">Thay đổi trang phục chỉ với một lần chạm</string>
+    <string name="make_passport_size">Tạo ảnh hộ chiếu</string>
+    <string name="photos">Ảnh</string>
+    <string name="change_backgrounds">Thay đổi phông nền</string>
+    <string name="beach_photo_while_staying_at_home">Ảnh bãi biển ngay tại nhà</string>
+
+
+    <string name="get_text">Tải</string>
+    <string name="premium">Premium</string>
+    <string name="premium_subtitle">Truy cập không giới hạn tất cả các tính năng với trải nghiệm 100% không quảng cáo</string>
+
+    <string name="features">Tính năng</string>
+    <string name="free">Miễn phí</string>
+    <string name="pro">Pro</string>
+
+    <string name="unlimited_photo_editing">Chỉnh sửa ảnh không giới hạn</string>
+    <string name="unlimited_ai_suit_changer">Thay đổi trang phục AI không giới hạn</string>
+    <string name="unlimited_bg_removes">Xóa phông nền không giới hạn</string>
+    <string name="remove_all_ads">Xóa tất cả quảng cáo</string>
+
+    <string name="monthly">Hàng tháng</string>
+    <string name="month">Tháng</string>
+    <string name="year">Năm</string>
+    <string name="loading">Đang tải…</string>
+
+    <string name="premium_trial_text">Dùng thử miễn phí 3 ngày, sau đó là 3,99 $/tuần</string>
+    <string name="continue_for_free">Tiếp tục miễn phí</string>
+    <string name="subscription_auto_renew_text">Gói đăng ký của bạn sẽ tự động gia hạn và bạn sẽ bị tính phí vào đầu mỗi chu kỳ thanh toán.</string>
+    <string name="no_commitment_cancel_anytime">Không bắt buộc - Hủy bất cứ lúc nào</string>
+
+    <string name="terms_and_conditions">Điều khoản và Điều kiện</string>
+    <string name="privacy_policy">Chính sách Bảo mật</string>
+    <string name="subscription_details">Chi tiết Đăng ký</string>
+
+
+    <string name="suit">Trang phục</string>
+    <string name="changer">Chương trình thay đổi</string>
+
+    <string name="suit_changer">Suit Changer</string>
+    <string name="suit_changer_subtitle">Cách dễ nhất để cá nhân hóa diện mạo của bạn.</string>
+    <string name="lets_change">Cùng thay đổi nào</string>
+    <string name="passport_pic">Ảnh hộ chiếu</string>
+    <string name="bg_changer">Thay đổi phông nền</string>
+    <string name="my_creation">Tác phẩm của tôi</string>
+    <string name="suits">Trang phục</string>
+    <string name="select_image">Chọn ảnh</string>
+    <string name="no_images_to_show">Không có ảnh để hiển thị.</string>
+    <string name="permission_required_to_access_your_photo_gallery">Cần có quyền truy cập vào bộ sưu tập ảnh của bạn</string>
+    <string name="grant_permission">Cấp quyền</string>
+    <string name="unlock_your_best_looks">Mở khóa diện mạo đẹp nhất của bạn!</string>
+    <string name="to_seamlessly_swap_suits_and_create_stunning_transformations_we_need_access_to_your_gallery_your_photos_stay_private_and_secure_only_you_can_see_them_grant_access_start_styling"><![CDATA[Để thay đổi trang phục mượt mà và tạo ra những biến đổi ấn tượng, chúng tôi cần quyền truy cập vào bộ sưu tập của bạn. Ảnh của bạn sẽ luôn riêng tư và an toàn—chỉ bạn mới có thể xem chúng. Hãy cấp quyền truy cập và bắt đầu tạo phong cách!]]></string>
+    <string name="deny">Từ chối</string>
+    <string name="allow">Cho phép</string>
+    <string name="permission_required">Cần có quyền</string>
+    <string name="gallery_access_is_required_to_continue_please_enable_it_from_settings">Cần quyền truy cập bộ sưu tập để tiếp tục. Vui lòng bật trong Cài đặt.</string>
+
+
+    <string name="camera_access_is_required_to_continue_please_enable_it_from_settings">Cần quyền truy cập máy ảnh để tiếp tục. Vui lòng bật trong Cài đặt.</string>
+    <string name="camera_permission_required">Cần quyền máy ảnh</string>
+    <string name="to_take_photos_for_your_passport_we_need_access_to_your_camera_please_grant_permission_to_continue">Để chụp ảnh hộ chiếu, chúng tôi cần quyền truy cập vào máy ảnh của bạn. Vui lòng cấp quyền để tiếp tục.</string>
+
+    <string name="crop_face">Cắt mặt</string>
+    <string name="crop_original">Gốc</string>
+    <string name="crop_free">Tự do</string>
+    <string name="crop_ratio_1_1">1:1</string>
+    <string name="crop_ratio_4_5">4:5</string>
+    <string name="crop_ratio_3_4">3:4</string>
+    <string name="crop_ratio_16_9">16:9</string>
+    <string name="crop_ratio_9_16">9:16</string>
+    <string name="failed_to_crop_image">Cắt ảnh thất bại</string>
+    <string name="removing_background">Đang xóa phông nền…</string>
+    <string name="photo_editor">Chỉnh sửa ảnh</string>
+    <string name="outfits">Trang phục</string>
+    <string name="eraser">Tẩy</string>
+    <string name="face_flip">Lật mặt</string>
+    <string name="suit_flip">Lật trang phục</string>
+    <string name="size">Kích thước</string>
+    <string name="offset">Độ lệch</string>
+
+    <string name="background_and_text">Phông nền và chữ</string>
+    <string name="background">Phông nền</string>
+    <string name="add_text">Thêm chữ</string>
+    <string name="stickers">Nhãn dán</string>
+
+    <string name="add_text_here">Thêm chữ vào đây</string>
+    <string name="cancel">Hủy</string>
+    <string name="add">Thêm</string>
+    <string name="backgrounds">Phông nền</string>
+    <string name="gallery">Bộ sưu tập</string>
+
+    <string name="saved">Đã lưu</string>
+    <string name="saved_image">Ảnh đã lưu</string>
+    <string name="share_to">Chia sẻ đến</string>
+    <string name="try_more">Thử thêm</string>
+    <string name="instagram">Instagram</string>
+    <string name="facebook">Facebook</string>
+    <string name="whatsapp">WhatsApp</string>
+    <string name="x">X</string>
+    <string name="share">Chia sẻ</string>
+    <string name="editor">Chỉnh sửa</string>
+
+    <string name="select_document_type">Chọn loại tài liệu</string>
+    <string name="search_hint_passport">vd: Hộ chiếu Việt Nam</string>
+    <string name="all">Tất cả</string>
+    <string name="passport">Hộ chiếu</string>
+    <string name="visa">Visa</string>
+    <string name="standard">Tiêu chuẩn</string>
+    <string name="pixel">Pixel</string>
+    <string name="camera">Máy ảnh</string>
+
+    <string name="done">Xong</string>
+    <string name="back">Quay lại</string>
+    <string name="expand_collapse">Mở rộng hoặc thu nhỏ</string>
+    <string name="passport_background_preview">Xem trước phông nền hộ chiếu</string>
+    <string name="image_saved_successfully">Đã lưu ảnh thành công</string>
+    <string name="creation">Tác phẩm</string>
+    <string name="no_creations_found">Không tìm thấy tác phẩm nào</string>
+
+    <string name="settings">Cài đặt</string>
+    <string name="unlock_premium">Mở khóa Premium</string>
+    <string name="upgrade_for_smooth">Nâng cấp để có trải nghiệm \nmượt mà, không quảng cáo</string>
+    <string name="get_pro">Dùng Pro</string>
+    <string name="language_selection">Chọn Ngôn Ngữ</string>
+    <string name="rate_us">Đánh giá chúng tôi</string>
+    <string name="help_us_improve">Giúp chúng tôi cải thiện</string>
+    <string name="tell_a_friend">Kể với bạn bè</string>
+    <string name="share_the_app">Chia sẻ ứng dụng</string>
+    <string name="crop">Cắt</string>
+    <string name="internet_connection_required">Vui lòng kiểm tra kết nối internet và thử lại</string>
+    <string name="app_not_installed">%1$s chưa được cài đặt</string>
+    <string name="close">Đóng</string>
+    <string name="retry">Thử lại</string>
+    <string name="no_backgrounds_found">Không tìm thấy phông nền nào</string>
+    <string name="choose_color">Chọn màu</string>
+    <string name="please_wait">Vui lòng đợi</string>
+    <string name="delete">Xóa</string>
+    <string name="delete_creation_confirmation">Bạn có chắc chắn muốn xóa tác phẩm này không?</string>
+    <string name="reset">Đặt lại</string>
+    <string name="reset_confirmation">Mọi chỉnh sửa sẽ bị mất. Bạn có chắc chắn muốn đặt lại không?</string>
+    <string name="no_images_found">Không tìm thấy ảnh.</string>
+    <string name="install">Cài đặt</string>
+    <string name="fonts">Phông chữ</string>
+    <string name="shadow">Đổ bóng</string>
+    <string name="color">Màu sắc</string>
+    <string name="align">Căn lề</string>
+    <string name="no_shadow">Không đổ bóng</string>
+    <string name="left">Trái</string>
+    <string name="center">Giữa</string>
+    <string name="right">Phải</string>
+    <string name="something_went_wrong">Đã xảy ra lỗi</string>
+    <string name="try_again">Thử lại</string>
+    <string name="printable">Có thể in</string>
+    <string name="suitable_for_online_submission">Phù hợp để nộp trực tuyến</string>
+    <string name="inch">inch</string>
+    <string name="background_remove_failed">Xóa phông nền thất bại</string>
+    <string name="thank_you_title">Cảm ơn bạn đã sử dụng ứng dụng! Chúng tôi trân trọng sự ủng hộ của bạn!</string>
+    <string name="exit_confirmation_title">Bạn có chắc chắn muốn thoát không?</string>
+    <string name="exit">Thoát</string>
+    <string name="enjoying_app_title">Bạn có thích Suit Changer không?</string>
+    <string name="how_would_you_rate_app">Chúng tôi đang nỗ lực hết mình để mang lại trải nghiệm tốt hơn. Rất cảm kích nếu bạn đánh giá chúng tôi</string>
+    <string name="the_best_we_can_get">Điều tốt nhất chúng tôi có thể nhận được</string>
+</resources>

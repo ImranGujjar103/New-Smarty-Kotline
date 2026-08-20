@@ -2,6 +2,7 @@ package com.imr.example.newsmartykotlin.presentation.creation
 
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -100,6 +101,9 @@ fun MyCreationScreen(
                 is MyCreationEvent.ShareCreation -> {
                     shareCreation(context, event.creation)
                 }
+                is MyCreationEvent.ShowToast -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -157,8 +161,8 @@ fun MyCreationScreen(
 
         if (uiState.showDeleteDialog) {
             DeleteConfirmationDialog(
-                onDismiss = viewModel::onDismissDeleteDialog,
-                onConfirm = viewModel::onConfirmDelete
+                onDismiss = { viewModel.onDismissDeleteDialog() },
+                onConfirm = { viewModel.onConfirmDelete() }
             )
         }
     }
@@ -450,14 +454,14 @@ private fun DeleteConfirmationDialog(
                             .weight(1f)
                             .height(52.dp)
                             .clip(RoundedCornerShape(16.dp))
-                            .background(CardColor)
+                            .background(PrimaryColor)
                             .clickable { onConfirm() },
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = stringResource(R.string.delete),
                             fontFamily = SfProDisplayBold,
-                            color = TextColor
+                            color = WhiteColor
                         )
                     }
                 }

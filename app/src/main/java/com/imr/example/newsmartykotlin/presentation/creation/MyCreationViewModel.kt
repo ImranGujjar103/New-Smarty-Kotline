@@ -61,7 +61,8 @@ class MyCreationViewModel(
                 _uiState.update { it.copy(showDeleteDialog = false, selectedCreation = null) }
                 loadCreations()
             } else {
-                _uiState.update { it.copy(showDeleteDialog = false, errorMessage = "Failed to delete creation") }
+                _uiState.update { it.copy(showDeleteDialog = false) }
+                _event.emit(MyCreationEvent.ShowToast("Failed to delete creation"))
             }
         }
     }

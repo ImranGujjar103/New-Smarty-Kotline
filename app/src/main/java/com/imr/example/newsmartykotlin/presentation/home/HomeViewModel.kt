@@ -21,10 +21,24 @@ class HomeViewModel(
     )
 
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+
+    val isAppRated = dataStorePrefs.getIsAppRated()
+
     fun isFirstSplash(isFirstSplash : Boolean){
         viewModelScope.launch {
             dataStorePrefs.isFirstSplash(isFirstSplash)
         }
+    }
 
+    fun setHomeInterstitialFirstTime(isFirstTime: Boolean) {
+        viewModelScope.launch {
+            dataStorePrefs.isHomeInterstitialFirstTime(isFirstTime)
+        }
+    }
+
+    fun setAppRated(isRated: Boolean) {
+        viewModelScope.launch {
+            dataStorePrefs.setIsAppRated(isRated)
+        }
     }
 }

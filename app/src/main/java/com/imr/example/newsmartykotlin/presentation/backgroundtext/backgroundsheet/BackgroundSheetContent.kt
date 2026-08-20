@@ -57,7 +57,7 @@ fun BackgroundSheetContent(
             val scrollIndex = if (selectedCategoryIndex == 0) index + 2 else index
             backgroundListState.scrollToItem(scrollIndex)
         } else if (selectedCategoryIndex == 0 && selectedBackgroundPath.isEmpty()) {
-            backgroundListState.scrollToItem(1) // Transparent item
+            backgroundListState.scrollToItem(0) // Show Gallery item first
         }
     }
     Column(
@@ -188,7 +188,7 @@ fun CategoryChip(
                 else Color(0xFFF1F1F1)
             )
             .clickable { onClick() }
-            .padding(horizontal = 28.dp),
+            .padding(horizontal = 16.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(

@@ -23,7 +23,10 @@ import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowInsetsController
 import android.view.animation.AnimationUtils
+import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.AnimRes
 import androidx.appcompat.app.AlertDialog
@@ -69,6 +72,58 @@ fun View.inVisible() {
     }
 
 }*/
+fun ComponentActivity.hideSystemBars() {
+
+    WindowCompat.setDecorFitsSystemWindows(window, false)
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+
+        window.insetsController?.hide(WindowInsets.Type.statusBars())
+        window.insetsController?.hide(WindowInsets.Type.navigationBars())
+
+        window.insetsController?.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+
+    } else {
+
+        @Suppress("DEPRECATION")
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_FULLSCREEN or
+                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+    }
+}
+fun ComponentActivity.showSystemBars() {
+
+    WindowCompat.setDecorFitsSystemWindows(window, false)
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+
+        window.insetsController?.show(WindowInsets.Type.statusBars())
+        window.insetsController?.show(WindowInsets.Type.navigationBars())
+
+    } else {
+
+        WindowCompat.getInsetsController(window, window.decorView)
+            .show(WindowInsetsCompat.Type.systemBars())
+    }
+
+    enableEdgeToEdge(
+        statusBarStyle = SystemBarStyle.light(
+            ContextCompat.getColor(this, R.color.background_color),
+            ContextCompat.getColor(this, R.color.background_color)
+        ),
+        navigationBarStyle = SystemBarStyle.light(
+            ContextCompat.getColor(this, R.color.background_color),
+            ContextCompat.getColor(this, R.color.background_color)
+        )
+    )
+
+    WindowCompat.getInsetsController(window, window.decorView).apply {
+        isAppearanceLightStatusBars = true
+        isAppearanceLightNavigationBars = true
+    }
+}
 
 fun View.startCustomAnimation(@AnimRes animRes: Int) {
     val animation = AnimationUtils.loadAnimation(context, animRes)

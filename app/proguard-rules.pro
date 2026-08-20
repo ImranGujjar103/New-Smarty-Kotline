@@ -79,4 +79,18 @@
 -keep class com.huawei.hiai.**{*;}
 -keep class com.huawei.hiai.computecapability.**{*;}
 -keep class com.huawei.** {*;}
+# @Serializable and @Polymorphic are used at runtime for polymorphic serialization.
+-keepattributes RuntimeVisibleAnnotations,AnnotationDefault,Signature,InnerClasses,EnclosingMethod
 
+# Google Mobile Ads SDK
+-keep class com.google.android.libraries.ads.mobile.sdk.** { *; }
+-keep class com.google.android.gms.ads.** { *; }
+-keep class com.google.android.gms.internal.ads.** { *; }
+
+# The stack trace mentioned ads_mobile_sdk package
+-keep class ads_mobile_sdk.** { *; }
+
+# Keep all members of classes that might be accessed via reflection in the Ads SDK
+-keepclassmembers class * {
+    * flags_;
+}

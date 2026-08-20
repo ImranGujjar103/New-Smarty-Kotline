@@ -116,10 +116,11 @@ object AdManager {
         activity: Activity,
         adLoadingController: AdLoadingController,
         scope: CoroutineScope,
+        delayMillis: Long = 800L,
         callback: () -> Unit
     ) {
         cachedInterstitialAd?.let { ad ->
-            adLoadingController.show(scope = scope) {
+            adLoadingController.show(scope = scope, delayMillis = delayMillis) {
                 ad.adEventCallback = object : InterstitialAdEventCallback {
                     override fun onAdDismissedFullScreenContent() {
                         Handler(Looper.getMainLooper()).post {
@@ -164,10 +165,11 @@ object AdManager {
         adId: String,
         adLoadingController: AdLoadingController,
         scope: CoroutineScope,
+        delayMillis: Long = 800L,
         callback: () -> Unit
     ) {
         cachedInterstitialAd?.let { ad ->
-            adLoadingController.show(scope = scope) {
+            adLoadingController.show(scope = scope, delayMillis = delayMillis) {
                 ad.adEventCallback = object : InterstitialAdEventCallback {
                     override fun onAdDismissedFullScreenContent() {
                         Handler(Looper.getMainLooper()).post {
@@ -286,6 +288,7 @@ object AdManager {
                     override fun onAdDismissedFullScreenContent() {
                         Handler(Looper.getMainLooper()).post {
                             AdLoadingState.hide()
+                            AdLoadingState.setInterstitialShowing(false)
                             AdLoadingState.setAdDismissed(true)
                             showLogsAppOpen("$tag app open ad dismissed")
                             cachedAppOpenAd = null
@@ -296,6 +299,7 @@ object AdManager {
                     override fun onAdFailedToShowFullScreenContent(fullScreenContentError: FullScreenContentError) {
                         Handler(Looper.getMainLooper()).post {
                             AdLoadingState.hide()
+                            AdLoadingState.setInterstitialShowing(false)
                             AdLoadingState.setAdDismissed(true)
                             showLogsAppOpen("$tag app open ad failed to show: ${fullScreenContentError.message}")
                             cachedAppOpenAd = null
@@ -304,6 +308,7 @@ object AdManager {
                     }
 
                     override fun onAdShowedFullScreenContent() {
+                        AdLoadingState.setInterstitialShowing(true)
                         showLogsAppOpen("$tag app open ad showed")
                     }
 
@@ -426,7 +431,7 @@ object AdManager {
         bannerWaitingCallbacks.add(callback)
 
         Handler(Looper.getMainLooper()).post {
-            val adSize = getAdaptiveBannerSize(activity)
+            val adSize = AdSize.BANNER
             val adRequest = BannerAdRequest.Builder(adId, adSize).build()
             val adView = AdView(activity)
 

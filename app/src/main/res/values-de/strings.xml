@@ -1,0 +1,171 @@
+<resources>
+    <string name="app_name">New-Smarty-Kotlin</string>
+    <string name="welcome">Willkommen!</string>
+    <string name="to_suit_changer">Bei Suit Changer</string>
+    <string name="save">Speichern</string>
+    <string name="select_language">Sprache wählen</string>
+    <string name="select_language_subtitle">Wählen Sie Ihre bevorzugte Sprache für das beste Erlebnis!</string>
+    <string name="next">Weiter</string>
+    <string name="continue_text">Fortfahren</string>
+    <string name="change_outfits_in_one_tap">Outfits mit einem Fingertipp ändern</string>
+    <string name="make_passport_size">Passbild erstellen</string>
+    <string name="photos">Fotos</string>
+    <string name="change_backgrounds">Hintergrund ändern</string>
+    <string name="beach_photo_while_staying_at_home">Strandfoto für zu Hause</string>
+
+
+    <string name="get_text">Holen</string>
+    <string name="premium">Premium</string>
+    <string name="premium_subtitle">Unbegrenzter Zugriff auf alle Funktionen mit 100% werbefreiem Erlebnis</string>
+
+    <string name="features">Funktionen</string>
+    <string name="free">Kostenlos</string>
+    <string name="pro">Pro</string>
+
+    <string name="unlimited_photo_editing">Unbegrenzte Fotobearbeitung</string>
+    <string name="unlimited_ai_suit_changer">Unbegrenzter KI-Anzugwechsler</string>
+    <string name="unlimited_bg_removes">Unbegrenzte Hintergrundentfernung</string>
+    <string name="remove_all_ads">Alle Werbung entfernen</string>
+
+    <string name="monthly">Monatlich</string>
+    <string name="month">Monat</string>
+    <string name="year">Jahr</string>
+    <string name="loading">Laden…</string>
+
+    <string name="premium_trial_text">Genießen Sie eine 3-tägige kostenlose Testversion, dann 3,99 $/Woche</string>
+    <string name="continue_for_free">Kostenlos fortfahren</string>
+    <string name="subscription_auto_renew_text">Ihr Abonnement verlängert sich automatisch und Ihnen wird zu Beginn jedes Abrechnungszyklus eine Gebühr berechnet.</string>
+    <string name="no_commitment_cancel_anytime">Keine Verpflichtung - Jederzeit kündbar</string>
+
+    <string name="terms_and_conditions">Allgemeine Geschäftsbedingungen</string>
+    <string name="privacy_policy">Datenschutz-Bestimmungen</string>
+    <string name="subscription_details">Abonnement-Details</string>
+
+
+    <string name="suit">Anzug</string>
+    <string name="changer">Wechsler</string>
+
+    <string name="suit_changer">Suit Changer</string>
+    <string name="suit_changer_subtitle">Der einfachste Weg, Ihren Look zu personalisieren.</string>
+    <string name="lets_change">Lass uns ändern</string>
+    <string name="passport_pic">Passbild</string>
+    <string name="bg_changer">HG-Wechsler</string>
+    <string name="my_creation">Meine Kreation</string>
+    <string name="suits">Anzüge</string>
+    <string name="select_image">Bild auswählen</string>
+    <string name="no_images_to_show">Keine Bilder vorhanden.</string>
+    <string name="permission_required_to_access_your_photo_gallery">Berechtigung zum Zugriff auf Ihre Fotogalerie erforderlich</string>
+    <string name="grant_permission">Berechtigung erteilen</string>
+    <string name="unlock_your_best_looks">Entsperren Sie Ihre besten Looks!</string>
+    <string name="to_seamlessly_swap_suits_and_create_stunning_transformations_we_need_access_to_your_gallery_your_photos_stay_private_and_secure_only_you_can_see_them_grant_access_start_styling"><![CDATA[Um nahtlos Anzüge zu tauschen und atemberaubende Transformationen zu erstellen, benötigen wir Zugriff auf Ihre Galerie. Ihre Fotos bleiben privat und sicher – nur Sie können sie sehen. Gewähren Sie Zugriff und legen Sie los!]]></string>
+    <string name="deny">Ablehnen</string>
+    <string name="allow">Zulassen</string>
+    <string name="permission_required">Berechtigung erforderlich</string>
+    <string name="gallery_access_is_required_to_continue_please_enable_it_from_settings">Der Zugriff auf die Galerie ist zum Fortfahren erforderlich. Bitte in den Einstellungen aktivieren.</string>
+
+
+    <string name="camera_access_is_required_to_continue_please_enable_it_from_settings">Der Zugriff auf die Kamera ist zum Fortfahren erforderlich. Bitte in den Einstellungen aktivieren.</string>
+    <string name="camera_permission_required">Kameraberechtigung erforderlich</string>
+    <string name="to_take_photos_for_your_passport_we_need_access_to_your_camera_please_grant_permission_to_continue">Um Fotos für Ihren Reisepass zu machen, benötigen wir Zugriff auf Ihre Kamera. Bitte erteilen Sie die Berechtigung, um fortzufahren.</string>
+
+    <string name="crop_face">Gesicht zuschneiden</string>
+    <string name="crop_original">Original</string>
+    <string name="crop_free">Frei</string>
+    <string name="crop_ratio_1_1">1:1</string>
+    <string name="crop_ratio_4_5">4:5</string>
+    <string name="crop_ratio_3_4">3:4</string>
+    <string name="crop_ratio_16_9">16:9</string>
+    <string name="crop_ratio_9_16">9:16</string>
+    <string name="failed_to_crop_image">Bild konnte nicht zugeschnitten werden</string>
+    <string name="removing_background">Hintergrund wird entfernt…</string>
+    <string name="photo_editor">Foto-Editor</string>
+    <string name="outfits">Outfits</string>
+    <string name="eraser">Radierer</string>
+    <string name="face_flip">Gesicht spiegeln</string>
+    <string name="suit_flip">Anzug spiegeln</string>
+    <string name="size">Größe</string>
+    <string name="offset">Versatz</string>
+
+    <string name="background_and_text">Hintergrund und Text</string>
+    <string name="background">Hintergrund</string>
+    <string name="add_text">Text hinzufügen</string>
+    <string name="stickers">Sticker</string>
+
+    <string name="add_text_here">Text hier hinzufügen</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="add">Hinzufügen</string>
+    <string name="backgrounds">Hintergründe</string>
+    <string name="gallery">Galerie</string>
+
+    <string name="saved">Gespeichert</string>
+    <string name="saved_image">Gespeichertes Bild</string>
+    <string name="share_to">Teilen auf</string>
+    <string name="try_more">Mehr versuchen</string>
+    <string name="instagram">Instagram</string>
+    <string name="facebook">Facebook</string>
+    <string name="whatsapp">WhatsApp</string>
+    <string name="x">X</string>
+    <string name="share">Teilen</string>
+    <string name="editor">Editor</string>
+
+    <string name="select_document_type">Dokumententyp auswählen</string>
+    <string name="search_hint_passport">z. B. Deutschland Reisepass</string>
+    <string name="all">Alle</string>
+    <string name="passport">Reisepass</string>
+    <string name="visa">Visum</string>
+    <string name="standard">Standard</string>
+    <string name="pixel">Pixel</string>
+    <string name="camera">Kamera</string>
+
+    <string name="done">Fertig</string>
+    <string name="back">Zurück</string>
+    <string name="expand_collapse">Erweitern oder reduzieren</string>
+    <string name="passport_background_preview">Passbild-Hintergrundvorschau</string>
+    <string name="image_saved_successfully">Bild erfolgreich gespeichert</string>
+    <string name="creation">Kreation</string>
+    <string name="no_creations_found">Keine Kreationen gefunden</string>
+
+    <string name="settings">Einstellungen</string>
+    <string name="unlock_premium">Premium freischalten</string>
+    <string name="upgrade_for_smooth">Upgrade für ein reibungsloses, \nwerbefreies Erlebnis</string>
+    <string name="get_pro">Pro holen</string>
+    <string name="language_selection">Sprachauswahl</string>
+    <string name="rate_us">Bewerten Sie uns</string>
+    <string name="help_us_improve">Helfen Sie uns, besser zu werden</string>
+    <string name="tell_a_friend">Einem Freund erzählen</string>
+    <string name="share_the_app">App teilen</string>
+    <string name="crop">Zuschneiden</string>
+    <string name="internet_connection_required">Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut</string>
+    <string name="app_not_installed">%1$s ist nicht installiert</string>
+    <string name="close">Schließen</string>
+    <string name="retry">Wiederholen</string>
+    <string name="no_backgrounds_found">Keine Hintergründe gefunden</string>
+    <string name="choose_color">Farbe wählen</string>
+    <string name="please_wait">Bitte warten</string>
+    <string name="delete">Löschen</string>
+    <string name="delete_creation_confirmation">Sind Sie sicher, dass Sie diese Kreation löschen möchten?</string>
+    <string name="reset">Zurücksetzen</string>
+    <string name="reset_confirmation">Alle Änderungen gehen verloren. Sind Sie sicher, dass Sie zurücksetzen möchten?</string>
+    <string name="no_images_found">Keine Bilder gefunden.</string>
+    <string name="install">Installieren</string>
+    <string name="fonts">Schriftarten</string>
+    <string name="shadow">Schatten</string>
+    <string name="color">Farbe</string>
+    <string name="align">Ausrichten</string>
+    <string name="no_shadow">Kein Schatten</string>
+    <string name="left">Links</string>
+    <string name="center">Zentriert</string>
+    <string name="right">Rechts</string>
+    <string name="something_went_wrong">Etwas ist schief gelaufen</string>
+    <string name="try_again">Erneut versuchen</string>
+    <string name="printable">Druckbar</string>
+    <string name="suitable_for_online_submission">Geeignet für Online-Einreichung</string>
+    <string name="inch">Zoll</string>
+    <string name="background_remove_failed">Hintergrundentfernung fehlgeschlagen</string>
+    <string name="thank_you_title">Vielen Dank für die Nutzung dieser App! Wir freuen uns über Ihre Unterstützung!</string>
+    <string name="exit_confirmation_title">Sind Sie sicher, dass Sie beenden möchten?</string>
+    <string name="exit">Beenden</string>
+    <string name="enjoying_app_title">Gefällt Ihnen Suit Changer?</string>
+    <string name="how_would_you_rate_app">Wir arbeiten hart für ein besseres Benutzererlebnis. Wir würden uns sehr freuen, wenn Sie uns bewerten könnten</string>
+    <string name="the_best_we_can_get">Das Beste, was wir bekommen können</string>
+</resources>

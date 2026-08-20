@@ -1,6 +1,9 @@
 package com.imr.example.newsmartykotlin.presentation.gallery
 
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -24,37 +27,44 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.imr.example.newsmartykotlin.R
+import com.imr.example.newsmartykotlin.core.permission.AppPermissionType
 import com.imr.example.newsmartykotlin.domain.model.GalleryImage
 import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
 import com.imr.example.newsmartykotlin.presentation.language.components.LanguageBottomNativeAd
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
 import com.imr.example.newsmartykotlin.presentation.navigation.SELECTED_BACKGROUND_IMAGE_KEY
+import com.imr.example.newsmartykotlin.presentation.permission.AppSettingsHelper
+import com.imr.example.newsmartykotlin.presentation.permission.GalleryPermissionHelper
 import com.imr.example.newsmartykotlin.presentation.viewmodel.AdViewModel
 import com.imr.example.newsmartykotlin.ui.theme.AppTypography
 import com.imr.example.newsmartykotlin.ui.theme.CardColor
@@ -75,15 +85,49 @@ fun GalleryScreen(
     adViewModel: AdViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     val isPurchased by adViewModel.dataStorePrefs.getIsPurchased().collectAsStateWithLifecycle(initialValue = false)
     val isConnected by adViewModel.isConnected.collectAsStateWithLifecycle(initialValue = true)
     val config by adViewModel.adRepository.appConfig.collectAsStateWithLifecycle()
+    val storageDeniedCount by adViewModel.dataStorePrefs.getPermissionDeniedCount(AppPermissionType.STORAGE).collectAsStateWithLifecycle(initialValue = 0)
 
-    val showAd = config.galleryNative.toShow && !isPurchased && isConnected
+    val showAd = config.galleryNative.toShow && !isPurchased && isConnected && !uiState.isForBgRemover
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val allGranted = permissions.values.all { it }
+        if (allGranted) {
+            viewModel.loadGalleryImages()
+        }
+        viewModel.updatePermissionStatus(GalleryPermissionHelper.isLimitedAccess(context))
+    }
+
+    val onStorageAllowClick = {
+        if (storageDeniedCount >= 2) {
+            AppSettingsHelper.openAppSettings(context)
+        } else {
+            permissionLauncher.launch(GalleryPermissionHelper.getStoragePermissionLauncherPermissions())
+        }
+    }
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.updatePermissionStatus(GalleryPermissionHelper.isLimitedAccess(context))
+                viewModel.loadGalleryImages()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     LaunchedEffect(config.galleryInterstitial.toShow) {
-        if (config.galleryInterstitial.toShow && !isPurchased && isConnected) {
+        if (config.galleryInterstitial.toShow && !isPurchased && isConnected && !uiState.isForBgRemover) {
             adViewModel.loadInterstitialAd(
                 adId = config.galleryInterstitial.adId,
                 tag = "Gallery_Interstitial"
@@ -220,6 +264,12 @@ fun GalleryScreen(
                         Column(
                             modifier = Modifier.fillMaxSize()
                         ) {
+
+
+                            if (uiState.isLimitedAccess) {
+                                LimitedAccessCard(onAllowClick = onStorageAllowClick)
+                            }
+
                             FolderTabsRow(
                                 folders = uiState.folders,
                                 selectedFolder = uiState.selectedFolderName,
@@ -287,6 +337,55 @@ fun GalleryScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp, vertical = 10.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun LimitedAccessCard(onAllowClick: () -> Unit) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 22.dp)
+            .padding(top = 16.dp),
+        shape = RoundedCornerShape(12.dp),
+        color = Color.White,
+        border = BorderStroke(1.dp, PrimaryColor.copy(alpha = 0.5f))
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Allow access to more media\nfor a better experience.",
+                fontSize = 13.sp,
+                fontFamily = SfProDisplayBold,
+                color = TextColor,
+                lineHeight = 16.sp,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 8.dp)
+            )
+
+            Button(
+                onClick = onAllowClick,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = PrimaryColor,
+                    contentColor = WhiteColor
+                ),
+                contentPadding = PaddingValues(horizontal = 14.dp, vertical = 0.dp),
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier.height(36.dp)
+            ) {
+                Text(
+                    text = "Allow More",
+                    fontSize = 13.sp,
+                    fontFamily = SfProDisplayBold,
+                    color = WhiteColor
                 )
             }
         }

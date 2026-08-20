@@ -140,6 +140,7 @@ sealed class AppRoutes(val route: String) {
 
     data object MyCreation : AppRoutes("my_creation")
     data object Settings : AppRoutes("settings")
+    data object ThankYou : AppRoutes("thank_you")
 
     data object PassportCountry : AppRoutes("passport_country")
 

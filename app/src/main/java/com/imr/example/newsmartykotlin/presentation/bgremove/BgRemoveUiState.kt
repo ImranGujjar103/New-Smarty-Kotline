@@ -7,5 +7,6 @@ data class BgRemoveUiState(
     val progress: Float = 0.5f,
     val progressText: String = "50%",
     val isLoading: Boolean = true,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val isForPassport: Boolean = false
 )

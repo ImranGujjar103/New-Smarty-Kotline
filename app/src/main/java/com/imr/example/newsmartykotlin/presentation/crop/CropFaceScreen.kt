@@ -81,27 +81,9 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun CropFaceScreen(
     navController: NavController,
-    viewModel: CropFaceViewModel = koinViewModel(),
-    adViewModel: AdViewModel = koinViewModel()
+    viewModel: CropFaceViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
-    val isPurchased by adViewModel.dataStorePrefs.getIsPurchased().collectAsStateWithLifecycle(initialValue = false)
-    val isConnected by adViewModel.isConnected.collectAsStateWithLifecycle(initialValue = true)
-    val config by adViewModel.adRepository.appConfig.collectAsStateWithLifecycle()
-
-    val showAd = config.cropFaceNative.toShow && !isPurchased && isConnected
-
-    val nativeState by adViewModel.getNativeAdState("CropFaceNative").collectAsStateWithLifecycle()
-
-    LaunchedEffect(showAd, nativeState) {
-        if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
-            adViewModel.loadNativeAd(
-                adId = config.cropFaceNative.adId,
-                tag = "CropFaceNative"
-            ) { _ -> }
-        }
-    }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -169,21 +151,6 @@ fun CropFaceScreen(
             selectedRatio = uiState.selectedRatio,
             onRatioClick = viewModel::onRatioSelected
         )
-
-        if (showAd) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White)
-            ) {
-                LanguageBottomNativeAd(
-                    state = nativeState,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 10.dp)
-                )
-            }
-        }
     }
 }
 

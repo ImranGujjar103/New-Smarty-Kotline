@@ -62,7 +62,7 @@ fun BgRemoveScreen(
     val isConnected by adViewModel.isConnected.collectAsStateWithLifecycle(initialValue = true)
     val config by adViewModel.adRepository.appConfig.collectAsStateWithLifecycle()
 
-    val showAd = config.bgRemoverNative.toShow && !isPurchased && isConnected
+    val showAd = config.bgRemoverNative.toShow && !isPurchased && isConnected && !uiState.isForPassport
 
     val nativeState by adViewModel.getNativeAdState("BgRemoverNative").collectAsStateWithLifecycle()
 

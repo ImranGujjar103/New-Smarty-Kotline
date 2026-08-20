@@ -1,0 +1,171 @@
+<resources>
+    <string name="app_name">New-Smarty-Kotlin</string>
+    <string name="welcome">Добро пожаловать!</string>
+    <string name="to_suit_changer">В Suit Changer</string>
+    <string name="save">Сохранить</string>
+    <string name="select_language">Выберите язык</string>
+    <string name="select_language_subtitle">Выберите предпочтительный язык для лучшего опыта!</string>
+    <string name="next">Далее</string>
+    <string name="continue_text">Продолжить</string>
+    <string name="change_outfits_in_one_tap">Меняйте наряды одним касанием</string>
+    <string name="make_passport_size">Сделать фото на паспорт</string>
+    <string name="photos">Фотографии</string>
+    <string name="change_backgrounds">Сменить фон</string>
+    <string name="beach_photo_while_staying_at_home">Фото на пляже, не выходя из дома</string>
+
+
+    <string name="get_text">Получить</string>
+    <string name="premium">Премиум</string>
+    <string name="premium_subtitle">Безлимитный доступ ко всем функциям и 100% отсутствие рекламы</string>
+
+    <string name="features">Функции</string>
+    <string name="free">Бесплатно</string>
+    <string name="pro">Про</string>
+
+    <string name="unlimited_photo_editing">Безлимитное редактирование фото</string>
+    <string name="unlimited_ai_suit_changer">Безлимитная смена костюмов с ИИ</string>
+    <string name="unlimited_bg_removes">Безлимитное удаление фона</string>
+    <string name="remove_all_ads">Удалить всю рекламу</string>
+
+    <string name="monthly">Ежемесячно</string>
+    <string name="month">Месяц</string>
+    <string name="year">Год</string>
+    <string name="loading">Загрузка…</string>
+
+    <string name="premium_trial_text">Попробуйте 3 дня бесплатно, затем $3.99 в неделю</string>
+    <string name="continue_for_free">Продолжить бесплатно</string>
+    <string name="subscription_auto_renew_text">Ваша подписка будет продлеваться автоматически, и оплата будет списываться в начале каждого расчетного периода.</string>
+    <string name="no_commitment_cancel_anytime">Без обязательств — отмена в любое время</string>
+
+    <string name="terms_and_conditions">Условия и положения</string>
+    <string name="privacy_policy">Политика конфиденциальности</string>
+    <string name="subscription_details">Детали подписки</string>
+
+
+    <string name="suit">Костюм</string>
+    <string name="changer">Чейнджер</string>
+
+    <string name="suit_changer">Suit Changer</string>
+    <string name="suit_changer_subtitle">Самый простой способ персонализировать свой образ.</string>
+    <string name="lets_change">Давайте менять</string>
+    <string name="passport_pic">Фото на паспорт</string>
+    <string name="bg_changer">Смена фона</string>
+    <string name="my_creation">Мои работы</string>
+    <string name="suits">Костюмы</string>
+    <string name="select_image">Выбрать изображение</string>
+    <string name="no_images_to_show">Нет изображений для отображения.</string>
+    <string name="permission_required_to_access_your_photo_gallery">Требуется разрешение для доступа к галерее фотографий</string>
+    <string name="grant_permission">Предоставить разрешение</string>
+    <string name="unlock_your_best_looks">Откройте свои лучшие образы!</string>
+    <string name="to_seamlessly_swap_suits_and_create_stunning_transformations_we_need_access_to_your_gallery_your_photos_stay_private_and_secure_only_you_can_see_them_grant_access_start_styling"><![CDATA[Чтобы легко менять костюмы и создавать потрясающие преображения, нам нужен доступ к вашей галерее. Ваши фотографии остаются приватными и защищенными — их видите только вы. Разрешите доступ и начните стилизацию!]]></string>
+    <string name="deny">Запретить</string>
+    <string name="allow">Разрешить</string>
+    <string name="permission_required">Требуется разрешение</string>
+    <string name="gallery_access_is_required_to_continue_please_enable_it_from_settings">Для продолжения требуется доступ к галерее. Пожалуйста, включите его в настройках.</string>
+
+
+    <string name="camera_access_is_required_to_continue_please_enable_it_from_settings">Для продолжения требуется доступ к камере. Пожалуйста, включите его в настройках.</string>
+    <string name="camera_permission_required">Требуется разрешение на использование камеры</string>
+    <string name="to_take_photos_for_your_passport_we_need_access_to_your_camera_please_grant_permission_to_continue">Чтобы сделать фото на паспорт, нам нужен доступ к вашей камере. Пожалуйста, предоставьте разрешение для продолжения.</string>
+
+    <string name="crop_face">Обрезать лицо</string>
+    <string name="crop_original">Оригинал</string>
+    <string name="crop_free">Свободно</string>
+    <string name="crop_ratio_1_1">1:1</string>
+    <string name="crop_ratio_4_5">4:5</string>
+    <string name="crop_ratio_3_4">3:4</string>
+    <string name="crop_ratio_16_9">16:9</string>
+    <string name="crop_ratio_9_16">9:16</string>
+    <string name="failed_to_crop_image">Не удалось обрезать изображение</string>
+    <string name="removing_background">Удаление фона…</string>
+    <string name="photo_editor">Фоторедактор</string>
+    <string name="outfits">Наряды</string>
+    <string name="eraser">Ластик</string>
+    <string name="face_flip">Отразить лицо</string>
+    <string name="suit_flip">Отразить костюм</string>
+    <string name="size">Размер</string>
+    <string name="offset">Смещение</string>
+
+    <string name="background_and_text">Фон и текст</string>
+    <string name="background">Фон</string>
+    <string name="add_text">Добавить текст</string>
+    <string name="stickers">Стикеры</string>
+
+    <string name="add_text_here">Добавить текст сюда</string>
+    <string name="cancel">Отмена</string>
+    <string name="add">Добавить</string>
+    <string name="backgrounds">Фоны</string>
+    <string name="gallery">Галерея</string>
+
+    <string name="saved">Сохранено</string>
+    <string name="saved_image">Изображение сохранено</string>
+    <string name="share_to">Поделиться в</string>
+    <string name="try_more">Попробовать еще</string>
+    <string name="instagram">Instagram</string>
+    <string name="facebook">Facebook</string>
+    <string name="whatsapp">WhatsApp</string>
+    <string name="x">X</string>
+    <string name="share">Поделиться</string>
+    <string name="editor">Редактор</string>
+
+    <string name="select_document_type">Выберите тип документа</string>
+    <string name="search_hint_passport">напр. Загранпаспорт РФ</string>
+    <string name="all">Все</string>
+    <string name="passport">Паспорт</string>
+    <string name="visa">Виза</string>
+    <string name="standard">Стандарт</string>
+    <string name="pixel">Пиксель</string>
+    <string name="camera">Камера</string>
+
+    <string name="done">Готово</string>
+    <string name="back">Назад</string>
+    <string name="expand_collapse">Развернуть или свернуть</string>
+    <string name="passport_background_preview">Предпросмотр фона паспорта</string>
+    <string name="image_saved_successfully">Изображение успешно сохранено</string>
+    <string name="creation">Работы</string>
+    <string name="no_creations_found">Работы не найдены</string>
+
+    <string name="settings">Настройки</string>
+    <string name="unlock_premium">Разблокировать Премиум</string>
+    <string name="upgrade_for_smooth">Обновите для плавной работы \nбез рекламы</string>
+    <string name="get_pro">Получить Про</string>
+    <string name="language_selection">Выбор языка</string>
+    <string name="rate_us">Оцените нас</string>
+    <string name="help_us_improve">Помогите нам стать лучше</string>
+    <string name="tell_a_friend">Рассказать другу</string>
+    <string name="share_the_app">Поделиться приложением</string>
+    <string name="crop">Обрезать</string>
+    <string name="internet_connection_required">Пожалуйста, проверьте интернет-соединение и попробуйте снова</string>
+    <string name="app_not_installed">%1$s не установлено</string>
+    <string name="close">Закрыть</string>
+    <string name="retry">Повторить</string>
+    <string name="no_backgrounds_found">Фоны не найдены</string>
+    <string name="choose_color">Выбрать цвет</string>
+    <string name="please_wait">Пожалуйста, подождите</string>
+    <string name="delete">Удалить</string>
+    <string name="delete_creation_confirmation">Вы уверены, что хотите удалить эту работу?</string>
+    <string name="reset">Сбросить</string>
+    <string name="reset_confirmation">Все изменения будут потеряны. Вы уверены, что хотите сбросить?</string>
+    <string name="no_images_found">Изображения не найдены.</string>
+    <string name="install">Установить</string>
+    <string name="fonts">Шрифты</string>
+    <string name="shadow">Тень</string>
+    <string name="color">Цвет</string>
+    <string name="align">Выравнивание</string>
+    <string name="no_shadow">Без тени</string>
+    <string name="left">Слева</string>
+    <string name="center">По центру</string>
+    <string name="right">Справа</string>
+    <string name="something_went_wrong">Что-то пошло не так</string>
+    <string name="try_again">Попробовать снова</string>
+    <string name="printable">Для печати</string>
+    <string name="suitable_for_online_submission">Подходит для подачи онлайн</string>
+    <string name="inch">дюйм</string>
+    <string name="background_remove_failed">Не удалось удалить фон</string>
+    <string name="thank_you_title">Спасибо за использование приложения! Мы ценим вашу поддержку!</string>
+    <string name="exit_confirmation_title">Вы уверены, что хотите выйти?</string>
+    <string name="exit">Выйти</string>
+    <string name="enjoying_app_title">Вам нравится Suit Changer?</string>
+    <string name="how_would_you_rate_app">Мы усердно работаем над улучшением приложения. Будем признательны за вашу оценку</string>
+    <string name="the_best_we_can_get">Лучшее, что мы можем получить</string>
+</resources>

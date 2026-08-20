@@ -19,6 +19,7 @@ import com.imr.example.newsmartykotlin.core.network.NetworkMonitor
 import com.imr.example.newsmartykotlin.core.utils.DataStorePrefs
 import com.imr.example.newsmartykotlin.data.model.SplashAdConfig
 import com.imr.example.newsmartykotlin.domain.repository.AdRepository
+import com.imr.example.newsmartykotlin.presentation.language.LanguageBannerState
 import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
 import com.imr.example.newsmartykotlin.presentation.states.AdState
 import com.imr.example.newsmartykotlin.presentation.states.ConsentState
@@ -53,10 +54,17 @@ class AdViewModel(
     val adState: StateFlow<AdState> = _adState.asStateFlow()
 
     private val _nativeAdStates = mutableMapOf<String, MutableStateFlow<LanguageNativeState>>()
+    private val _bannerAdStates = mutableMapOf<String, MutableStateFlow<LanguageBannerState>>()
 
     fun getNativeAdState(tag: String): StateFlow<LanguageNativeState> {
         return _nativeAdStates.getOrPut(tag) {
             MutableStateFlow(LanguageNativeState.Idle)
+        }.asStateFlow()
+    }
+
+    fun getBannerAdState(tag: String): StateFlow<LanguageBannerState> {
+        return _bannerAdStates.getOrPut(tag) {
+            MutableStateFlow(LanguageBannerState.Idle)
         }.asStateFlow()
     }
 
@@ -333,12 +341,6 @@ class AdViewModel(
                     isBannerPreloadCompleted = true
                 }
                 isNativePreloadCompleted = true
-                // Native preload
-//                if (isFirstSplash) {
-//                    preloadNativeAd()
-//                } else {
-//                    isNativePreloadCompleted = true
-//                }
 
                 // 🟢 NEW: Try Pro Splash Ad first if enabled
                 if (splashProConfig.toShow) {
@@ -564,6 +566,7 @@ class AdViewModel(
         activity: Activity,
         toShow: Boolean,
         adLoadingController: AdLoadingController,
+        delayMillis: Long = 800L,
         callback: () -> Unit
     ) {
         if (toShow) {
@@ -571,6 +574,7 @@ class AdViewModel(
                 activity = activity,
                 adLoadingController = adLoadingController,
                 scope = viewModelScope,
+                delayMillis = delayMillis,
                 callback = {
                     callback()
                     viewModelScope.launch {
@@ -590,6 +594,7 @@ class AdViewModel(
         tag: String,
         adId: String,
         adLoadingController: AdLoadingController,
+        delayMillis: Long = 800L,
         callback: () -> Unit
     ) {
         if (toShow) {
@@ -599,6 +604,7 @@ class AdViewModel(
                 adId = adId,
                 adLoadingController = adLoadingController,
                 scope = viewModelScope,
+                delayMillis = delayMillis,
                 callback = {
                     callback()
                     viewModelScope.launch {
@@ -725,6 +731,24 @@ class AdViewModel(
         }
     }
 
+    fun loadBannerAd(activity: Activity, adId: String, tag: String) {
+        val stateFlow = _bannerAdStates.getOrPut(tag) {
+            MutableStateFlow(LanguageBannerState.Idle)
+        }
+
+        if (stateFlow.value is LanguageBannerState.Loading || stateFlow.value is LanguageBannerState.Loaded) return
+
+        stateFlow.value = LanguageBannerState.Loading
+
+        AdManager.loadAdaptiveBanner(activity, adId = adId, tag = tag) { adView ->
+            if (adView != null) {
+                stateFlow.value = LanguageBannerState.Loaded(adView)
+            } else {
+                stateFlow.value = LanguageBannerState.Failed
+            }
+        }
+    }
+
     suspend fun loadSplashAppOpenAd(adId: String?, callback: (AppOpenAd?) -> Unit) {
         Log.d(TAG, "loadSplashAppOpenAd: adId = $adId ==== ${getCurrentTime()}")
         if (adId == null) {
@@ -828,8 +852,7 @@ class AdViewModel(
             Log.d(TAG, "checkNavigation: isPaused = $isPaused")
             Log.d(TAG, "checkNavigation: isFirstSplash = $isFirstSplash")
             Log.d(TAG, "checkNavigation: isPurchased = $isPurchased")
-            Log.d(TAG, "checkNavigation: premiumAfterSplashShow = ${config.premiumAfterSplashShow}")
-            Log.d(TAG, "checkNavigation: premiumHomeShow = ${config.premiumHomeShow}")
+            Log.d(TAG, "checkNavigation: premiumNormalUser = ${config.premiumNormalUser}")
             Log.d(TAG, "checkNavigation: shouldShowAd = $shouldShowAd")
             Log.d(TAG, "checkNavigation: adType = $adTypeToShow")
 
@@ -860,7 +883,7 @@ class AdViewModel(
                  *
                  * Controlled by Remote Config.
                  */
-                !isPurchased && config.premiumHomeShow -> {
+                !isPurchased && config.premiumNormalUser -> {
                     NavigationState.NavigateToPremium(
                         showAd = shouldShowAd,
                         adType = adTypeToShow

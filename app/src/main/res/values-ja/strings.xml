@@ -1,0 +1,171 @@
+<resources>
+    <string name="app_name">New-Smarty-Kotlin</string>
+    <string name="welcome">ようこそ！</string>
+    <string name="to_suit_changer">Suit Changerへ</string>
+    <string name="save">保存</string>
+    <string name="select_language">言語を選択</string>
+    <string name="select_language_subtitle">最高の体験のために、お好みの言語を選択してください！</string>
+    <string name="next">次へ</string>
+    <string name="continue_text">続行</string>
+    <string name="change_outfits_in_one_tap">タップひとつで着替え</string>
+    <string name="make_passport_size">証明写真を作成</string>
+    <string name="photos">写真</string>
+    <string name="change_backgrounds">背景を変更</string>
+    <string name="beach_photo_while_staying_at_home">家にいながらビーチ写真</string>
+
+
+    <string name="get_text">入手</string>
+    <string name="premium">プレミアム</string>
+    <string name="premium_subtitle">100%広告なしの体験で、すべての機能に無制限アクセス</string>
+
+    <string name="features">機能</string>
+    <string name="free">無料</string>
+    <string name="pro">Pro</string>
+
+    <string name="unlimited_photo_editing">写真編集が無制限</string>
+    <string name="unlimited_ai_suit_changer">AI着せ替えが無制限</string>
+    <string name="unlimited_bg_removes">背景削除が無制限</string>
+    <string name="remove_all_ads">すべての広告を削除</string>
+
+    <string name="monthly">月間</string>
+    <string name="month">月</string>
+    <string name="year">年</string>
+    <string name="loading">読み込み中…</string>
+
+    <string name="premium_trial_text">3日間の無料トライアル後、週額3.99ドル</string>
+    <string name="continue_for_free">無料で続行</string>
+    <string name="subscription_auto_renew_text">サブスクリプションは自動的に更新され、各請求サイクルの開始時に課金されます。</string>
+    <string name="no_commitment_cancel_anytime">縛りなし - いつでもキャンセル可能</string>
+
+    <string name="terms_and_conditions">利用規約</string>
+    <string name="privacy_policy">プライバシーポリシー</string>
+    <string name="subscription_details">サブスクリプションの詳細</string>
+
+
+    <string name="suit">スーツ</string>
+    <string name="changer">チェンジャー</string>
+
+    <string name="suit_changer">Suit Changer</string>
+    <string name="suit_changer_subtitle">あなたのルックスをカスタマイズする最も簡単な方法。</string>
+    <string name="lets_change">変えてみよう</string>
+    <string name="passport_pic">証明写真</string>
+    <string name="bg_changer">背景チェンジャー</string>
+    <string name="my_creation">マイ・クリエイション</string>
+    <string name="suits">スーツ</string>
+    <string name="select_image">画像を選択</string>
+    <string name="no_images_to_show">表示する画像がありません。</string>
+    <string name="permission_required_to_access_your_photo_gallery">フォトギャラリーにアクセスするための許可が必要です</string>
+    <string name="grant_permission">許可を与える</string>
+    <string name="unlock_your_best_looks">最高のルックスをアンロック！</string>
+    <string name="to_seamlessly_swap_suits_and_create_stunning_transformations_we_need_access_to_your_gallery_your_photos_stay_private_and_secure_only_you_can_see_them_grant_access_start_styling"><![CDATA[スーツをシームレスに入れ替え、見事な変身を作成するには、ギャラリーへのアクセスが必要です。あなたの写真はプライベートで安全に保たれ、あなただけが見ることができます。アクセスを許可してスタイリングを開始しましょう！]]></string>
+    <string name="deny">拒否</string>
+    <string name="allow">許可</string>
+    <string name="permission_required">許可が必要です</string>
+    <string name="gallery_access_is_required_to_continue_please_enable_it_from_settings">続行するにはギャラリーへのアクセスが必要です。設定から有効にしてください。</string>
+
+
+    <string name="camera_access_is_required_to_continue_please_enable_it_from_settings">続行するにはカメラへのアクセスが必要です。設定から有効にしてください。</string>
+    <string name="camera_permission_required">カメラの許可が必要です</string>
+    <string name="to_take_photos_for_your_passport_we_need_access_to_your_camera_please_grant_permission_to_continue">証明写真を撮影するために、カメラへのアクセスが必要です。続行するために許可を与えてください。</string>
+
+    <string name="crop_face">顔を切り抜き</string>
+    <string name="crop_original">オリジナル</string>
+    <string name="crop_free">自由</string>
+    <string name="crop_ratio_1_1">1:1</string>
+    <string name="crop_ratio_4_5">4:5</string>
+    <string name="crop_ratio_3_4">3:4</string>
+    <string name="crop_ratio_16_9">16:9</string>
+    <string name="crop_ratio_9_16">9:16</string>
+    <string name="failed_to_crop_image">画像の切り抜きに失敗しました</string>
+    <string name="removing_background">背景を削除中…</string>
+    <string name="photo_editor">フォトエディター</string>
+    <string name="outfits">アウトフィット</string>
+    <string name="eraser">消しゴム</string>
+    <string name="face_flip">顔を反転</string>
+    <string name="suit_flip">スーツを反転</string>
+    <string name="size">サイズ</string>
+    <string name="offset">オフセット</string>
+
+    <string name="background_and_text">背景とテキスト</string>
+    <string name="background">背景</string>
+    <string name="add_text">テキストを追加</string>
+    <string name="stickers">ステッカー</string>
+
+    <string name="add_text_here">ここにテキストを追加</string>
+    <string name="cancel">キャンセル</string>
+    <string name="add">追加</string>
+    <string name="backgrounds">背景</string>
+    <string name="gallery">ギャラリー</string>
+
+    <string name="saved">保存済み</string>
+    <string name="saved_image">保存された画像</string>
+    <string name="share_to">共有先</string>
+    <string name="try_more">もっと試す</string>
+    <string name="instagram">Instagram</string>
+    <string name="facebook">Facebook</string>
+    <string name="whatsapp">WhatsApp</string>
+    <string name="x">X</string>
+    <string name="share">共有</string>
+    <string name="editor">エディター</string>
+
+    <string name="select_document_type">ドキュメントの種類を選択</string>
+    <string name="search_hint_passport">例：日本国パスポート</string>
+    <string name="all">すべて</string>
+    <string name="passport">パスポート</string>
+    <string name="visa">ビザ</string>
+    <string name="standard">標準</string>
+    <string name="pixel">ピクセル</string>
+    <string name="camera">カメラ</string>
+
+    <string name="done">完了</string>
+    <string name="back">戻る</string>
+    <string name="expand_collapse">展開または折りたたみ</string>
+    <string name="passport_background_preview">証明写真背景プレビュー</string>
+    <string name="image_saved_successfully">画像が正常に保存されました</string>
+    <string name="creation">作品</string>
+    <string name="no_creations_found">作品が見つかりません</string>
+
+    <string name="settings">設定</string>
+    <string name="unlock_premium">プレミアムをアンロック</string>
+    <string name="upgrade_for_smooth">スムーズで広告のない体験のために \nアップグレードしましょう</string>
+    <string name="get_pro">Proを入手</string>
+    <string name="language_selection">言語の選択</string>
+    <string name="rate_us">評価する</string>
+    <string name="help_us_improve">改善にご協力ください</string>
+    <string name="tell_a_friend">友達に教える</string>
+    <string name="share_the_app">アプリを共有</string>
+    <string name="crop">切り抜き</string>
+    <string name="internet_connection_required">インターネット接続を確認して、もう一度お試しください</string>
+    <string name="app_not_installed">%1$sがインストールされていません</string>
+    <string name="close">閉じる</string>
+    <string name="retry">再試行</string>
+    <string name="no_backgrounds_found">背景が見つかりません</string>
+    <string name="choose_color">色を選択</string>
+    <string name="please_wait">お待ちください</string>
+    <string name="delete">削除</string>
+    <string name="delete_creation_confirmation">この作品を削除してもよろしいですか？</string>
+    <string name="reset">リセット</string>
+    <string name="reset_confirmation">すべての編集が失われます。リセットしてもよろしいですか？</string>
+    <string name="no_images_found">画像が見つかりません。</string>
+    <string name="install">インストール</string>
+    <string name="fonts">フォント</string>
+    <string name="shadow">シャドウ</string>
+    <string name="color">カラー</string>
+    <string name="align">整列</string>
+    <string name="no_shadow">シャドウなし</string>
+    <string name="left">左揃え</string>
+    <string name="center">中央揃え</string>
+    <string name="right">右揃え</string>
+    <string name="something_went_wrong">問題が発生しました</string>
+    <string name="try_again">もう一度お試しください</string>
+    <string name="printable">印刷可能</string>
+    <string name="suitable_for_online_submission">オンライン申請に適しています</string>
+    <string name="inch">インチ</string>
+    <string name="background_remove_failed">背景の削除に失敗しました</string>
+    <string name="thank_you_title">アプリをご利用いただきありがとうございます！ご協力に感謝いたします。</string>
+    <string name="exit_confirmation_title">終了してもよろしいですか？</string>
+    <string name="exit">終了</string>
+    <string name="enjoying_app_title">Suit Changerを気に入っていただけましたか？</string>
+    <string name="how_would_you_rate_app">より良い体験のために努力しています。評価をいただけると大変励みになります</string>
+    <string name="the_best_we_can_get">最高のお褒めの言葉です</string>
+</resources>

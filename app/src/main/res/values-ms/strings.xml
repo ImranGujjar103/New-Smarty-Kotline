@@ -1,0 +1,171 @@
+<resources>
+    <string name="app_name">New-Smarty-Kotlin</string>
+    <string name="welcome">Selamat Datang!</string>
+    <string name="to_suit_changer">Ke Suit Changer</string>
+    <string name="save">Simpan</string>
+    <string name="select_language">Pilih Bahasa</string>
+    <string name="select_language_subtitle">Pilih Bahasa Pilihan Anda untuk Pengalaman Terbaik!</string>
+    <string name="next">Seterusnya</string>
+    <string name="continue_text">Teruskan</string>
+    <string name="change_outfits_in_one_tap">Tukar Pakaian dengan Satu Ketikan</string>
+    <string name="make_passport_size">Jadikan Saiz Pasport</string>
+    <string name="photos">Foto</string>
+    <string name="change_backgrounds">Tukar Latar Belakang</string>
+    <string name="beach_photo_while_staying_at_home">Foto pantai semasa di rumah</string>
+
+
+    <string name="get_text">Dapatkan</string>
+    <string name="premium">Premium</string>
+    <string name="premium_subtitle">Akses tanpa had ke semua ciri dengan pengalaman 100% Bebas Iklan</string>
+
+    <string name="features">Ciri-ciri</string>
+    <string name="free">Percuma</string>
+    <string name="pro">Pro</string>
+
+    <string name="unlimited_photo_editing">Penyuntingan Foto Tanpa Had</string>
+    <string name="unlimited_ai_suit_changer">Penukar Pakaian AI Tanpa Had</string>
+    <string name="unlimited_bg_removes">Pembuang Latar Belakang Tanpa Had</string>
+    <string name="remove_all_ads">Alih Keluar Semua Iklan</string>
+
+    <string name="monthly">Bulanan</string>
+    <string name="month">Bulan</string>
+    <string name="year">Tahun</string>
+    <string name="loading">Memuatkan…</string>
+
+    <string name="premium_trial_text">Nikmati percubaan percuma 3 hari kemudian $ 3.99/minggu</string>
+    <string name="continue_for_free">Teruskan Secara Percuma</string>
+    <string name="subscription_auto_renew_text">Langganan anda akan diperbaharui secara automatik, dan anda akan dikenakan bayaran pada permulaan setiap kitaran pengebilan.</string>
+    <string name="no_commitment_cancel_anytime">Tiada Komitmen - Batalkan Bila-bila Masa</string>
+
+    <string name="terms_and_conditions">Terma dan Syarat</string>
+    <string name="privacy_policy">Dasar Privasi</string>
+    <string name="subscription_details">Butiran Langganan</string>
+
+
+    <string name="suit">Pakaian</string>
+    <string name="changer">Penukar</string>
+
+    <string name="suit_changer">Suit Changer</string>
+    <string name="suit_changer_subtitle">Cara termudah untuk memperibadikan penampilan anda.</string>
+    <string name="lets_change">Jom Tukar</string>
+    <string name="passport_pic">Gambar Pasport</string>
+    <string name="bg_changer">Penukar Latar Belakang</string>
+    <string name="my_creation">Ciptaan Saya</string>
+    <string name="suits">Pakaian</string>
+    <string name="select_image">Pilih Imej</string>
+    <string name="no_images_to_show">Tiada imej untuk dipaparkan.</string>
+    <string name="permission_required_to_access_your_photo_gallery">Kebenaran diperlukan untuk mengakses galeri foto anda</string>
+    <string name="grant_permission">Beri Kebenaran</string>
+    <string name="unlock_your_best_looks">Buka Kunci Penampilan Terbaik Anda!</string>
+    <string name="to_seamlessly_swap_suits_and_create_stunning_transformations_we_need_access_to_your_gallery_your_photos_stay_private_and_secure_only_you_can_see_them_grant_access_start_styling"><![CDATA[Untuk menukar pakaian dengan lancar dan mencipta transformasi yang menakjubkan, kami memerlukan akses ke galeri anda. Foto anda kekal peribadi dan selamat—hanya anda yang boleh melihatnya. Berikan Akses & Mula Menggaya!]]></string>
+    <string name="deny">Tolak</string>
+    <string name="allow">Benarkan</string>
+    <string name="permission_required">Kebenaran Diperlukan</string>
+    <string name="gallery_access_is_required_to_continue_please_enable_it_from_settings">Akses galeri diperlukan untuk meneruskan. Sila dayakannya dari Tetapan.</string>
+
+
+    <string name="camera_access_is_required_to_continue_please_enable_it_from_settings">Akses kamera diperlukan untuk meneruskan. Sila dayakannya dari Tetapan.</string>
+    <string name="camera_permission_required">Kebenaran Kamera Diperlukan</string>
+    <string name="to_take_photos_for_your_passport_we_need_access_to_your_camera_please_grant_permission_to_continue">Untuk mengambil foto bagi pasport anda, kami memerlukan akses ke kamera anda. Sila berikan kebenaran untuk meneruskan.</string>
+
+    <string name="crop_face">Potong Muka</string>
+    <string name="crop_original">Asal</string>
+    <string name="crop_free">Bebas</string>
+    <string name="crop_ratio_1_1">1:1</string>
+    <string name="crop_ratio_4_5">4:5</string>
+    <string name="crop_ratio_3_4">3:4</string>
+    <string name="crop_ratio_16_9">16:9</string>
+    <string name="crop_ratio_9_16">9:16</string>
+    <string name="failed_to_crop_image">Gagal memotong imej</string>
+    <string name="removing_background">Mengalih keluar latar belakang…</string>
+    <string name="photo_editor">Editor Foto</string>
+    <string name="outfits">Pakaian</string>
+    <string name="eraser">Pemadam</string>
+    <string name="face_flip">Pusing Muka</string>
+    <string name="suit_flip">Pusing Pakaian</string>
+    <string name="size">Saiz</string>
+    <string name="offset">Ofset</string>
+
+    <string name="background_and_text">Latar Belakang dan teks</string>
+    <string name="background">Latar Belakang</string>
+    <string name="add_text">Tambah Teks</string>
+    <string name="stickers">Pelekat</string>
+
+    <string name="add_text_here">Tambah Teks Di Sini</string>
+    <string name="cancel">Batal</string>
+    <string name="add">Tambah</string>
+    <string name="backgrounds">Latar Belakang</string>
+    <string name="gallery">Galeri</string>
+
+    <string name="saved">Disimpan</string>
+    <string name="saved_image">Imej disimpan</string>
+    <string name="share_to">Kongsi Ke</string>
+    <string name="try_more">Cuba Lagi</string>
+    <string name="instagram">Instagram</string>
+    <string name="facebook">Facebook</string>
+    <string name="whatsapp">WhatsApp</string>
+    <string name="x">X</string>
+    <string name="share">Kongsi</string>
+    <string name="editor">Editor</string>
+
+    <string name="select_document_type">Pilih jenis dokumen</string>
+    <string name="search_hint_passport">cth. Pasport Malaysia</string>
+    <string name="all">Semua</string>
+    <string name="passport">Pasport</string>
+    <string name="visa">Visa</string>
+    <string name="standard">Standard</string>
+    <string name="pixel">Piksel</string>
+    <string name="camera">Kamera</string>
+
+    <string name="done">Selesai</string>
+    <string name="back">Kembali</string>
+    <string name="expand_collapse">Kembangkan atau runtuhkan</string>
+    <string name="passport_background_preview">Pratonton latar belakang pasport</string>
+    <string name="image_saved_successfully">Imej berjaya disimpan</string>
+    <string name="creation">Ciptaan</string>
+    <string name="no_creations_found">Tiada ciptaan ditemui</string>
+
+    <string name="settings">Tetapan</string>
+    <string name="unlock_premium">Buka Kunci Premium</string>
+    <string name="upgrade_for_smooth">Naik taraf untuk pengalaman \nlancar tanpa iklan</string>
+    <string name="get_pro">Dapatkan Pro</string>
+    <string name="language_selection">Pilihan Bahasa</string>
+    <string name="rate_us">Nilaikan Kami</string>
+    <string name="help_us_improve">Bantu kami Menambah Baik</string>
+    <string name="tell_a_friend">Beritahu Rakan</string>
+    <string name="share_the_app">Kongsi Aplikasi</string>
+    <string name="crop">Potong</string>
+    <string name="internet_connection_required">Sila semak sambungan internet anda dan cuba lagi</string>
+    <string name="app_not_installed">%1$s tidak dipasang</string>
+    <string name="close">Tutup</string>
+    <string name="retry">Cuba lagi</string>
+    <string name="no_backgrounds_found">Tiada latar belakang ditemui</string>
+    <string name="choose_color">Pilih Warna</string>
+    <string name="please_wait">Sila Tunggu</string>
+    <string name="delete">Padam</string>
+    <string name="delete_creation_confirmation">Adakah anda pasti mahu memadamkan ciptaan ini?</string>
+    <string name="reset">Set Semula</string>
+    <string name="reset_confirmation">Semua suntingan akan hilang. Adakah anda pasti mahu set semula?</string>
+    <string name="no_images_found">Tiada imej ditemui.</string>
+    <string name="install">Pasang</string>
+    <string name="fonts">Fon</string>
+    <string name="shadow">Bayang</string>
+    <string name="color">Warna</string>
+    <string name="align">Susun</string>
+    <string name="no_shadow">Tiada Bayang</string>
+    <string name="left">Kiri</string>
+    <string name="center">Tengah</string>
+    <string name="right">Kanan</string>
+    <string name="something_went_wrong">Sesuatu telah berlaku</string>
+    <string name="try_again">Cuba lagi</string>
+    <string name="printable">Boleh cetak</string>
+    <string name="suitable_for_online_submission">Sesuai untuk penghantaran dalam talian</string>
+    <string name="inch">inci</string>
+    <string name="background_remove_failed">Gagal mengalih keluar latar belakang</string>
+    <string name="thank_you_title">Terima kasih kerana menggunakan aplikasi ini! Kami menghargai sokongan anda!</string>
+    <string name="exit_confirmation_title">Adakah anda pasti mahu keluar.</string>
+    <string name="exit">Keluar</string>
+    <string name="enjoying_app_title">Adakah anda suka Suit Changer?</string>
+    <string name="how_would_you_rate_app">Kami berusaha gigih untuk pengalaman pengguna yang lebih baik. Kami sangat menghargai jika anda boleh menilai kami</string>
+    <string name="the_best_we_can_get">Yang terbaik yang boleh kami dapatkan</string>
+</resources>

@@ -92,8 +92,7 @@ import kotlin.math.roundToInt
 @Composable
 fun EraserScreen(
     navController: NavController,
-    viewModel: EraserViewModel = koinViewModel(),
-    adViewModel: AdViewModel = koinViewModel()
+    viewModel: EraserViewModel = koinViewModel()
 ) {
     val scope = rememberCoroutineScope()
     val graphicsLayer = rememberGraphicsLayer()
@@ -102,23 +101,6 @@ fun EraserScreen(
         graphicsLayer.compositingStrategy = CompositingStrategy.Offscreen
     }
     val uiState by viewModel.uiState.collectAsState()
-
-    val isPurchased by adViewModel.dataStorePrefs.getIsPurchased().collectAsStateWithLifecycle(initialValue = false)
-    val isConnected by adViewModel.isConnected.collectAsStateWithLifecycle(initialValue = true)
-    val config by adViewModel.adRepository.appConfig.collectAsStateWithLifecycle()
-
-    val showAd = config.eraserNative.toShow && !isPurchased && isConnected
-
-    val nativeState by adViewModel.getNativeAdState("EraserNative").collectAsStateWithLifecycle()
-
-    LaunchedEffect(showAd, nativeState) {
-        if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
-            adViewModel.loadNativeAd(
-                adId = config.eraserNative.adId,
-                tag = "EraserNative"
-            ) { _ -> }
-        }
-    }
 
     val localStrokes = remember { mutableStateListOf<EraseStroke>() }
 
@@ -360,21 +342,6 @@ fun EraserScreen(
                 },
                 onBackClick = viewModel::onBackClick
             )
-        }
-
-        if (showAd) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White)
-            ) {
-                LanguageBottomNativeAd(
-                    state = nativeState,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 10.dp)
-                )
-            }
         }
     }
 

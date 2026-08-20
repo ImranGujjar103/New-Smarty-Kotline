@@ -23,8 +23,8 @@ import com.google.android.libraries.ads.mobile.sdk.common.LoadAdError
 
 import com.imr.example.newsmartykotlin.MyApp
 import com.imr.example.newsmartykotlin.core.extensions.hideNavigationBar
-import com.imr.example.newsmartykotlin.core.extensions.isActivityAlive
 import com.imr.example.newsmartykotlin.core.extensions.isInternetAvailable
+import com.imr.example.newsmartykotlin.core.extensions.showLogsAppOpen
 import java.util.Date
 
 
@@ -39,9 +39,8 @@ class AppOpenManager(
     private var handler: Handler? = null
     private var runnable: Runnable? = null
 
-    private var dialog: Dialog? = null
-
-    private var isRestricted = false
+    private var isRestricted = true
+    private var tag = "appOpenResume"
 
     fun setIsRestricted(restricted: Boolean) {
         isRestricted = restricted
@@ -60,29 +59,62 @@ class AppOpenManager(
     }
 
     override fun onStart(owner: LifecycleOwner) {
+
         if (shouldShowAd()) {
             try {
-
                 showAdIfAvailable(currentActivity)
-              //  loadAd(MyApp.CONTEXT)
             } catch (e: Exception) {
-                Log.e(TAG, "Error showing ad: ${e.message}")
+                showLogsAppOpen("Error showing ad in onStart: ${e.message}")
             }
         }
     }
 
     private fun shouldShowAd(): Boolean {
-        if (application.isPurchased) return false
-        if (!application.appConfig.appOpenResume.toShow) return false
-        if (isRestricted) return false
+        if (application.isPurchased) {
+            showLogsAppOpen(" $tag ---->  User is premium")
+            return false
+        }
+        val config = application.appConfig.appOpenResume
+        if (isRestricted) {
+            return false
+        }
+        if (!config.toShow) {
+            showLogsAppOpen(" $tag ---->  Remote config toShow is false")
+            return false
+        }
+        if (config.adId.isEmpty()) {
+            showLogsAppOpen(" $tag ---->   - Ad ID is empty")
+            return false
+        }
 
-        val activity = currentActivity ?: return false
+
+        val activity = currentActivity ?: run {
+            showLogsAppOpen(" $tag ---->    - Current activity is null")
+            return false
+        }
+        if (activity is AdActivity) {
+            showLogsAppOpen(" $tag ---->   - Current activity is AdActivity")
+            return false
+        }
+        
+        // Prevent showing on top of other full screen ads
+        if (AdLoadingState.isInterstitialShowing.value) {
+            showLogsAppOpen(" $tag ---->    - Another interstitial/full-screen ad is showing")
+            return false
+        }
+
+        if (AdLoadingState.isShowing.value && !isLoadingAd && !isShowingAd) {
+            showLogsAppOpen(" $tag ---->    - Ad loading overlay is active (another ad is loading)")
+            return false
+        }
 
         return true
     }
 
     private fun isAdAvailable(): Boolean {
-        return appOpenAd != null && wasLoadTimeLessThanNHoursAgo()
+        val available = appOpenAd != null && wasLoadTimeLessThanNHoursAgo()
+        showLogsAppOpen("isAdAvailable: $available")
+        return available
     }
 
     private fun wasLoadTimeLessThanNHoursAgo(): Boolean {
@@ -90,108 +122,113 @@ class AppOpenManager(
         return timeSinceLoad < 4 * 60 * 60 * 1000
     }
 
-
-
     private fun loadAd(context: Context) {
-        if (!context.isInternetAvailable()) return
-        if (isLoadingAd || isAdAvailable()) return
-/*        Log.d("appExitTest", "isAppExit : $isAppExit")
-        if(application.isAppExit) return*/
+        if (!context.isInternetAvailable()) {
+            showLogsAppOpen(" $tag ---->   : Internet not available")
+            return
+        }
+        if (isLoadingAd) {
+            showLogsAppOpen(" $tag ---->   : Already loading...")
+            return
+        }
 
-        if (!shouldShowAd() || currentActivity == null || isShowingAd) return
+        if (!shouldShowAd() || currentActivity == null || isShowingAd) {
+            showLogsAppOpen(" $tag ---->   : shouldShowAd check failed or already showing")
+            return
+        }
 
-        Log.d(TAG, "Loading App Open Ad...")
+        showLogsAppOpen(" $tag ---->   : Starting load runtime...")
         isLoadingAd = true
+        AdLoadingState.show()
 
-
-        Log.d("ad_log_openapp", "⏳ Resume Open App Loading")
         val adId = application.appConfig.appOpenResume.adId
 
         Handler(Looper.getMainLooper()).post {
             val request = AdRequest.Builder(adId).build()
-            Log.d(TAG, "adId : $adId")
             AppOpenAd.load(request, object : AdLoadCallback<AppOpenAd> {
                 override fun onAdLoaded(ad: AppOpenAd) {
+                    showLogsAppOpen(" $tag ---->   : onAdLoaded")
                     appOpenAd = ad
-                    isLoadingAd = false
                     loadTime = Date().time
-                    Log.d(TAG, "App Open Ad loaded.")
-                    Log.d("ad_log_openapp", "✅ Resume Open App Loaded")
-
                     showAdIfAvailable(currentActivity)
                 }
 
                 override fun onAdFailedToLoad(error: LoadAdError) {
+                    showLogsAppOpen(" $tag ---->   : onAdFailedToLoad: ${error.message}")
                     isLoadingAd = false
-                    Log.d(TAG, "Failed to load App Open Ad: ${error.message}")
-                    Log.d("ad_log_openapp", "❌ Resume Open App Failed")
+                    AdLoadingState.hide()
                 }
             })
         }
     }
 
     private fun showAdIfAvailable(activity: Activity?) {
-        if (!shouldShowAd() || activity == null || isShowingAd) return
-
-        Log.d("openAppTest","isAdAvailable : ${isAdAvailable()}")
-
-        Handler(Looper.getMainLooper()).post {
-            activity.isActivityAlive {
-                dialog?.dismiss()
+        if (!shouldShowAd() || activity == null || isShowingAd) {
+            if (isLoadingAd) {
+                isLoadingAd = false
+                AdLoadingState.hide()
             }
+            return
         }
 
         if (!isAdAvailable()) {
+            showLogsAppOpen(" $tag ---->   : Ad not available, loading...")
             loadAd(activity)
             return
         }
 
-        showFullScreenDialog(activity)  // Show loading screen
-
+        showLogsAppOpen(" $tag ---->   : Ad is available, posting show runnable")
         handler = Handler(Looper.getMainLooper())
         runnable = Runnable {
+            isLoadingAd = false
             appOpenAd?.adEventCallback = object : AppOpenAdEventCallback {
                 override fun onAdDismissedFullScreenContent() {
+                    showLogsAppOpen(" $tag ---->   onAdDismissedFullScreenContent")
                     appOpenAd = null
                     isShowingAd = false
-
-                    activity.isActivityAlive {
-                        dialog?.dismiss()
-                    }
+                    AdLoadingState.hide()
+                    AdLoadingState.setInterstitialShowing(false)
+                    AdLoadingState.setAdDismissed(true)
+                    
+                    // Small delay to reset dismissal state
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        AdLoadingState.setAdDismissed(false)
+                    }, 600)
                 }
 
                 override fun onAdFailedToShowFullScreenContent(fullScreenContentError: FullScreenContentError) {
+                    showLogsAppOpen(" $tag ---->   onAdFailedToShowFullScreenContent: ${fullScreenContentError.message}")
                     isShowingAd = false
-                    Log.d("ad_log_openapp", "onAdFailedToShowFullScreenContent : ${fullScreenContentError.message}")
-                    activity.isActivityAlive {
-                        dialog?.dismiss()
-                    }
+                    appOpenAd = null
+                    AdLoadingState.hide()
+                    AdLoadingState.setInterstitialShowing(false)
                 }
 
                 override fun onAdShowedFullScreenContent() {
+                    showLogsAppOpen(" $tag ---->   onAdShowedFullScreenContent")
                     isShowingAd = true
-                    Log.d(TAG, "App Open Ad shown.")
-                    Log.d("ad_log_openapp", "✨ Resume Open App Impression")
+                    AdLoadingState.setInterstitialShowing(true)
                 }
 
                 override fun onAdClicked() {
-                    Log.d(TAG, "App Open Ad clicked.")
+                    showLogsAppOpen(" $tag ---->   onAdClicked")
                 }
 
                 override fun onAdImpression() {
-                    Log.d(TAG, "App Open Ad impression.")
+                    showLogsAppOpen(" $tag ---->   onAdImpression")
                     appOpenAd = null
                 }
             }
 
             try {
                 isShowingAd = true
+                showLogsAppOpen(" $tag ---->   Calling appOpenAd?.show")
                 appOpenAd?.show(activity)
             } catch (e: Exception) {
-                Log.e(TAG, "Exception showing ad: ${e.message}")
-                activity.isActivityAlive {
-                    dialog?.dismiss()
-                }
+                showLogsAppOpen(" $tag ---->   Exception showing ad: ${e.message}")
+                isShowingAd = false
+                AdLoadingState.hide()
+                AdLoadingState.setInterstitialShowing(false)
             }
         }
 
@@ -203,13 +240,7 @@ class AppOpenManager(
     }
 
     private fun safeDismissDialog() {
-        dialog?.let {
-            val ctx = it.context
-            if (it.isShowing && ctx is Activity && !ctx.isFinishing && !ctx.isDestroyed) {
-                it.dismiss()
-            }
-        }
-        dialog = null
+        // No longer using dialog, using AdLoadingState instead
     }
 
     override fun onActivityStarted(activity: Activity) {
@@ -234,19 +265,6 @@ class AppOpenManager(
     }
 
 
-    private fun showFullScreenDialog(activity: Activity) {
-     /*   dialog = Dialog(activity, R.style.Theme_AntiTheftApp)
-        dialog?.apply {
-            setContentView(R.layout.dialog_full_screen)
-
-            setCancelable(false)
-            window?.hideNavigationBar()
-
-            window?.setBackgroundDrawableResource(android.R.color.white)
-            show()
-        }*/
-    }
-
     private fun clearAd() {
         Log.d(TAG, "Clearing AppOpenAd reference")
         appOpenAd = null
@@ -254,8 +272,6 @@ class AppOpenManager(
         isShowingAd = false
         loadTime = 0L
         handler?.removeCallbacks(runnable ?: Runnable { })
-        currentActivity?.isActivityAlive {
-            dialog?.dismiss()
-        }
+        AdLoadingState.hide()
     }
 }

@@ -38,7 +38,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -58,8 +57,10 @@ import com.imr.example.newsmartykotlin.presentation.backgroundtext.components.Ad
 import com.imr.example.newsmartykotlin.presentation.backgroundtext.components.EditableSticker
 import com.imr.example.newsmartykotlin.presentation.backgroundtext.components.StickerBottomSheet
 import com.imr.example.newsmartykotlin.presentation.backgroundtext.components.TextEditingBottomSheet
-import com.imr.example.newsmartykotlin.presentation.language.LanguageNativeState
-import com.imr.example.newsmartykotlin.presentation.language.components.LanguageBottomNativeAd
+import android.app.Activity
+import com.imr.example.newsmartykotlin.presentation.common.components.BannerAd
+import com.imr.example.newsmartykotlin.presentation.common.components.BannerAdShimmer
+import com.imr.example.newsmartykotlin.presentation.language.LanguageBannerState
 import com.imr.example.newsmartykotlin.presentation.navigation.AppRoutes
 import com.imr.example.newsmartykotlin.presentation.navigation.SELECTED_BACKGROUND_IMAGE_KEY
 import com.imr.example.newsmartykotlin.presentation.permission.GalleryPermissionHelper
@@ -88,7 +89,18 @@ fun BackgroundTextScreen(
     val isConnected by adViewModel.isConnected.collectAsStateWithLifecycle(initialValue = true)
     val config by adViewModel.adRepository.appConfig.collectAsStateWithLifecycle()
 
-    val showAd = config.backgroundTextNative.toShow && !isPurchased && isConnected
+    val showBannerAd = config.backgroundTextBanner.toShow && !isPurchased && isConnected
+    val bannerState by adViewModel.getBannerAdState("BackgroundTextBanner").collectAsStateWithLifecycle()
+
+    LaunchedEffect(showBannerAd) {
+        if (showBannerAd) {
+            adViewModel.loadBannerAd(
+                activity = context as Activity,
+                adId = config.backgroundTextBanner.adId,
+                tag = "BackgroundTextBanner"
+            )
+        }
+    }
 
     LaunchedEffect(config.saveInterstitial.toShow) {
         if (config.saveInterstitial.toShow && !isPurchased && isConnected) {
@@ -96,17 +108,6 @@ fun BackgroundTextScreen(
                 adId = config.saveInterstitial.adId,
                 tag = "Save_Interstitial"
             )
-        }
-    }
-
-    val nativeState by adViewModel.getNativeAdState("BackgroundTextNative").collectAsStateWithLifecycle()
-
-    LaunchedEffect(showAd, nativeState) {
-        if (showAd && (nativeState is LanguageNativeState.Idle || nativeState is LanguageNativeState.Failed)) {
-            adViewModel.loadNativeAd(
-                adId = config.backgroundTextNative.adId,
-                tag = "BackgroundTextNative"
-            ) { _ -> }
         }
     }
 
@@ -185,6 +186,34 @@ fun BackgroundTextScreen(
                         }
                     }
                 )
+
+                if (showBannerAd) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp)
+                    ) {
+                        when (bannerState) {
+                            is LanguageBannerState.Loaded -> {
+                                BannerAd(
+                                    adView = (bannerState as LanguageBannerState.Loaded).adView,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+
+                            is LanguageBannerState.Loading -> {
+                                BannerAdShimmer(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 20.dp)
+                                )
+                            }
+
+                            else -> {}
+                        }
+                    }
+                }
+
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Box(
@@ -217,19 +246,15 @@ fun BackgroundTextScreen(
                             Image(
                                 painter = rememberAsyncImagePainter(uiState.backgroundPath),
                                 contentDescription = null,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(horizontal = 28.dp, vertical = 28.dp),
-                                contentScale = ContentScale.Fit
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
                             )
                         }
 
                         Image(
                             painter = rememberAsyncImagePainter(uiState.imagePath),
                             contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(horizontal = 28.dp, vertical = 28.dp),
+                            modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Fit
                         )
 
@@ -282,21 +307,6 @@ fun BackgroundTextScreen(
                         viewModel.showStickerSheet()
                     }
                 )
-            }
-
-            if (showAd) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White)
-                ) {
-                    LanguageBottomNativeAd(
-                        state = nativeState,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp, vertical = 10.dp)
-                    )
-                }
             }
         }
 

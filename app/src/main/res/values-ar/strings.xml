@@ -1,0 +1,171 @@
+<resources>
+    <string name="app_name">New-Smarty-Kotlin</string>
+    <string name="welcome">أهلاً بك!</string>
+    <string name="to_suit_changer">إلى مغير البدلات</string>
+    <string name="save">حفظ</string>
+    <string name="select_language">اختر اللغة</string>
+    <string name="select_language_subtitle">اختر لغتك المفضلة للحصول على أفضل تجربة!</string>
+    <string name="next">التالي</string>
+    <string name="continue_text">استمرار</string>
+    <string name="change_outfits_in_one_tap">تغيير الملابس بنقرة واحدة</string>
+    <string name="make_passport_size">اجعلها بحجم جواز السفر</string>
+    <string name="photos">الصور</string>
+    <string name="change_backgrounds">تغيير الخلفيات</string>
+    <string name="beach_photo_while_staying_at_home">صورة الشاطئ أثناء البقاء في المنزل</string>
+
+
+    <string name="get_text">احصل على</string>
+    <string name="premium">بريميوم</string>
+    <string name="premium_subtitle">وصول غير محدود لجميع الميزات مع تجربة خالية من الإعلانات بنسبة 100%</string>
+
+    <string name="features">الميزات</string>
+    <string name="free">مجاني</string>
+    <string name="pro">برو</string>
+
+    <string name="unlimited_photo_editing">تعديل صور غير محدود</string>
+    <string name="unlimited_ai_suit_changer">مغير بدلات بالذكاء الاصطناعي غير محدود</string>
+    <string name="unlimited_bg_removes">إزالة خلفيات غير محدودة</string>
+    <string name="remove_all_ads">إزالة جميع الإعلانات</string>
+
+    <string name="monthly">شهرياً</string>
+    <string name="month">شهر</string>
+    <string name="year">سنة</string>
+    <string name="loading">جاري التحميل…</string>
+
+    <string name="premium_trial_text">استمتع بفترة تجريبية مجانية لمدة 3 أيام ثم 3.99 دولار/أسبوع</string>
+    <string name="continue_for_free">الاستمرار مجانًا</string>
+    <string name="subscription_auto_renew_text">سيتم تجديد اشتراكك تلقائيًا، وسيتم محاسبتك في بداية كل دورة فوترة.</string>
+    <string name="no_commitment_cancel_anytime">بدون التزام - يمكنك الإلغاء في أي وقت</string>
+
+    <string name="terms_and_conditions">الشروط والأحكام</string>
+    <string name="privacy_policy">سياسة الخصوصية</string>
+    <string name="subscription_details">تفاصيل الاشتراك</string>
+
+
+    <string name="suit">بدلة</string>
+    <string name="changer">مغير</string>
+
+    <string name="suit_changer">Suit Changer</string>
+    <string name="suit_changer_subtitle">أسهل طريقة لتخصيص مظهرك.</string>
+    <string name="lets_change">دعنا نغير</string>
+    <string name="passport_pic">صورة جواز سفر</string>
+    <string name="bg_changer">مغير الخلفية</string>
+    <string name="my_creation">إبداعاتي</string>
+    <string name="suits">البدلات</string>
+    <string name="select_image">اختر صورة</string>
+    <string name="no_images_to_show">لا توجد صور لعرضها.</string>
+    <string name="permission_required_to_access_your_photo_gallery">الإذن مطلوب للوصول إلى معرض الصور الخاص بك</string>
+    <string name="grant_permission">منح الإذن</string>
+    <string name="unlock_your_best_looks">أطلق العنان لأفضل إطلالاتك!</string>
+    <string name="to_seamlessly_swap_suits_and_create_stunning_transformations_we_need_access_to_your_gallery_your_photos_stay_private_and_secure_only_you_can_see_them_grant_access_start_styling"><![CDATA[لتبديل البدلات بسلاسة وإنشاء تحولات مذهلة، نحتاج إلى الوصول إلى معرض الصور الخاص بك. تظل صورك خاصة وآمنة - أنت فقط من يمكنه رؤيتها. امنح الإذن وابدأ التنسيق!]]></string>
+    <string name="deny">رفض</string>
+    <string name="allow">سماح</string>
+    <string name="permission_required">الإذن مطلوب</string>
+    <string name="gallery_access_is_required_to_continue_please_enable_it_from_settings">مطلوب الوصول إلى معرض الصور للاستمرار. يرجى تفعيله من الإعدادات.</string>
+
+
+    <string name="camera_access_is_required_to_continue_please_enable_it_from_settings">مطلوب الوصول إلى الكاميرا للاستمرار. يرجى تفعيله من الإعدادات.</string>
+    <string name="camera_permission_required">إذن الكاميرا مطلوب</string>
+    <string name="to_take_photos_for_your_passport_we_need_access_to_your_camera_please_grant_permission_to_continue">لالتقاط صور لجواز سفرك، نحتاج إلى الوصول إلى الكاميرا. يرجى منح الإذن للاستمرار.</string>
+
+    <string name="crop_face">قص الوجه</string>
+    <string name="crop_original">الأصلي</string>
+    <string name="crop_free">حر</string>
+    <string name="crop_ratio_1_1">1:1</string>
+    <string name="crop_ratio_4_5">4:5</string>
+    <string name="crop_ratio_3_4">3:4</string>
+    <string name="crop_ratio_16_9">16:9</string>
+    <string name="crop_ratio_9_16">9:16</string>
+    <string name="failed_to_crop_image">فشل في قص الصورة</string>
+    <string name="removing_background">جاري إزالة الخلفية…</string>
+    <string name="photo_editor">محرر الصور</string>
+    <string name="outfits">الملابس</string>
+    <string name="eraser">ممحاة</string>
+    <string name="face_flip">قلب الوجه</string>
+    <string name="suit_flip">قلب البدلة</string>
+    <string name="size">الحجم</string>
+    <string name="offset">الإزاحة</string>
+
+    <string name="background_and_text">الخلفية والنص</string>
+    <string name="background">الخلفية</string>
+    <string name="add_text">إضافة نص</string>
+    <string name="stickers">ملصقات</string>
+
+    <string name="add_text_here">أضف نصاً هنا</string>
+    <string name="cancel">إلغاء</string>
+    <string name="add">إضافة</string>
+    <string name="backgrounds">الخلفيات</string>
+    <string name="gallery">المعرض</string>
+
+    <string name="saved">تم الحفظ</string>
+    <string name="saved_image">تم حفظ الصورة</string>
+    <string name="share_to">مشاركة إلى</string>
+    <string name="try_more">تجربة المزيد</string>
+    <string name="instagram">إنستغرام</string>
+    <string name="facebook">فيسبوك</string>
+    <string name="whatsapp">واتساب</string>
+    <string name="x">X</string>
+    <string name="share">مشاركة</string>
+    <string name="editor">محرر</string>
+
+    <string name="select_document_type">اختر نوع المستند</string>
+    <string name="search_hint_passport">مثل جواز سفر الولايات المتحدة</string>
+    <string name="all">الكل</string>
+    <string name="passport">جواز سفر</string>
+    <string name="visa">تأشيرة</string>
+    <string name="standard">قياسي</string>
+    <string name="pixel">بكسل</string>
+    <string name="camera">كاميرا</string>
+
+    <string name="done">تم</string>
+    <string name="back">رجوع</string>
+    <string name="expand_collapse">توسيع أو طي</string>
+    <string name="passport_background_preview">معاينة خلفية جواز السفر</string>
+    <string name="image_saved_successfully">تم حفظ الصورة بنجاح</string>
+    <string name="creation">إبداعاتي</string>
+    <string name="no_creations_found">لم يتم العثور على إبداعات</string>
+
+    <string name="settings">الإعدادات</string>
+    <string name="unlock_premium">فتح البريميوم</string>
+    <string name="upgrade_for_smooth">قم بالترقية للحصول على تجربة \nسلسة وخالية من الإعلانات</string>
+    <string name="get_pro">احصل على برو</string>
+    <string name="language_selection">اختيار اللغة</string>
+    <string name="rate_us">قيمنا</string>
+    <string name="help_us_improve">ساعدنا في التحسين</string>
+    <string name="tell_a_friend">أخبر صديقاً</string>
+    <string name="share_the_app">مشاركة التطبيق</string>
+    <string name="crop">قص</string>
+    <string name="internet_connection_required">يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى</string>
+    <string name="app_not_installed">%1$s غير مثبت</string>
+    <string name="close">إغلاق</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="no_backgrounds_found">لم يتم العثور على خلفيات</string>
+    <string name="choose_color">اختر لوناً</string>
+    <string name="please_wait">يرجى الانتظار</string>
+    <string name="delete">حذف</string>
+    <string name="delete_creation_confirmation">هل أنت متأكد أنك تريد حذف هذا الإبداع؟</string>
+    <string name="reset">إعادة تعيين</string>
+    <string name="reset_confirmation">ستفقد جميع التعديلات. هل أنت متأكد أنك تريد إعادة التعيين؟</string>
+    <string name="no_images_found">لم يتم العور على صور.</string>
+    <string name="install">تثبيت</string>
+    <string name="fonts">خطوط</string>
+    <string name="shadow">ظل</string>
+    <string name="color">لون</string>
+    <string name="align">محاذاة</string>
+    <string name="no_shadow">بدون ظل</string>
+    <string name="left">يسار</string>
+    <string name="center">وسط</string>
+    <string name="right">يمين</string>
+    <string name="something_went_wrong">حدث خطأ ما</string>
+    <string name="try_again">إعادة المحاولة</string>
+    <string name="printable">قابل للطباعة</string>
+    <string name="suitable_for_online_submission">مناسب للتقديم عبر الإنترنت</string>
+    <string name="inch">بوصة</string>
+    <string name="background_remove_failed">فشلت إزالة الخلفية</string>
+    <string name="thank_you_title">شكراً لاستخدامك هذا التطبيق! نحن نقدر دعمك!</string>
+    <string name="exit_confirmation_title">هل أنت متأكد أنك تريد الخروج؟</string>
+    <string name="exit">خروج</string>
+    <string name="enjoying_app_title">هل يعجبك مغير البدلات؟</string>
+    <string name="how_would_you_rate_app">نحن نعمل بجد للحصول على تجربة مستخدم أفضل. سنكون ممتنين جداً إذا قمت بتقييمنا</string>
+    <string name="the_best_we_can_get">أفضل ما يمكننا الحصول عليه</string>
+</resources>

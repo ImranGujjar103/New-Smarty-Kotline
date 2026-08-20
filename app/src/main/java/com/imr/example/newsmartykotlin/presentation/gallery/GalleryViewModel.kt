@@ -19,7 +19,14 @@ class GalleryViewModel(
     private val getGalleryImagesUseCase: GetGalleryImagesUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(GalleryUiState())
+    private val isForBgRemover: Boolean =
+        savedStateHandle[AppRoutes.GalleryForBgRemover.ARG_IS_BG_REMOVER] ?: false
+
+    private val _uiState = MutableStateFlow(
+        GalleryUiState(
+            isForBgRemover = isForBgRemover
+        )
+    )
     val uiState = _uiState.asStateFlow()
 
     private val _event = MutableSharedFlow<GalleryEvent>()
@@ -27,9 +34,6 @@ class GalleryViewModel(
 
     private val suitId: String =
         savedStateHandle[AppRoutes.Gallery.ARG_SUIT_URL] ?: ""
-
-    private val isForBgRemover: Boolean =
-        savedStateHandle[AppRoutes.GalleryForBgRemover.ARG_IS_BG_REMOVER] ?: false
 
     private val isForPassport: Boolean =
         savedStateHandle[AppRoutes.GalleryForPassport.ARG_IS_FOR_PASSPORT] ?: false
@@ -65,6 +69,10 @@ class GalleryViewModel(
                 }
             }
         }
+    }
+
+    fun updatePermissionStatus(isLimited: Boolean) {
+        _uiState.update { it.copy(isLimitedAccess = isLimited) }
     }
 
     fun onFolderClick(folderName: String) {

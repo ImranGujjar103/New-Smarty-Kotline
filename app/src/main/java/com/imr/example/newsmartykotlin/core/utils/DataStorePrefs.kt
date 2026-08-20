@@ -22,6 +22,7 @@ class DataStorePrefs(private val context: Context) {
     private val IS_Consent = booleanPreferencesKey("IS_Consent")
 
     private val IS_FIRST_SPLASH = booleanPreferencesKey("IS_FIRST_SPLASH")
+    private val IS_HOME_INTERSTITIAL_FIRST_TIME = booleanPreferencesKey("IS_HOME_INTERSTITIAL_FIRST_TIME")
 
     // Premium Billing Keys
     private val IS_WEEKLY_TRIAL = booleanPreferencesKey("IS_WEEKLY_TRIAL")
@@ -43,6 +44,7 @@ class DataStorePrefs(private val context: Context) {
     private val YEARLY_PRICE = stringPreferencesKey("YEARLY_PRICE")
 
     private val PREMIUM_LAYOUT_TYPE = stringPreferencesKey("PREMIUM_LAYOUT_TYPE")
+    private val IS_APP_RATED = booleanPreferencesKey("IS_APP_RATED")
     private val SELECTED_LANGUAGE_CODE = stringPreferencesKey("SELECTED_LANGUAGE_CODE")
     private val SELECTED_LANGUAGE_DATA = stringPreferencesKey("SELECTED_LANGUAGE_DATA")
     private val LANGUAGE_SELECTED = booleanPreferencesKey("LANGUAGE_SELECTED")
@@ -390,6 +392,9 @@ class DataStorePrefs(private val context: Context) {
     suspend fun isFirstSplash(value: Boolean) = setBoolean(IS_FIRST_SPLASH, value)
     fun isFirstSplash(): Flow<Boolean> = getBoolean(IS_FIRST_SPLASH, true)
 
+    suspend fun isHomeInterstitialFirstTime(value: Boolean) = setBoolean(IS_HOME_INTERSTITIAL_FIRST_TIME, value)
+    fun isHomeInterstitialFirstTime(): Flow<Boolean> = getBoolean(IS_HOME_INTERSTITIAL_FIRST_TIME, true)
+
     suspend fun setIsPurchased(value: Boolean) = setBoolean(PREMIUM_PURCHASED, value)
     fun getIsPurchased(): Flow<Boolean> = getBoolean(PREMIUM_PURCHASED, false)
 
@@ -446,6 +451,10 @@ class DataStorePrefs(private val context: Context) {
     // Remote Config Premium Layout
     suspend fun setPremiumLayoutType(value: String) = setString(PREMIUM_LAYOUT_TYPE, value)
     fun getPremiumLayoutType(): Flow<String> = getString(PREMIUM_LAYOUT_TYPE, "two_card")
+
+    suspend fun setIsAppRated(value: Boolean) = setBoolean(IS_APP_RATED, value)
+    fun getIsAppRated(): Flow<Boolean> = getBoolean(IS_APP_RATED, false)
+
     // Monthly Paid Trial Preferences
 
     // Clear all data
